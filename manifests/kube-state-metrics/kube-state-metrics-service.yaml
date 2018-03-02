@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kube-state-metrics
+    k8s-app: kube-state-metrics
+  name: kube-state-metrics
+spec:
+  clusterIP: None
+  ports:
+  - name: http-main
+    port: 8443
+    targetPort: http-main
+    protocol: TCP
+  - name: http-self
+    port: 9443
+    targetPort: http-self
+    protocol: TCP
+  selector:
+    app: kube-state-metrics
+

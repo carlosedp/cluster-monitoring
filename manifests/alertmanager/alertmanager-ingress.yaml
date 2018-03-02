@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  rules:
+  - host: alertmanager.internal.carlosedp.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: alertmanager-main
+          servicePort: web
+

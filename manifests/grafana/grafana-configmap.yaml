@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: monitoring
+data:
+  config.ini: |
+    [database]
+    path = /data/grafana.db
+
+    [paths]
+    data = /data
+    logs = /data/log
+    plugins = /data/plugins
+
+    [session]
+    provider = memory
+
+    [auth.basic]
+    enabled = false
+
+    [auth.anonymous]
+    enabled = false
