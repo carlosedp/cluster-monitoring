@@ -39,4 +39,4 @@ find manifests/prometheus -type f ! -name prometheus-k8s-roles.yaml ! -name prom
 kubectl apply -f manifests/prometheus/prometheus-k8s-roles.yaml
 kubectl apply -f manifests/prometheus/prometheus-k8s-role-bindings.yaml
 kctl apply -f manifests/alertmanager/
-
+kctl apply -f manifests/smtp-server/smtp.yaml
