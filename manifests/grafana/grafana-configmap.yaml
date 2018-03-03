@@ -21,3 +21,12 @@ data:
 
     [auth.anonymous]
     enabled = false
+
+    [smtp]
+    enabled = true
+    host = 192.168.1.50:30025 
+    user =
+    password =
+    from_address = 'carlosedp@gmail.com'
+    from_name = Grafana Alert
+    skip_verify = true
