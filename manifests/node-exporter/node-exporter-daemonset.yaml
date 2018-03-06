@@ -20,7 +20,7 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - image: napnap75/rpi-prometheus:node_exporter
+      - image: carlosedp/node_exporter 
         args:
         #- "--web.listen-address=0.0.0.1:9100"
         - "--path.procfs=/host/proc"
