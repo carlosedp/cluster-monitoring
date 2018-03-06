@@ -15,7 +15,7 @@ spec:
         runAsUser: 65534
       containers:
       - name: kube-state-metrics
-        image: carlosedp/kube-state-metrics-arm64:v1.2.0
+        image: carlosedp/kube-state-metrics:v1.2.0
         args:
         - "--host=0.0.0.0"
         - "--port=8443"
