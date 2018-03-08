@@ -24,7 +24,7 @@ data:
 
     [smtp]
     enabled = true
-    host = smtp-server.monitoring.svc:30025 
+    host = smtp-server.monitoring.svc:25 
     user =
     password =
     from_address = 'carlosedp@gmail.com'
