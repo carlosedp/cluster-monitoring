@@ -436,13 +436,13 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "4m",
                 "now"
               ]
             },
             "reducer": {
               "params": [],
-              "type": "max"
+              "type": "avg"
             },
             "type": "query"
           }
@@ -557,13 +557,13 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "4m",
                 "now"
               ]
             },
             "reducer": {
               "params": [],
-              "type": "max"
+              "type": "avg"
             },
             "type": "query"
           }
@@ -845,7 +845,7 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "1m",
                 "now"
               ]
             },
@@ -957,7 +957,7 @@
           {
             "evaluator": {
               "params": [
-                85
+                82
               ],
               "type": "gt"
             },
@@ -967,13 +967,13 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "1m",
                 "now"
               ]
             },
             "reducer": {
               "params": [],
-              "type": "max"
+              "type": "avg"
             },
             "type": "query"
           }
@@ -1034,7 +1034,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 85
+          "value": 82
         }
       ],
       "timeFrom": null,
@@ -1626,5 +1626,5 @@
   "timezone": "browser",
   "title": "Kubernetes cluster monitoring (via Prometheus)",
   "uid": "82pBZCmRk",
-  "version": 22
+  "version": 24
 }
