@@ -14,7 +14,7 @@ spec:
         runAsUser: 65534
       containers:
       - name: grafana
-        image: carlosedp/monitoring-grafana:latest
+        image: carlosedp/monitoring-grafana:v5.0.4
         volumeMounts:
         - name: grafana-config
           mountPath: /grafana/conf/config.ini
