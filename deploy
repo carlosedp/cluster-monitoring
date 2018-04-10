@@ -32,7 +32,17 @@ until kctl get alertmanagers.monitoring.coreos.com > /dev/null 2>&1; do sleep 1;
 echo "done!"
 
 kctl apply -f manifests/node-exporter
-kctl apply -f manifests/kube-state-metrics
+kctl apply -f manifests/armexporter/daemonset.yaml
+kctl apply -f manifests/armexporter/service.yaml
+
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-cluster-role.yaml
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-cluster-role-binding.yaml
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-role.yaml
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-role-binding.yaml
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-service-account.yaml
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-service.yaml
+kctl apply -f manifests/kube-state-metrics/kube-state-metrics-deployment.yaml
+
 kctl apply -f manifests/grafana/grafana-credentials.yaml
 kctl apply -f manifests/grafana
 find manifests/prometheus -type f ! -name prometheus-k8s-roles.yaml ! -name prometheus-k8s-role-bindings.yaml -exec kubectl --namespace "$NAMESPACE" apply -f {} \;
