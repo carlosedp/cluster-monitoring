@@ -25,6 +25,8 @@ spec:
         #- "--web.listen-address=0.0.0.1:9100"
         - "--path.procfs=/host/proc"
         - "--path.sysfs=/host/sys"
+        - "--collector.filesystem.ignored-mount-points"
+        - '^(\/(host|root)\/sys\/kernel\/debug\/).*'
         name: node-exporter
         ports:
         - containerPort: 9100
