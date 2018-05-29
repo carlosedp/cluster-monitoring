@@ -7,7 +7,7 @@ metadata:
 spec:
   replicas: 1
   baseImage: carlosedp/prometheus
-  version: v2.1.0
+  version: v2.2.1
   retention: "168h"
   serviceAccountName: prometheus-k8s
   serviceMonitorSelector:
@@ -23,7 +23,7 @@ spec:
       # memory. Modify based on your target and time-series count for
       # production use. This value is mainly meant for demonstration/testing
       # purposes.
-      memory: 400Mi
+      memory: 512Mi
   alerting:
     alertmanagers:
     - namespace: monitoring
