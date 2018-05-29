@@ -27,7 +27,7 @@ spec:
         - name: http-self
           containerPort: 9443
       - name: addon-resizer
-        image: carlosedp/addon-resizer:2.1 
+        image: carlosedp/addon-resizer:2.1
         resources:
           limits:
             cpu: 100m
