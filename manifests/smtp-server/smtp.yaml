@@ -33,9 +33,15 @@ spec:
           protocol: TCP
         env:
         - name: GMAIL_USER
-          value: "youremail@gmail.com"
+          valueFrom:
+            secretKeyRef:
+              name: smtp-account
+              key: username
         - name: GMAIL_PASSWORD
-          value: "yourpassword"
+          valueFrom:
+            secretKeyRef:
+              name: smtp-account
+              key: password
         - name: DISABLE_IPV6
           value: "True"
         - name: RELAY_DOMAINS
