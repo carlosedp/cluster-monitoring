@@ -20,7 +20,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0"
+      "version": "5.2.2"
     },
     {
       "type": "panel",
@@ -131,7 +131,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum(node_memory_MemTotal) - sum(node_memory_MemFree+node_memory_Buffers+node_memory_Cached) ) / sum(node_memory_MemTotal) * 100",
+          "expr": "(sum(node_memory_MemTotal_bytes) - sum(node_memory_MemFree_bytes+node_memory_Buffers_bytes+node_memory_Cached_bytes) ) / sum(node_memory_MemTotal_bytes) * 100",
           "format": "time_series",
           "interval": "10s",
           "intervalFactor": 1,
@@ -159,10 +159,10 @@
       "colors": [
         "rgba(0, 0, 0, 0)",
         "rgb(210, 1, 1)",
-        "#0a50a1"
+        "#890f02"
       ],
       "datasource": "${DS_PROMETHEUS}",
-      "format": "percent",
+      "format": "percentunit",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -213,14 +213,15 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum(rpi_up == 1) / sum(rpi_up)) * 100",
+          "expr": "avg(up{job=\"kubelet\"}) BY (job)",
           "format": "time_series",
+          "instant": true,
           "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "thresholds": "101",
+      "thresholds": "1.1",
       "title": "Up Nodes",
       "type": "singlestat",
       "valueFontSize": "120%",
@@ -298,7 +299,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "avg(100 - (avg by (instance) (irate(node_cpu{job=\"node-exporter\",mode=\"idle\"}[5m])) * 100))",
+          "expr": "avg(100 - (avg by (instance) (irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) * 100))",
           "format": "time_series",
           "interval": "10s",
           "intervalFactor": 1,
@@ -322,7 +323,7 @@
     {
       "columns": [],
       "datasource": "${DS_PROMETHEUS}",
-      "fontSize": "110%",
+      "fontSize": "90%",
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -332,7 +333,7 @@
       "id": 25,
       "links": [],
       "pageSize": null,
-      "scroll": false,
+      "scroll": true,
       "showHeader": true,
       "sort": {
         "col": 2,
@@ -395,7 +396,7 @@
       ],
       "targets": [
         {
-          "expr": "time() - node_boot_time",
+          "expr": "(time() - node_boot_time_seconds)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -490,7 +491,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_memory_MemTotal - (node_memory_MemFree+node_memory_Buffers+node_memory_Cached )",
+          "expr": "node_memory_MemTotal_bytes - (node_memory_MemFree_bytes+node_memory_Buffers_bytes+node_memory_Cached_bytes)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ instance }}",
@@ -539,7 +540,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alert": {
@@ -557,13 +562,13 @@
             "query": {
               "params": [
                 "A",
-                "4m",
+                "15m",
                 "now"
               ]
             },
             "reducer": {
               "params": [],
-              "type": "avg"
+              "type": "max"
             },
             "type": "query"
           }
@@ -611,7 +616,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (irate(node_cpu{job=\"node-exporter\",mode=\"idle\"}[5m])) * 100)",
+          "expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])) * 100)",
           "format": "time_series",
           "intervalFactor": 3,
           "legendFormat": "{{instance}}",
@@ -661,7 +666,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "columns": [],
@@ -689,6 +698,21 @@
           "link": false,
           "pattern": "Time",
           "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "pattern": "condition|container|daemonset|endpoint|namespace|node",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
         },
         {
           "alias": "",
@@ -726,6 +750,8 @@
       "type": "table"
     },
     {
+      "dashboardFilter": "",
+      "folderId": null,
       "gridPos": {
         "h": 9,
         "w": 5,
@@ -735,6 +761,7 @@
       "id": 27,
       "limit": 10,
       "links": [],
+      "nameFilter": "",
       "onlyAlertsOnDashboard": false,
       "show": "current",
       "sortOrder": 1,
@@ -807,7 +834,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum(node_filesystem_size{device=~\"/dev/.*\"}) - sum(node_filesystem_free{device=~\"/dev/.*\"}) ) / sum(node_filesystem_size{device=~\"/dev/.*\"}) * 100",
+          "expr": "(sum(node_filesystem_size_bytes{device=~\"/dev/.*\"}) - sum(node_filesystem_free_bytes{device=~\"/dev/.*\"}) ) / sum(node_filesystem_size_bytes{device=~\"/dev/.*\"}) * 100",
           "format": "time_series",
           "interval": "10s",
           "intervalFactor": 1,
@@ -844,14 +871,14 @@
             },
             "query": {
               "params": [
-                "A",
-                "1m",
+                "C",
+                "5m",
                 "now"
               ]
             },
             "reducer": {
               "params": [],
-              "type": "last"
+              "type": "avg"
             },
             "type": "query"
           }
@@ -881,7 +908,7 @@
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -895,16 +922,33 @@
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rpi_up",
+          "expr": "sum(up{job=\"kubelet\"}) BY (job)",
           "format": "time_series",
+          "hide": true,
           "instant": false,
           "intervalFactor": 1,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "Up Nodes",
           "refId": "A"
+        },
+        {
+          "expr": "count(up{job=\"kubelet\"})",
+          "format": "time_series",
+          "hide": true,
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "Total Nodes",
+          "refId": "B"
+        },
+        {
+          "expr": "avg(up{job=\"kubelet\"}) BY (job)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "refId": "C"
         }
       ],
       "thresholds": [
@@ -949,7 +993,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alert": {
@@ -957,7 +1005,7 @@
           {
             "evaluator": {
               "params": [
-                82
+                85
               ],
               "type": "gt"
             },
@@ -1034,7 +1082,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 82
+          "value": 85
         }
       ],
       "timeFrom": null,
@@ -1070,7 +1118,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "collapsed": false,
@@ -1108,6 +1160,8 @@
         "alignAsTable": true,
         "avg": true,
         "current": true,
+        "hideEmpty": true,
+        "hideZero": true,
         "max": false,
         "min": false,
         "rightSide": true,
@@ -1121,7 +1175,7 @@
       "lines": true,
       "linewidth": 2,
       "links": [],
-      "nullPointMode": "connected",
+      "nullPointMode": "null as zero",
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -1132,7 +1186,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (container_name)( rate(container_cpu_usage_seconds_total{image!=\"\",container_name!=\"POD\"}[1m] ) )",
+          "expr": "topk(10,sum by (container_name)( rate(container_cpu_usage_seconds_total{image!=\"\",container_name!=\"POD\"}[1m] ) ))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -1150,7 +1204,7 @@
       "tooltip": {
         "msResolution": true,
         "shared": true,
-        "sort": 0,
+        "sort": 2,
         "value_type": "cumulative"
       },
       "type": "graph",
@@ -1178,7 +1232,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1280,7 +1338,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1301,22 +1363,24 @@
       "id": 19,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
+        "avg": true,
         "current": false,
-        "hideEmpty": false,
-        "hideZero": false,
+        "hideEmpty": true,
+        "hideZero": true,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
-        "sideWidth": 150,
+        "sideWidth": 550,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 2,
       "links": [],
-      "nullPointMode": "null as zero",
+      "nullPointMode": "null",
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -1327,10 +1391,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[5m])) by (name)",
+          "expr": "topk(10,sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[5m])) by (name))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{name}}",
+          "legendFormat": "{{ name }}",
           "refId": "A",
           "step": 240
         },
@@ -1351,7 +1415,7 @@
       "tooltip": {
         "msResolution": true,
         "shared": true,
-        "sort": 0,
+        "sort": 1,
         "value_type": "cumulative"
       },
       "transparent": false,
@@ -1380,7 +1444,11 @@
           "min": 0,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1401,20 +1469,24 @@
       "id": 21,
       "legend": {
         "alignAsTable": true,
-        "avg": false,
+        "avg": true,
         "current": false,
+        "hideEmpty": true,
+        "hideZero": true,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "sideWidth": 150,
+        "sort": "avg",
+        "sortDesc": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 2,
       "links": [],
-      "nullPointMode": "null as zero",
+      "nullPointMode": "null",
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -1425,7 +1497,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_network_receive_bytes_total{name=~\".+\"}[5m])) by (name)",
+          "expr": "topk(10,sum(rate(container_network_receive_bytes_total{name=~\".+\"}[5m])) by (name))",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -1449,7 +1521,7 @@
       "tooltip": {
         "msResolution": true,
         "shared": true,
-        "sort": 0,
+        "sort": 1,
         "value_type": "cumulative"
       },
       "transparent": false,
@@ -1478,7 +1550,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1582,7 +1658,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "10s",
@@ -1626,5 +1706,5 @@
   "timezone": "browser",
   "title": "Kubernetes cluster monitoring (via Prometheus)",
   "uid": "82pBZCmRk",
-  "version": 24
+  "version": 37
 }

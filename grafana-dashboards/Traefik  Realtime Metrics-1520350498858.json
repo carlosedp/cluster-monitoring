@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0"
+      "version": "5.2.2"
     },
     {
       "type": "panel",
@@ -122,8 +122,9 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(traefik_request_duration_seconds_sum) / sum(traefik_requests_total) * 1000",
+          "expr": "avg(traefik_entrypoint_request_duration_seconds_sum) / avg(traefik_entrypoint_requests_total) * 1000",
           "format": "time_series",
+          "instant": true,
           "intervalFactor": 2,
           "legendFormat": "",
           "refId": "A",
@@ -287,7 +288,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(rate(traefik_requests_total{code=\"404\",method=\"GET\",exported_service=\"http\"}[5m])) * 1000",
+          "expr": "sum(rate(traefik_entrypoint_requests_total{code=\"404\",method=\"GET\"}[5m])) * 1000",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -346,7 +347,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(traefik_requests_total{exported_service=\"http\"})",
+          "expr": "sum(traefik_entrypoint_requests_total{entrypoint=\"http\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -356,7 +357,7 @@
           "step": 20
         },
         {
-          "expr": "sum(traefik_requests_total{exported_service=\"https\"})",
+          "expr": "sum(traefik_entrypoint_requests_total{entrypoint=\"https\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -399,7 +400,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alert": {
@@ -471,7 +476,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(traefik_request_duration_seconds_sum) / sum(traefik_requests_total) * 1000",
+          "expr": "avg(traefik_entrypoint_request_duration_seconds_sum) / avg(traefik_entrypoint_requests_total) * 1000",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Average response time (ms)",
@@ -521,7 +526,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -560,7 +569,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(traefik_requests_total[5m]))",
+          "expr": "sum(rate(traefik_entrypoint_requests_total[5m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -603,7 +612,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -643,7 +656,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(traefik_requests_total{exported_service=~\"http|https\",code=\"200\"}[5m])",
+          "expr": "rate(traefik_entrypoint_requests_total{entrypoint=~\"http|https\",code=\"200\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{service}} {{method}} {{code}}",
@@ -685,7 +698,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -725,7 +742,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(traefik_requests_total{exported_service=~\"http|https\",code!=\"200\"}[5m])",
+          "expr": "rate(traefik_entrypoint_requests_total{entrypoint=~\"http|https\",code!=\"200\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{service}} {{method}} {{code}}",
@@ -767,7 +784,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -806,10 +827,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "traefik_requests_total{exported_service!~\"http\"}",
+          "expr": "sum(traefik_entrypoint_requests_total) by (code)",
           "format": "time_series",
+          "instant": false,
           "intervalFactor": 2,
-          "legendFormat": "{{service}} {{method}} {{code}}",
+          "legendFormat": "{{code}}",
           "refId": "A",
           "step": 20
         }
@@ -848,7 +870,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -889,7 +915,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(traefik_requests_total{exported_service=~\"http|https\",code=\"200\"}[5m])",
+          "expr": "rate(traefik_entrypoint_requests_total{entrypoint=~\"http|https\",code=\"200\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{method}} : {{code}}",
@@ -930,7 +956,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -971,7 +1001,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(traefik_requests_total{exported_service=~\"http|https\",code!=\"200\"}[5m])",
+          "expr": "rate(traefik_entrypoint_requests_total{entrypoint=~\"http|https\",code!=\"200\"}[5m])",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{ method }} : {{code}}",
@@ -1012,7 +1042,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -1045,11 +1079,11 @@
       "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(rate(traefik_requests_total{exported_service !~ \"http|https\"}[5m])) by (exported_service) ",
+          "expr": "sum(rate(traefik_entrypoint_requests_total[5m])) by (entrypoint)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ exported_service}}",
+          "legendFormat": "{{ entrypoint}}",
           "refId": "A"
         }
       ],
@@ -1088,11 +1122,11 @@
       "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(rate(traefik_requests_total{exported_service =~ \"http|https\"}[5m])) by (exported_service) ",
+          "expr": "sum(rate(traefik_entrypoint_requests_total[5m])) by (entrypoint) ",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ exported_service}}",
+          "legendFormat": "{{ entrypoint}}",
           "refId": "A"
         }
       ],
@@ -1142,5 +1176,5 @@
   "timezone": "browser",
   "title": "Traefik  Realtime Metrics",
   "uid": "000000010",
-  "version": 6
+  "version": 9
 }
