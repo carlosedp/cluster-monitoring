@@ -2,7 +2,7 @@
 
 The Prometheus Operator for Kubernetes provides easy monitoring definitions for Kubernetes services and deployment and management of Prometheus instances.
 
-This project aims on porting the [official manifests](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and images to the ARM platform. This have been tested on a ARM64 Kubernetes cluster deployed as [this article](medium.com/@carlosedp/building-an-arm-kubernetes-cluster-ef31032636f9).
+This project aims on porting the [official manifests](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and images to the ARM platform. This have been tested on a ARM64 Kubernetes cluster deployed as [this article](https://medium.com/@carlosedp/building-an-arm-kubernetes-cluster-ef31032636f9).
 
 ## Changes to Kubeadm for Prometheus Operator
 
