@@ -1,0 +1,84 @@
+{
+    "dependencies": [
+        {
+            "name": "kube-prometheus",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/coreos/prometheus-operator",
+                    "subdir": "contrib/kube-prometheus/jsonnet/kube-prometheus"
+                }
+            },
+            "version": "9536d7787789b74b692cd8a5482a2801b1aba232"
+        },
+        {
+            "name": "ksonnet",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/ksonnet/ksonnet-lib",
+                    "subdir": ""
+                }
+            },
+            "version": "d03da231d6c8bd74437b74a1e9e8b966f13dffa2"
+        },
+        {
+            "name": "kubernetes-mixin",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/kubernetes-monitoring/kubernetes-mixin",
+                    "subdir": ""
+                }
+            },
+            "version": "4c23c06fff9ef50744f5ed306c9ab0c4bd78a144"
+        },
+        {
+            "name": "grafonnet",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/grafana/grafonnet-lib",
+                    "subdir": "grafonnet"
+                }
+            },
+            "version": "eea8b5ba6b8883cf2df5a17c39a42c4b57c0d63e"
+        },
+        {
+            "name": "grafana-builder",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/kausalco/public",
+                    "subdir": "grafana-builder"
+                }
+            },
+            "version": "c6932cf90bce4fef218b4308effc9f15c4219a01"
+        },
+        {
+            "name": "grafana",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/brancz/kubernetes-grafana",
+                    "subdir": "grafana"
+                }
+            },
+            "version": "da19aef6f5b378fb5281e6f61dbadbbf734d45ee"
+        },
+        {
+            "name": "prometheus-operator",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/coreos/prometheus-operator",
+                    "subdir": "jsonnet/prometheus-operator"
+                }
+            },
+            "version": "72ec4b9b16ef11700724dc71fec77112536eed40"
+        },
+        {
+            "name": "etcd-mixin",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/coreos/etcd",
+                    "subdir": "Documentation/etcd-mixin"
+                }
+            },
+            "version": "15b6a17be48dea91a11497980b9adab541add7f0"
+        }
+    ]
+}
