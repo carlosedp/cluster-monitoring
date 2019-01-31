@@ -1,16 +1,19 @@
 #!/bin/bash
 
+# Build images for Prometheus Operator and dependencies
+# Run on Linux AMD64 machine due to qemu image for rbac-proxy
+
 export DOCKER_CLI_EXPERIMENTAL=enabled
 
 REPO=carlosedp
 
 AOR_VERSION=2.1
-KSM_VERSION=v1.4.0
-PROM_OP_VERSION=v0.26.0
-PROMCONFIGRELOADER_VERSION=v0.20.0
 PROM_ADAPTER_VERSION=v0.4.1
-PROM_CONFIG_RELOADER_VERSION=v0.26.0
-KUBE_RBAC_VERSION=v0.4.0
+KSM_VERSION=v1.5.0
+PROM_OP_VERSION=v0.28.0
+KUBE_RBAC_VERSION=v0.4.1
+PROMCONFIGRELOADER_VERSION=v0.20.0
+PROM_CONFIG_RELOADER_VERSION=v0.28.0
 CONFIGMAP_RELOAD_VERSION=v0.2.2
 #-------------------------------------------------------------------------------
 # Kubernetes addon-resizer
@@ -37,6 +40,13 @@ docker rmi $REPO/addon-resizer:$AOR_VERSION-amd64
 manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:$AOR_VERSION
 manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:latest
 
+IMAGE=$REPO/addon-resizer
+VERSION=$AOR_VERSION
+ALL_ARCH='amd64 arm arm64'
+
+docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
+for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
+docker manifest push $IMAGE:$VERSION
 #-------------------------------------------------------------------------------
 # Prometheus-adapter
 # Retag prometheus-adapter from directxman12 images to have unified manifest on DockerHub
@@ -77,6 +87,7 @@ VERSION=$KSM_VERSION
 go get github.com/kubernetes/kube-state-metrics
 #mv $HOME/go/src/github.com/kubernetes/kube-state-metrics $HOME/go/src/k8s.io/kube-state-metrics
 pushd $GOPATH/src/k8s.io/kube-state-metrics
+git pull
 git checkout ${KSM_VERSION}
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/alpine:3.7/' > Dockerfile.arm
@@ -115,6 +126,7 @@ VERSION=$PROM_OP_VERSION
 
 go get github.com/coreos/prometheus-operator
 cd $HOME/go/src/github.com/coreos/prometheus-operator
+git pull
 git checkout ${VERSION}
 
 go get -u github.com/prometheus/promu
@@ -153,6 +165,7 @@ ALL_ARCH='amd64 arm arm64'
 
 go get github.com/brancz/kube-rbac-proxy
 cd $HOME/go/src/github.com/brancz/kube-rbac-proxy
+git pull
 git checkout ${VERSION}
 
 cat > Dockerfile.arm <<EOF
@@ -214,6 +227,7 @@ ALL_ARCH='amd64 arm arm64'
 
 go get github.com/coreos/prometheus-operator
 cd $HOME/go/src/github.com/coreos/prometheus-operator/cmd/prometheus-config-reloader
+git pull
 git checkout ${VERSION}
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/busybox/' > Dockerfile.arm
@@ -250,7 +264,8 @@ ALL_ARCH='amd64 arm arm64'
 
 go get github.com/openshift/configmap-reload
 cd $HOME/go/src/github.com/openshift/configmap-reload
-#git checkout ${VERSION}
+git pull
+git checkout ${VERSION}
 
 cat > Dockerfile.arm <<EOF
 FROM arm32v6/busybox
