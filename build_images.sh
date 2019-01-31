@@ -12,7 +12,6 @@ PROM_ADAPTER_VERSION=v0.4.1
 KSM_VERSION=v1.5.0
 PROM_OP_VERSION=v0.28.0
 KUBE_RBAC_VERSION=v0.4.1
-PROMCONFIGRELOADER_VERSION=v0.20.0
 PROM_CONFIG_RELOADER_VERSION=v0.28.0
 CONFIGMAP_RELOAD_VERSION=v0.2.2
 #-------------------------------------------------------------------------------
@@ -84,7 +83,7 @@ VERSION=$KSM_VERSION
 go get github.com/kubernetes/kube-state-metrics
 #mv $HOME/go/src/github.com/kubernetes/kube-state-metrics $HOME/go/src/k8s.io/kube-state-metrics
 pushd $GOPATH/src/k8s.io/kube-state-metrics
-git pull
+git fetch
 git checkout ${KSM_VERSION}
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/alpine:3.7/' > Dockerfile.arm
@@ -123,7 +122,7 @@ VERSION=$PROM_OP_VERSION
 
 go get github.com/coreos/prometheus-operator
 cd $HOME/go/src/github.com/coreos/prometheus-operator
-git pull
+git fetch
 git checkout ${VERSION}
 
 go get -u github.com/prometheus/promu
@@ -162,7 +161,7 @@ ALL_ARCH='amd64 arm arm64'
 
 go get github.com/brancz/kube-rbac-proxy
 cd $HOME/go/src/github.com/brancz/kube-rbac-proxy
-git pull
+git fetch
 git checkout ${VERSION}
 
 cat > Dockerfile.arm <<EOF
@@ -193,12 +192,13 @@ EXPOSE 8080
 EOF
 
 docker run --rm --privileged multiarch/qemu-user-static:register --reset
-
+rm qemu-arm-static
 wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-arm-static
 chmod +x qemu-arm-static
 GOOS=linux GOARCH=arm go build .
 docker build -t $IMAGE:$VERSION-arm -f Dockerfile.arm .
 
+rm qemu-aarch64-static
 wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-aarch64-static
 chmod +x qemu-aarch64-static
 GOOS=linux GOARCH=arm64 go build .
@@ -224,12 +224,20 @@ ALL_ARCH='amd64 arm arm64'
 
 go get github.com/coreos/prometheus-operator
 cd $HOME/go/src/github.com/coreos/prometheus-operator/cmd/prometheus-config-reloader
-git pull
+git fetch
 git checkout ${VERSION}
 
+wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-arm-static
+wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-aarch64-static
+chmod +x qemu*
+
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/busybox/' > Dockerfile.arm
+sed -i '/^FROM/a COPY qemu-arm-static /usr/bin/qemu-arm-static' Dockerfile.arm
+sed -i '/^RUN/a RUN rm /usr/bin/qemu-arm-static' Dockerfile.arm
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm64v8\/busybox/' > Dockerfile.arm64
+sed -i '/^FROM/a COPY qemu-aarch64-static /usr/bin/qemu-aarch64-static' Dockerfile.arm64
+sed -i '/^RUN/a RUN rm /usr/bin/qemu-aarch64-static' Dockerfile.arm64
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/busybox/' > Dockerfile.amd64
 
@@ -252,6 +260,7 @@ docker manifest push $IMAGE:$VERSION
 
 rm Dockerfile.arm
 rm Dockerfile.arm64
+rm Dockerfile.amd64
 
 #-------------------------------------------------------------------------------
 # configmap-reload
@@ -261,7 +270,7 @@ ALL_ARCH='amd64 arm arm64'
 
 go get github.com/openshift/configmap-reload
 cd $HOME/go/src/github.com/openshift/configmap-reload
-git pull
+git fetch
 git checkout ${VERSION}
 
 cat > Dockerfile.arm <<EOF
