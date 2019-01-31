@@ -1,37 +1,65 @@
 #!/bin/bash
 
+export DOCKER_CLI_EXPERIMENTAL=enabled
+
 REPO=carlosedp
 
-AOM_VERSION=2.1
+AOR_VERSION=2.1
 KSM_VERSION=v1.4.0
-VERSION=v0.26.0
+PROM_OP_VERSION=v0.26.0
 PROMCONFIGRELOADER_VERSION=v0.20.0
-
+PROM_ADAPTER_VERSION=v0.4.1
+PROM_CONFIG_RELOADER_VERSION=v0.26.0
+KUBE_RBAC_VERSION=v0.4.0
+CONFIGMAP_RELOAD_VERSION=v0.2.2
 #-------------------------------------------------------------------------------
 # Kubernetes addon-resizer
 # Retag Addon-resizer google images to have unified manifest on DockerHub
-docker pull gcr.io/google-containers/addon-resizer-arm64:$AOM_VERSION
-docker pull gcr.io/google-containers/addon-resizer-arm:$AOM_VERSION
-docker pull gcr.io/google-containers/addon-resizer-amd64:$AOM_VERSION
+docker pull gcr.io/google-containers/addon-resizer-arm:$AOR_VERSION
+docker pull gcr.io/google-containers/addon-resizer-arm64:$AOR_VERSION
+docker pull gcr.io/google-containers/addon-resizer-amd64:$AOR_VERSION
 
 
-docker tag gcr.io/google-containers/addon-resizer-arm64:$AOM_VERSION $REPO/addon-resizer:$AOM_VERSION-arm64
-docker tag gcr.io/google-containers/addon-resizer-amd64:$AOM_VERSION $REPO/addon-resizer:$AOM_VERSION-arm64
-docker tag gcr.io/google-containers/addon-resizer-arm:$AOM_VERSION $REPO/addon-resizer:$AOM_VERSION-arm
+docker tag gcr.io/google-containers/addon-resizer-arm:$AOR_VERSION $REPO/addon-resizer:$AOR_VERSION-arm
+docker tag gcr.io/google-containers/addon-resizer-arm64:$AOR_VERSION $REPO/addon-resizer:$AOR_VERSION-arm64
+docker tag gcr.io/google-containers/addon-resizer-amd64:$AOR_VERSION $REPO/addon-resizer:$AOR_VERSION-amd64
 
-docker push $REPO/addon-resizer:$AOM_VERSION-arm
-docker push $REPO/addon-resizer:$AOM_VERSION-arm64
-docker push $REPO/addon-resizer:$AOM_VERSION-amd64
+docker push $REPO/addon-resizer:$AOR_VERSION-arm
+docker push $REPO/addon-resizer:$AOR_VERSION-arm64
+docker push $REPO/addon-resizer:$AOR_VERSION-amd64
 
-manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64 --template $REPO/addon-resizer:$AOM_VERSION-ARCH --target $REPO/addon-resizer:$AOM_VERSION
-manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64 --template $REPO/addon-resizer:$AOM_VERSION-ARCH --target $REPO/addon-resizer:latest
+manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:$AOR_VERSION
+manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:latest
 
+#-------------------------------------------------------------------------------
+# Prometheus-adapter
+# Retag prometheus-adapter from directxman12 images to have unified manifest on DockerHub
+
+docker pull directxman12/k8s-prometheus-adapter-arm:$PROM_ADAPTER_VERSION
+docker pull directxman12/k8s-prometheus-adapter-arm64:$PROM_ADAPTER_VERSION
+docker pull directxman12/k8s-prometheus-adapter-amd64:$PROM_ADAPTER_VERSION
+
+docker tag directxman12/k8s-prometheus-adapter-arm:$PROM_ADAPTER_VERSION $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm
+docker tag directxman12/k8s-prometheus-adapter-arm64:$PROM_ADAPTER_VERSION $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm64
+docker tag directxman12/k8s-prometheus-adapter-amd64:$PROM_ADAPTER_VERSION $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-amd64
+
+docker push $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm
+docker push $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm64
+docker push $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-amd64
+
+IMAGE=$REPO/k8s-prometheus-adapter
+VERSION=$PROM_ADAPTER_VERSION
+ALL_ARCH='amd64 arm arm64'
+
+docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
+for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
+docker manifest push $IMAGE:$VERSION
 #-------------------------------------------------------------------------------
 # Kube-state-metrics
 
-export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/kube-state-metrics
 ALL_ARCH='amd64 arm arm64'
+VERSION=$KSM_VERSION
 
 go get github.com/kubernetes/kube-state-metrics
 #mv $HOME/go/src/github.com/kubernetes/kube-state-metrics $HOME/go/src/k8s.io/kube-state-metrics
@@ -55,15 +83,15 @@ docker push $REPO/kube-state-metrics:$KSM_VERSION-arm
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm64
 docker push $REPO/kube-state-metrics:$KSM_VERSION-amd64
 
-docker manifest create --amend $IMAGE:$KSM_VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$KSM_VERSION\-&~g"`
-for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$KSM_VERSION $IMAGE:$KSM_VERSION-$arch; done
-docker manifest push $IMAGE:$KSM_VERSION
+docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
+for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
+docker manifest push $IMAGE:$VERSION
 
 #-------------------------------------------------------------------------------
 # Prometheus-operator
-export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/prometheus-operator
 ALL_ARCH='amd64 arm arm64'
+VERSION=$PROM_OP_VERSION
 
 go get github.com/coreos/prometheus-operator
 cd $HOME/go/src/github.com/coreos/prometheus-operator
@@ -95,7 +123,7 @@ rm Dockerfile.arm64
 # kube-rbac-proxy
 export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/kube-rbac-proxy
-VERSION=v0.4.0
+VERSION=$KUBE_RBAC_VERSION
 ALL_ARCH='amd64 arm arm64'
 
 go get github.com/brancz/kube-rbac-proxy
@@ -156,7 +184,8 @@ docker manifest push $IMAGE:$VERSION
 # prometheus-config-reloader
 export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/prometheus-config-reloader
-VERSION=v0.26.0
+
+VERSION=$PROM_CONFIG_RELOADER_VERSION
 ALL_ARCH='amd64 arm arm64'
 
 go get github.com/coreos/prometheus-operator
@@ -191,7 +220,7 @@ rm Dockerfile.arm64
 # configmap-reload
 export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/configmap-reload
-VERSION=v0.2.2
+VERSION=$CONFIGMAP_RELOAD_VERSION
 ALL_ARCH='amd64 arm arm64'
 
 go get github.com/openshift/configmap-reload
