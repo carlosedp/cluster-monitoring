@@ -37,9 +37,6 @@ docker rmi $REPO/addon-resizer:$AOR_VERSION-arm
 docker rmi $REPO/addon-resizer:$AOR_VERSION-arm64
 docker rmi $REPO/addon-resizer:$AOR_VERSION-amd64
 
-manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:$AOR_VERSION
-manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:latest
-
 IMAGE=$REPO/addon-resizer
 VERSION=$AOR_VERSION
 ALL_ARCH='amd64 arm arm64'
