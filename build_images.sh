@@ -19,7 +19,6 @@ docker pull gcr.io/google-containers/addon-resizer-arm:$AOR_VERSION
 docker pull gcr.io/google-containers/addon-resizer-arm64:$AOR_VERSION
 docker pull gcr.io/google-containers/addon-resizer-amd64:$AOR_VERSION
 
-
 docker tag gcr.io/google-containers/addon-resizer-arm:$AOR_VERSION $REPO/addon-resizer:$AOR_VERSION-arm
 docker tag gcr.io/google-containers/addon-resizer-arm64:$AOR_VERSION $REPO/addon-resizer:$AOR_VERSION-arm64
 docker tag gcr.io/google-containers/addon-resizer-amd64:$AOR_VERSION $REPO/addon-resizer:$AOR_VERSION-amd64
@@ -27,6 +26,13 @@ docker tag gcr.io/google-containers/addon-resizer-amd64:$AOR_VERSION $REPO/addon
 docker push $REPO/addon-resizer:$AOR_VERSION-arm
 docker push $REPO/addon-resizer:$AOR_VERSION-arm64
 docker push $REPO/addon-resizer:$AOR_VERSION-amd64
+
+docker rmi gcr.io/google-containers/addon-resizer-arm:$AOR_VERSION
+docker rmi gcr.io/google-containers/addon-resizer-arm64:$AOR_VERSION
+docker rmi gcr.io/google-containers/addon-resizer-amd64:$AOR_VERSION
+docker rmi $REPO/addon-resizer:$AOR_VERSION-arm
+docker rmi $REPO/addon-resizer:$AOR_VERSION-arm64
+docker rmi $REPO/addon-resizer:$AOR_VERSION-amd64
 
 manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:$AOR_VERSION
 manifest-tool-linux-arm64 push from-args --platforms linux/arm,linux/arm64,linux/amd64 --template $REPO/addon-resizer:$AOR_VERSION-ARCH --target $REPO/addon-resizer:latest
@@ -47,6 +53,13 @@ docker push $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm
 docker push $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm64
 docker push $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-amd64
 
+docker rmi directxman12/k8s-prometheus-adapter-arm:$PROM_ADAPTER_VERSION
+docker rmi directxman12/k8s-prometheus-adapter-arm64:$PROM_ADAPTER_VERSION
+docker rmi directxman12/k8s-prometheus-adapter-amd64:$PROM_ADAPTER_VERSION
+docker rmi $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm
+docker rmi $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-arm64
+docker rmi $REPO/k8s-prometheus-adapter:$PROM_ADAPTER_VERSION-amd64
+
 IMAGE=$REPO/k8s-prometheus-adapter
 VERSION=$PROM_ADAPTER_VERSION
 ALL_ARCH='amd64 arm arm64'
@@ -63,12 +76,14 @@ VERSION=$KSM_VERSION
 
 go get github.com/kubernetes/kube-state-metrics
 #mv $HOME/go/src/github.com/kubernetes/kube-state-metrics $HOME/go/src/k8s.io/kube-state-metrics
-cd $HOME/go/src/k8s.io/kube-state-metrics
+pushd $GOPATH/src/k8s.io/kube-state-metrics
 git checkout ${KSM_VERSION}
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/alpine:3.7/' > Dockerfile.arm
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm64v8\/alpine:3.7/' > Dockerfile.arm64
+
+cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/alpine:3.7/' > Dockerfile.amd64
 
 GOOS=linux GOARCH=arm go build .
 docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm -f Dockerfile.arm .
@@ -77,16 +92,21 @@ GOOS=linux GOARCH=arm64 go build .
 docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm64  -f Dockerfile.arm64 .
 
 GOOS=linux GOARCH=amd64 go build .
-docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-amd64  -f Dockerfile .
+docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-amd64  -f Dockerfile.amd64 .
 
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm64
 docker push $REPO/kube-state-metrics:$KSM_VERSION-amd64
 
+docker rmi $REPO/kube-state-metrics:$KSM_VERSION-arm
+docker rmi $REPO/kube-state-metrics:$KSM_VERSION-arm64
+docker rmi $REPO/kube-state-metrics:$KSM_VERSION-amd64
+
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
 docker manifest push $IMAGE:$VERSION
 
+popd
 #-------------------------------------------------------------------------------
 # Prometheus-operator
 IMAGE=carlosedp/prometheus-operator
@@ -103,14 +123,20 @@ cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm64v8\/busybox/' > Dockerfile.arm64
 
+cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/busybox/' > Dockerfile.amd64
+
 GOOS=linux GOARCH=arm $GOPATH/bin/promu build --prefix `pwd`
 docker build -t $REPO/prometheus-operator:${VERSION}-arm -f Dockerfile.arm .
 
 GOOS=linux GOARCH=arm64 $GOPATH/bin/promu build --prefix `pwd`
 docker build -t $REPO/prometheus-operator:${VERSION}-arm64 -f Dockerfile.arm64 .
 
+GOOS=linux GOARCH=amd64 $GOPATH/bin/promu build --prefix `pwd`
+docker build -t $REPO/prometheus-operator:${VERSION}-amd64 -f Dockerfile.amd64 .
+
 docker push $REPO/prometheus-operator:$VERSION-arm
 docker push $REPO/prometheus-operator:$VERSION-arm64
+docker push $REPO/prometheus-operator:$VERSION-amd64
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
@@ -121,7 +147,6 @@ rm Dockerfile.arm64
 
 #-------------------------------------------------------------------------------
 # kube-rbac-proxy
-export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/kube-rbac-proxy
 VERSION=$KUBE_RBAC_VERSION
 ALL_ARCH='amd64 arm arm64'
@@ -182,7 +207,6 @@ docker manifest push $IMAGE:$VERSION
 
 #-------------------------------------------------------------------------------
 # prometheus-config-reloader
-export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/prometheus-config-reloader
 
 VERSION=$PROM_CONFIG_RELOADER_VERSION
@@ -196,6 +220,8 @@ cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm64v8\/busybox/' > Dockerfile.arm64
 
+cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/busybox/' > Dockerfile.amd64
+
 GOOS=linux GOARCH=arm CGO_ENABLED=0 go build -o prometheus-config-reloader main.go
 docker build -t $IMAGE:$VERSION-arm -f Dockerfile.arm .
 
@@ -203,7 +229,7 @@ GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o prometheus-config-reloader mai
 docker build -t $IMAGE:$VERSION-arm64 -f Dockerfile.arm64 .
 
 GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o prometheus-config-reloader main.go
-docker build -t $IMAGE:$VERSION-amd64 -f Dockerfile .
+docker build -t $IMAGE:$VERSION-amd64 -f Dockerfile.amd64 .
 
 docker push $IMAGE:$VERSION-arm
 docker push $IMAGE:$VERSION-arm64
@@ -218,7 +244,6 @@ rm Dockerfile.arm64
 
 #-------------------------------------------------------------------------------
 # configmap-reload
-export DOCKER_CLI_EXPERIMENTAL=enabled
 IMAGE=carlosedp/configmap-reload
 VERSION=$CONFIGMAP_RELOAD_VERSION
 ALL_ARCH='amd64 arm arm64'
