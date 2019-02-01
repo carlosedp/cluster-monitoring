@@ -8,7 +8,7 @@
                     "subdir": "contrib/kube-prometheus/jsonnet/kube-prometheus"
                 }
             },
-            "version": "9536d7787789b74b692cd8a5482a2801b1aba232"
+            "version": "e123a1de479dbb911b4070f1bfcbd1e65e02209e"
         },
         {
             "name": "ksonnet",
@@ -28,7 +28,7 @@
                     "subdir": ""
                 }
             },
-            "version": "4c23c06fff9ef50744f5ed306c9ab0c4bd78a144"
+            "version": "668950e4af13f0153fa1d7b58ebe7023b33f2217"
         },
         {
             "name": "grafonnet",
@@ -38,7 +38,7 @@
                     "subdir": "grafonnet"
                 }
             },
-            "version": "eea8b5ba6b8883cf2df5a17c39a42c4b57c0d63e"
+            "version": "11022f5e920ac1ea960556193e3f0ab57d70d7c5"
         },
         {
             "name": "grafana-builder",
@@ -48,7 +48,7 @@
                     "subdir": "grafana-builder"
                 }
             },
-            "version": "c6932cf90bce4fef218b4308effc9f15c4219a01"
+            "version": "ec3d4f943df01f517a083305666cd1c87bcc7e94"
         },
         {
             "name": "grafana",
@@ -58,7 +58,7 @@
                     "subdir": "grafana"
                 }
             },
-            "version": "da19aef6f5b378fb5281e6f61dbadbbf734d45ee"
+            "version": "9ddf5a198b0f7c898dc061158ea427112acbae11"
         },
         {
             "name": "prometheus-operator",
@@ -68,7 +68,7 @@
                     "subdir": "jsonnet/prometheus-operator"
                 }
             },
-            "version": "72ec4b9b16ef11700724dc71fec77112536eed40"
+            "version": "174c9bf17bec78b055e8e63c6ae3a3dc9bb0a3a8"
         },
         {
             "name": "etcd-mixin",
@@ -78,7 +78,7 @@
                     "subdir": "Documentation/etcd-mixin"
                 }
             },
-            "version": "15b6a17be48dea91a11497980b9adab541add7f0"
+            "version": "6070db22ed3d46372a5600fe8f35907f4d706bdb"
         }
     ]
 }

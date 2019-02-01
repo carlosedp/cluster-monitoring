@@ -72,6 +72,8 @@ spec:
         - mountPath: /etc/grafana
           name: grafana-config
           readOnly: false
+      nodeSelector:
+        beta.kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

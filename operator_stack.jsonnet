@@ -36,7 +36,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
         addonResizer: "carlosedp/addon-resizer",
         nodeExporter: "carlosedp/node_exporter",
         prometheusOperator: "carlosedp/prometheus-operator",
-        prometheusAdapter: "directxman12/k8s-prometheus-adapter-arm64",
+        prometheusAdapter: "carlosedp/k8s-prometheus-adapter",
         grafana: "carlosedp/monitoring-grafana",
         configmapReloader: "carlosedp/configmap-reload",
         prometheusConfigReloader: "carlosedp/prometheus-config-reloader",
@@ -45,7 +45,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
     prometheus+:: {
       names: 'k8s',
       replicas: 1,
-      namespaces: ["default", "kube-system","monitoring"],
+      namespaces: ["default", "kube-system","monitoring","logging"],
     },
 
     alertmanager+:: {
