@@ -16,9 +16,7 @@ spec:
         app: grafana
     spec:
       containers:
-      - args:
-        - -config=/etc/grafana/grafana.ini
-        image: carlosedp/monitoring-grafana:v5.4.0
+      - image: carlosedp/monitoring-grafana:v5.4.0
         name: grafana
         ports:
         - containerPort: 3000
@@ -117,16 +115,3 @@ spec:
       - name: grafana-config
         secret:
           secretName: grafana-config
-  volumeClaimTemplate:
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: grafana-storage
-      namespace: monitoring
-    spec:
-      accessModes:
-      - ReadWriteMany
-      resources:
-        requests:
-          storage: 2Gi
-      storageClassName: nfs-ssd-node1

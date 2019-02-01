@@ -25,9 +25,8 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
 
       local armExporter =
         container.new('arm-exporter', $._config.imageRepos.armExporter + ':' + $._config.versions.armExporter) +
-        container.mixin.resources.withRequests({ cpu: '100m', memory: '180Mi' }) +
-        container.mixin.resources.withLimits({ cpu: '200m', memory: '180Mi' });
-
+        container.mixin.resources.withRequests({ cpu: '50m', memory: '50Mi' }) +
+        container.mixin.resources.withLimits({ cpu: '100m', memory: '100Mi' });
       local proxy =
         container.new('kube-rbac-proxy', $._config.imageRepos.kubeRbacProxy + ':' + $._config.versions.kubeRbacProxy) +
         container.withArgs([

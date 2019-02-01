@@ -17,15 +17,15 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
     versions+:: {
         prometheus: "v2.5.0",
         alertmanager: "v0.15.3",
-        kubeStateMetrics: "v1.4.0",
-        kubeRbacProxy: "v0.4.0",
+        kubeStateMetrics: "v1.5.0",
+        kubeRbacProxy: "v0.4.1",
         addonResizer: "2.1",
         nodeExporter: "v0.17.0",
-        prometheusOperator: "v0.26.0",
-        prometheusAdapter: "v0.4.0",
+        prometheusOperator: "v0.28.0",
+        prometheusAdapter: "v0.4.1",
         grafana: "v5.4.0",
         configmapReloader: "v0.2.2",
-        prometheusConfigReloader: "v0.26.0",
+        prometheusConfigReloader: "v0.28.0",
     },
 
     imageRepos+:: {
@@ -136,38 +136,38 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
     },
 
   # Override command for Grafana to load ini from correct path
-  grafana+:: {
-    deployment+:
-      {
-        local pvc = k.core.v1.persistentVolumeClaim,
-        spec+: {
-          volumeClaimTemplate:
-            pvc.new() +
-            pvc.mixin.metadata.withNamespace($._config.namespace) +
-            pvc.mixin.metadata.withName("grafana-storage") +
-            pvc.mixin.spec.withAccessModes('ReadWriteMany') +
-            pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }) +
-            pvc.mixin.spec.withStorageClassName('nfs-ssd-node1'),
-          template+: {
-            spec+: {
-              containers:
-                std.map(
-                  function(c)
-                    if c.name == 'grafana' then
-                      c {
-                        args+: [
-                          '-config=/etc/grafana/grafana.ini',
-                        ],
-                      }
-                    else
-                      c,
-                  super.containers,
-                ),
-            },
-          },
-        },
-      },
-  },
+  // grafana+:: {
+  //   deployment+:
+  //     {
+  //       local pvc = k.core.v1.persistentVolumeClaim,
+  //       spec+: {
+  //         volumeClaimTemplate:
+  //           pvc.new() +
+  //           pvc.mixin.metadata.withNamespace($._config.namespace) +
+  //           pvc.mixin.metadata.withName("grafana-storage") +
+  //           pvc.mixin.spec.withAccessModes('ReadWriteMany') +
+  //           pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }) +
+  //           pvc.mixin.spec.withStorageClassName('nfs-ssd-node1'),
+  //         template+: {
+  //           spec+: {
+  //             containers:
+  //               std.map(
+  //                 function(c)
+  //                   if c.name == 'grafana' then
+  //                     c {
+  //                       args+: [
+  //                         '-config=/etc/grafana/grafana.ini',
+  //                       ],
+  //                     }
+  //                   else
+  //                     c,
+  //                 super.containers,
+  //               ),
+  //           },
+  //         },
+  //       },
+  //     },
+  // },
 
   // Override command for addon-resizer due to change from parameter --threshold to --acceptance-offset
   kubeStateMetrics+:: {

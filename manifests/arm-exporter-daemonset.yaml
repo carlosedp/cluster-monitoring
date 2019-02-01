@@ -19,11 +19,11 @@ spec:
         name: arm-exporter
         resources:
           limits:
-            cpu: 200m
-            memory: 180Mi
-          requests:
             cpu: 100m
-            memory: 180Mi
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
       - args:
         - --secure-listen-address=$(IP):9243
         - --upstream=http://127.0.0.1:9243/
