@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: kube-dns
+  name: kube-dns-prometheus-discovery
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 9153
+    targetPort: 9153
+  selector:
+    k8s-app: kube-dns

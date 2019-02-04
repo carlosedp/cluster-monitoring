@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: metallb-controller
+  name: metallb-controller
+  namespace: metallb-system
+spec:
+  clusterIP: None
+  ports:
+  - name: http
+    port: 7472
+    targetPort: 7472
+  selector:
+    app: metallb
+    component: controller

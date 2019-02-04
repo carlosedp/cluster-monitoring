@@ -16,7 +16,7 @@ spec:
         app: grafana
     spec:
       containers:
-      - image: carlosedp/monitoring-grafana:v5.4.0
+      - image: grafana/grafana:5.4.3
         name: grafana
         ports:
         - containerPort: 3000
@@ -57,6 +57,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-pod
           name: grafana-dashboard-k8s-resources-pod
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/kubernetes-cluster-dashboard
+          name: grafana-dashboard-kubernetes-cluster-dashboard
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/nodes
           name: grafana-dashboard-nodes
           readOnly: false
@@ -66,8 +69,14 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/pods
           name: grafana-dashboard-pods
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus-dashboard
+          name: grafana-dashboard-prometheus-dashboard
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/statefulset
           name: grafana-dashboard-statefulset
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/traefik-dashboard
+          name: grafana-dashboard-traefik-dashboard
           readOnly: false
         - mountPath: /etc/grafana
           name: grafana-config
@@ -103,6 +112,9 @@ spec:
           name: grafana-dashboard-k8s-resources-pod
         name: grafana-dashboard-k8s-resources-pod
       - configMap:
+          name: grafana-dashboard-kubernetes-cluster-dashboard
+        name: grafana-dashboard-kubernetes-cluster-dashboard
+      - configMap:
           name: grafana-dashboard-nodes
         name: grafana-dashboard-nodes
       - configMap:
@@ -112,8 +124,14 @@ spec:
           name: grafana-dashboard-pods
         name: grafana-dashboard-pods
       - configMap:
+          name: grafana-dashboard-prometheus-dashboard
+        name: grafana-dashboard-prometheus-dashboard
+      - configMap:
           name: grafana-dashboard-statefulset
         name: grafana-dashboard-statefulset
+      - configMap:
+          name: grafana-dashboard-traefik-dashboard
+        name: grafana-dashboard-traefik-dashboard
       - name: grafana-config
         secret:
           secretName: grafana-config

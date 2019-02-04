@@ -41,5 +41,4 @@ spec:
         resources:
           requests:
             storage: 20Gi
-        storageClassName: nfs-ssd-node1
-  version: v2.5.0
+  version: v2.7.0
