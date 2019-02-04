@@ -1,18 +1,10 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
-local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
+local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
+           (import 'image_sources_versions.jsonnet') +
+  {
   _config+:: {
     namespace: 'monitoring',
-
-    versions+:: {
-      armExporter: 'latest',
-      kubeRbacProxy: 'v0.4.0',
-    },
-
-    imageRepos+:: {
-      armExporter: 'carlosedp/arm_exporter',
-      kubeRbacProxy: 'carlosedp/kube-rbac-proxy',
-    },
   },
 
   armExporter+:: {
