@@ -120,6 +120,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
         'kubernetes-cluster-dashboard.json': (import 'grafana-dashboards/kubernetes-cluster-dashboard.json'),
         'prometheus-dashboard.json': (import 'grafana-dashboards/prometheus-dashboard.json'),
         'traefik-dashboard.json': (import 'grafana-dashboards/traefik-dashboard.json'),
+        'coredns-dashboard.json': (import 'grafana-dashboards/coredns-dashboard.json'),
     },
     kubeStateMetrics+:: {
     // Override command for addon-resizer due to change from parameter --threshold to --acceptance-offset
