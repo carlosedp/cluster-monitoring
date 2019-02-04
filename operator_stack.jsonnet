@@ -1,7 +1,7 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
 local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
-        //    (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet') +
+           (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet') +
            (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet') +
            (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet') +
            (import 'image_sources_versions.jsonnet') +

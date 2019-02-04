@@ -6,6 +6,20 @@ metadata:
   name: k8s
   namespace: monitoring
 spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: prometheus
+              operator: In
+              values:
+              - k8s
+          namespaces:
+          - monitoring
+          topologyKey: kubernetes.io/hostname
+        weight: 100
   alerting:
     alertmanagers:
     - name: alertmanager-main

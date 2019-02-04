@@ -6,6 +6,20 @@ metadata:
   name: main
   namespace: monitoring
 spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: alertmanager
+              operator: In
+              values:
+              - main
+          namespaces:
+          - monitoring
+          topologyKey: kubernetes.io/hostname
+        weight: 100
   baseImage: carlosedp/alertmanager
   nodeSelector:
     beta.kubernetes.io/os: linux
