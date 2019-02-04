@@ -28,7 +28,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
             endpoints: [
               {
                  port: 'admin',
-                 scheme: 'https',
+                 scheme: 'http',
                  interval: '30s',
               },
             ],
