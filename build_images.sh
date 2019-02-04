@@ -42,7 +42,7 @@ ALL_ARCH='amd64 arm arm64'
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
+docker manifest push --purge $IMAGE:$VERSION
 #-------------------------------------------------------------------------------
 # Prometheus-adapter
 # Retag prometheus-adapter from directxman12 images to have unified manifest on DockerHub
@@ -72,7 +72,7 @@ ALL_ARCH='amd64 arm arm64'
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
+docker manifest push --purge $IMAGE:$VERSION
 #-------------------------------------------------------------------------------
 # Kube-state-metrics
 
@@ -92,26 +92,22 @@ cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^
 
 cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/alpine:3.7/' > Dockerfile.amd64
 
-GOOS=linux GOARCH=arm go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=arm go build .
 docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm -f Dockerfile.arm .
 
-GOOS=linux GOARCH=arm64 go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build .
 docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm64  -f Dockerfile.arm64 .
 
-GOOS=linux GOARCH=amd64 go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags '-extldflags "-static"' .
 docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-amd64  -f Dockerfile.amd64 .
 
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm64
 docker push $REPO/kube-state-metrics:$KSM_VERSION-amd64
 
-docker rmi $REPO/kube-state-metrics:$KSM_VERSION-arm
-docker rmi $REPO/kube-state-metrics:$KSM_VERSION-arm64
-docker rmi $REPO/kube-state-metrics:$KSM_VERSION-amd64
-
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
+docker manifest push --purge $IMAGE:$VERSION
 
 popd
 #-------------------------------------------------------------------------------
@@ -148,7 +144,7 @@ docker push $REPO/prometheus-operator:$VERSION-amd64
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
+docker manifest push --purge $IMAGE:$VERSION
 
 rm Dockerfile.arm
 rm Dockerfile.arm64
@@ -184,7 +180,7 @@ EXPOSE 8080
 EOF
 
 cat > Dockerfile.amd64 <<EOF
-FROM alpine:3.8
+FROM amd64/alpine:3.8
 RUN apk add -U --no-cache ca-certificates && rm -rf /var/cache/apk/*
 COPY kube-rbac-proxy .
 ENTRYPOINT ["./kube-rbac-proxy"]
@@ -195,16 +191,16 @@ docker run --rm --privileged multiarch/qemu-user-static:register --reset
 rm qemu-arm-static
 wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-arm-static
 chmod +x qemu-arm-static
-GOOS=linux GOARCH=arm go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=arm go build .
 docker build -t $IMAGE:$VERSION-arm -f Dockerfile.arm .
 
 rm qemu-aarch64-static
 wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-aarch64-static
 chmod +x qemu-aarch64-static
-GOOS=linux GOARCH=arm64 go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build .
 docker build -t $IMAGE:$VERSION-arm64  -f Dockerfile.arm64 .
 
-GOOS=linux GOARCH=amd64 go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags '-extldflags "-static"' .
 docker build -t $IMAGE:$VERSION-amd64  -f Dockerfile.amd64 .
 
 docker push $IMAGE:$VERSION-arm
@@ -213,7 +209,7 @@ docker push $IMAGE:$VERSION-amd64
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
+docker manifest push --purge $IMAGE:$VERSION
 
 #-------------------------------------------------------------------------------
 # prometheus-config-reloader
@@ -247,7 +243,7 @@ docker build -t $IMAGE:$VERSION-arm -f Dockerfile.arm .
 GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o prometheus-config-reloader main.go
 docker build -t $IMAGE:$VERSION-arm64 -f Dockerfile.arm64 .
 
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o prometheus-config-reloader main.go
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags '-extldflags "-static"'  -o prometheus-config-reloader main.go
 docker build -t $IMAGE:$VERSION-amd64 -f Dockerfile.amd64 .
 
 docker push $IMAGE:$VERSION-arm
@@ -256,7 +252,7 @@ docker push $IMAGE:$VERSION-amd64
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
+docker manifest push --purge $IMAGE:$VERSION
 
 rm Dockerfile.arm
 rm Dockerfile.arm64
@@ -297,7 +293,7 @@ docker build -t $IMAGE:$VERSION-arm -f Dockerfile.arm .
 GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build .
 docker build -t $IMAGE:$VERSION-arm64 -f Dockerfile.arm64 .
 
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build .
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags '-extldflags "-static"' .
 docker build -t $IMAGE:$VERSION-amd64 -f Dockerfile.amd64 .
 
 docker push $IMAGE:$VERSION-arm
@@ -306,8 +302,4 @@ docker push $IMAGE:$VERSION-amd64
 
 docker manifest create --amend $IMAGE:$VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$VERSION $IMAGE:$VERSION-$arch; done
-docker manifest push $IMAGE:$VERSION
-
-
-
-
+docker manifest push --purge $IMAGE:$VERSION
