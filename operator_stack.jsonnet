@@ -10,10 +10,6 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
         namespace: "monitoring",
 
         urls+:: {
-            prom_externalUrl: 'http://prometheus.internal.carlosedp.com',
-            alert_externalUrl: 'http://alertmanager.internal.carlosedp.com',
-            grafana_externalUrl: 'http://grafana.internal.carlosedp.com/',
-
             prom_ingress: 'prometheus.internal.carlosedp.com',
             alert_ingress: 'alertmanager.internal.carlosedp.com',
             grafana_ingress: 'grafana.internal.carlosedp.com',
@@ -76,7 +72,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
         prometheus+: {
             spec+: {
                 retention: '15d',
-                externalUrl: $._config.urls.prom_externalUrl,
+                externalUrl: 'http://' + $._config.urls.prom_ingress,
                 storage: {
                 volumeClaimTemplate:
                     pvc.new() +
@@ -113,7 +109,6 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
         },
         storage:
             local pvc = k.core.v1.persistentVolumeClaim;
-            local deployment = k.apps.v1beta2.deployment;
             pvc.new() + pvc.mixin.metadata.withNamespace($._config.namespace) +
                         pvc.mixin.metadata.withName("grafana-storage") +
                         pvc.mixin.spec.withAccessModes('ReadWriteMany') +
@@ -208,8 +203,8 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
                     httpIngressPath.mixin.backend.withServicePort('web')
                 ),
             ),
-        // 'grafana-external':
         // // Example external ingress with authentication
+        // 'grafana-external':
         //     ingress.new() +
         //     ingress.mixin.metadata.withName('grafana-external') +
         //     ingress.mixin.metadata.withNamespace($._config.namespace) +
