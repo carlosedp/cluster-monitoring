@@ -4913,7 +4913,7 @@ items:
           "editable": true,
           "gnetId": 162,
           "graphTooltip": 1,
-          "id": 12,
+          "id": 13,
           "links": [
 
           ],
@@ -5296,7 +5296,7 @@ items:
                           {
                               "evaluator": {
                                   "params": [
-                                      3500000000
+                                      0.84999999999999998
                                   ],
                                   "type": "gt"
                               },
@@ -5305,8 +5305,8 @@ items:
                               },
                               "query": {
                                   "params": [
-                                      "A",
-                                      "4m",
+                                      "B",
+                                      "5m",
                                       "now"
                                   ]
                               },
@@ -5314,12 +5314,13 @@ items:
                                   "params": [
 
                                   ],
-                                  "type": "avg"
+                                  "type": "max"
                               },
                               "type": "query"
                           }
                       ],
                       "executionErrorState": "alerting",
+                      "for": "0m",
                       "frequency": "60s",
                       "handler": 1,
                       "name": "Memory Usage alert",
@@ -5375,6 +5376,13 @@ items:
                           "intervalFactor": 2,
                           "legendFormat": "{{ instance }}",
                           "refId": "A"
+                      },
+                      {
+                          "expr": "(node_memory_MemTotal_bytes - (node_memory_MemFree_bytes+node_memory_Buffers_bytes+node_memory_Cached_bytes))/node_memory_MemTotal_bytes",
+                          "format": "time_series",
+                          "hide": true,
+                          "intervalFactor": 1,
+                          "refId": "B"
                       }
                   ],
                   "thresholds": [
@@ -5383,7 +5391,7 @@ items:
                           "fill": true,
                           "line": true,
                           "op": "gt",
-                          "value": 3500000000
+                          "value": 0.84999999999999998
                       }
                   ],
                   "timeFrom": null,
@@ -5658,6 +5666,9 @@ items:
               },
               {
                   "dashboardFilter": "",
+                  "dashboardTags": [
+
+                  ],
                   "folderId": null,
                   "gridPos": {
                       "h": 9,
@@ -6727,8 +6738,8 @@ items:
           },
           "timezone": "browser",
           "title": "Kubernetes cluster monitoring (via Prometheus)",
-          "uid": "82pBZCmRk",
-          "version": 2
+          "uid": "82pBZCmRkasd",
+          "version": 1
       }
   kind: ConfigMap
   metadata:

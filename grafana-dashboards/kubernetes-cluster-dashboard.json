@@ -16,7 +16,7 @@
     "editable": true,
     "gnetId": 162,
     "graphTooltip": 1,
-    "id": 12,
+    "id": 13,
     "links": [],
     "panels": [
       {
@@ -379,7 +379,7 @@
             {
               "evaluator": {
                 "params": [
-                  3500000000
+                  0.85
                 ],
                 "type": "gt"
               },
@@ -388,19 +388,20 @@
               },
               "query": {
                 "params": [
-                  "A",
-                  "4m",
+                  "B",
+                  "5m",
                   "now"
                 ]
               },
               "reducer": {
                 "params": [],
-                "type": "avg"
+                "type": "max"
               },
               "type": "query"
             }
           ],
           "executionErrorState": "alerting",
+          "for": "0m",
           "frequency": "60s",
           "handler": 1,
           "name": "Memory Usage alert",
@@ -448,6 +449,13 @@
             "intervalFactor": 2,
             "legendFormat": "{{ instance }}",
             "refId": "A"
+          },
+          {
+            "expr": "(node_memory_MemTotal_bytes - (node_memory_MemFree_bytes+node_memory_Buffers_bytes+node_memory_Cached_bytes))/node_memory_MemTotal_bytes",
+            "format": "time_series",
+            "hide": true,
+            "intervalFactor": 1,
+            "refId": "B"
           }
         ],
         "thresholds": [
@@ -456,7 +464,7 @@
             "fill": true,
             "line": true,
             "op": "gt",
-            "value": 3500000000
+            "value": 0.85
           }
         ],
         "timeFrom": null,
@@ -705,6 +713,7 @@
       },
       {
         "dashboardFilter": "",
+        "dashboardTags": [],
         "folderId": null,
         "gridPos": {
           "h": 9,
@@ -1666,6 +1675,6 @@
     },
     "timezone": "browser",
     "title": "Kubernetes cluster monitoring (via Prometheus)",
-    "uid": "82pBZCmRk",
-    "version": 2
+    "uid": "82pBZCmRkasd",
+    "version": 1
   }
