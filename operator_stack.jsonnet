@@ -1,281 +1,249 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
-local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') + {
+local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
+        //    (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet') +
+           (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet') +
+           (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet') +
+           (import 'image_sources_versions.jsonnet') +
+    {
 	_config+:: {
-    namespace: "monitoring",
+        namespace: "monitoring",
 
-    urls+:: {
-      prom_externalUrl: 'http://prometheus.internal.carlosedp.com',
-      alert_externalUrl: 'http://alertmanager.internal.carlosedp.com',
-      grafana_externalUrl: 'http://grafana.internal.carlosedp.com/',
+        urls+:: {
+            prom_externalUrl: 'http://prometheus.internal.carlosedp.com',
+            alert_externalUrl: 'http://alertmanager.internal.carlosedp.com',
+            grafana_externalUrl: 'http://grafana.internal.carlosedp.com/',
 
-      prom_ingress: 'prometheus.internal.carlosedp.com',
-      alert_ingress: 'alertmanager.internal.carlosedp.com',
-      grafana_ingress: 'grafana.internal.carlosedp.com',
-    },
-
-    versions+:: {
-        prometheus: "v2.5.0",
-        alertmanager: "v0.15.3",
-        kubeStateMetrics: "v1.5.0",
-        kubeRbacProxy: "v0.4.1",
-        addonResizer: "2.1",
-        nodeExporter: "v0.17.0",
-        prometheusOperator: "v0.28.0",
-        prometheusAdapter: "v0.4.1",
-        grafana: "v5.4.0",
-        configmapReloader: "v0.2.2",
-        prometheusConfigReloader: "v0.28.0",
-    },
-
-    imageRepos+:: {
-        prometheus: "carlosedp/prometheus",
-        alertmanager: "carlosedp/alertmanager",
-        kubeStateMetrics: "carlosedp/kube-state-metrics",
-        kubeRbacProxy: "carlosedp/kube-rbac-proxy",
-        addonResizer: "carlosedp/addon-resizer",
-        nodeExporter: "carlosedp/node_exporter",
-        prometheusOperator: "carlosedp/prometheus-operator",
-        prometheusAdapter: "carlosedp/k8s-prometheus-adapter",
-        grafana: "carlosedp/monitoring-grafana",
-        configmapReloader: "carlosedp/configmap-reload",
-        prometheusConfigReloader: "carlosedp/prometheus-config-reloader",
-    },
-
-    prometheus+:: {
-      names: 'k8s',
-      replicas: 1,
-      namespaces: ["default", "kube-system","monitoring","logging"],
-    },
-
-    alertmanager+:: {
-      name: 'main',
-      config: |||
-        global:
-          resolve_timeout: 5m
-        route:
-          group_by: ['job']
-          group_wait: 30s
-          group_interval: 5m
-          repeat_interval: 12h
-          receiver: 'null'
-          routes:
-          - match:
-              alertname: DeadMansSwitch
-            receiver: 'null'
-        receivers:
-        - name: 'null'
-      |||,
-      replicas: 1,
-    // Configure External URL's
-      alertmanager+: {
-        spec+: {
-          externalUrl: $._config.urls.alert_externalUrl,
+            prom_ingress: 'prometheus.internal.carlosedp.com',
+            alert_ingress: 'alertmanager.internal.carlosedp.com',
+            grafana_ingress: 'grafana.internal.carlosedp.com',
+            grafana_ingress_external: 'grafana.cloud.carlosedp.com',
         },
-      },
-    },
 
-    kubeStateMetrics+:: {
-        collectors: '',  // empty string gets a default set
-        scrapeInterval: '30s',
-        scrapeTimeout: '30s',
+        prometheus+:: {
+            names: 'k8s',
+            replicas: 1,
+            namespaces: ["default", "kube-system", "monitoring", "logging", "metallb-system"],
+        },
 
-        baseCPU: '100m',
-        baseMemory: '150Mi',
-        cpuPerNode: '2m',
-        memoryPerNode: '30Mi',
-      },
+        alertmanager+:: {
+            replicas: 1,
+        },
 
-    grafana+:: {
-      config: {
-        sections: {
-          database: { path: '/data/grafana.db' },
-          paths: {
-            data: '/var/lib/grafana',
-            logs: '/var/lib/grafana/log',
-            plugins: '/var/lib/grafana/plugins',
-            provisioning: '/etc/grafana/provisioning',
-          },
-          session: { provider: 'memory' },
-          'auth.basic': {enabled: false},
-          'auth.anonymous': {enabled: false},
-          smtp: {
-            enabled: true,
-            host: 'smtp-server.monitoring.svc:25',
-            user: '',
-            password: '',
-            from_address:'carlosedp@gmail.com',
-            from_name: 'Grafana Alert',
-            skip_verify: true
+        kubeStateMetrics+:: {
+            collectors: '',  // empty string gets a default set
+            scrapeInterval: '30s',
+            scrapeTimeout: '30s',
+
+            baseCPU: '100m',
+            baseMemory: '150Mi',
+            cpuPerNode: '2m',
+            memoryPerNode: '30Mi',
+        },
+
+        grafana+:: {
+          config: {
+            sections: {
+            //   database: { path: '/data/grafana.db' },
+            //   paths: {
+            //     data: '/var/lib/grafana',
+            //     logs: '/var/lib/grafana/log',
+            //     plugins: '/var/lib/grafana/plugins',
+            //     provisioning: '/etc/grafana/provisioning',
+            //   },
+              session: { provider: 'memory' },
+              'auth.basic': {enabled: false},
+              'auth.anonymous': {enabled: false},
+              smtp: {
+                enabled: true,
+                host: 'smtp-server.monitoring.svc:25',
+                user: '',
+                password: '',
+                from_address:'carlosedp@gmail.com',
+                from_name: 'Grafana Alert',
+                skip_verify: true
+              },
+            },
           },
         },
-      },
     },
-
     //---------------------------------------
     // End of _config
     //---------------------------------------
 
-    },
     prometheus+:: {
-      local pvc = k.core.v1.persistentVolumeClaim,
-
-      prometheus+: {
-        spec+: {
-          retention: '15d',
-          externalUrl: $._config.urls.prom_externalUrl,
-          storage: {
-            volumeClaimTemplate:
-              pvc.new() +
-              pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
-              pvc.mixin.spec.resources.withRequests({ storage: '20Gi' }) +
-              pvc.mixin.spec.withStorageClassName('nfs-ssd-node1'),
-          },
+        local pvc = k.core.v1.persistentVolumeClaim,
+        prometheus+: {
+            spec+: {
+                retention: '15d',
+                externalUrl: $._config.urls.prom_externalUrl,
+                storage: {
+                volumeClaimTemplate:
+                    pvc.new() +
+                    pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
+                    pvc.mixin.spec.resources.withRequests({ storage: '20Gi' })
+                    # Uncomment below to define a StorageClass name
+                    #+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
+                },
+            },
         },
-      },
     },
 
-  # Override command for Grafana to load ini from correct path
-  // grafana+:: {
-  //   deployment+:
-  //     {
-  //       local pvc = k.core.v1.persistentVolumeClaim,
-  //       spec+: {
-  //         volumeClaimTemplate:
-  //           pvc.new() +
-  //           pvc.mixin.metadata.withNamespace($._config.namespace) +
-  //           pvc.mixin.metadata.withName("grafana-storage") +
-  //           pvc.mixin.spec.withAccessModes('ReadWriteMany') +
-  //           pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }) +
-  //           pvc.mixin.spec.withStorageClassName('nfs-ssd-node1'),
-  //         template+: {
-  //           spec+: {
-  //             containers:
-  //               std.map(
-  //                 function(c)
-  //                   if c.name == 'grafana' then
-  //                     c {
-  //                       args+: [
-  //                         '-config=/etc/grafana/grafana.ini',
-  //                       ],
-  //                     }
-  //                   else
-  //                     c,
-  //                 super.containers,
-  //               ),
-  //           },
-  //         },
-  //       },
-  //     },
-  // },
+  # Override command for Grafana persist data
+    // grafana+:: {
+    //     local pvc = k.core.v1.persistentVolumeClaim,
+    //     local deployment = k.apps.v1beta2.deployment,
+    //     local container = deployment.mixin.spec.template.spec.containersType,
+    //     local containerVolumeMount = container.volumeMountsType,
+    //     local volume = deployment.mixin.spec.template.spec.volumesType,
+    //     local grafanaStorage = pvc.new() + pvc.mixin.metadata.withNamespace($._config.namespace) +
+    //                 pvc.mixin.metadata.withName("grafana-storage") +
+    //                 pvc.mixin.spec.withAccessModes('ReadWriteMany') +
+    //                 pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }),
+    //     deployment+: {
+    // //     local storageVolumeName = grafanaStorage,
+    // //     local storageVolume = volume.fromPersistentVolumeClaim(grafanaStorage),
+    // //     },
+    //     // {
+    //         spec+: {
+    //         template+: {
+    //             spec+: {
+    //             containers:
+    //                 std.map(
+    //                 function(c)
+    //                     if c.name == 'grafana' then
+    //                     c {
+    //                         volumeMounts+: [
+    //                             containerVolumeMount.new("grafana-storage", "/var/lib/grafana"),
+    //                         ],
+    //                     }
+    //                     else
+    //                     c,
+    //                 super.containers,
+    //                 ),
+    //             volumes+: [
+    //                 volume.fromPersistentVolumeClaim(grafanaStorage, "grafana-storage"),
+    //             ],
+    //             },
+    //         },
+    //         },
+    //     },
+    // },
 
-  // Override command for addon-resizer due to change from parameter --threshold to --acceptance-offset
-  kubeStateMetrics+:: {
-    deployment+: {
-      spec+: {
-        template+: {
-          spec+: {
-            containers:
-              std.filterMap(
-                function(c) c.name == 'addon-resizer',
-                function(c)
-                  if std.startsWith(c.name, 'addon-resizer') then
-                    c {
-                      command: [
-                        '/pod_nanny',
-                        '--container=kube-state-metrics',
-                        '--cpu=' + $._config.kubeStateMetrics.baseCPU,
-                        '--extra-cpu=' + $._config.kubeStateMetrics.cpuPerNode,
-                        '--memory=' + $._config.kubeStateMetrics.baseMemory,
-                        '--extra-memory=' + $._config.kubeStateMetrics.memoryPerNode,
-                        '--acceptance-offset=5',
-                        '--deployment=kube-state-metrics',
-                      ],
+    // Add custom dashboards
+    grafanaDashboards+:: {
+        'kubernetes-cluster-dashboard.json': (import 'grafana-dashboards/kubernetes-cluster-dashboard.json'),
+        'prometheus-dashboard.json': (import 'grafana-dashboards/prometheus-dashboard.json'),
+        'traefik-dashboard.json': (import 'grafana-dashboards/traefik-dashboard.json'),
+    },
+    kubeStateMetrics+:: {
+    // Override command for addon-resizer due to change from parameter --threshold to --acceptance-offset
+        deployment+: {
+            spec+: {
+                template+: {
+                    spec+: {
+                    containers:
+                        std.map(
+                        function(c)
+                            if std.startsWith(c.name, 'addon-resizer') then
+                            c {
+                                command: [
+                                    '/pod_nanny',
+                                    '--container=kube-state-metrics',
+                                    '--cpu=100m',
+                                    '--extra-cpu=2m',
+                                    '--memory=150Mi',
+                                    '--extra-memory=30Mi',
+                                    '--acceptance-offset=5',
+                                    '--deployment=kube-state-metrics',
+                                ],
+                            }
+                            else
+                            c,
+                        super.containers,
+                        ),
                     },
-                super.containers,
-              ),
-          },
+                },
+            },
         },
-      },
     },
-  },
 
   // Create ingress objects per application
-  ingress+: {
-    local secret = k.core.v1.secret,
-    local ingress = k.extensions.v1beta1.ingress,
-    local ingressTls = ingress.mixin.spec.tlsType,
-    local ingressRule = ingress.mixin.spec.rulesType,
-    local httpIngressPath = ingressRule.mixin.http.pathsType,
+    ingress+: {
+        local secret = k.core.v1.secret,
+        local ingress = k.extensions.v1beta1.ingress,
+        local ingressTls = ingress.mixin.spec.tlsType,
+        local ingressRule = ingress.mixin.spec.rulesType,
+        local httpIngressPath = ingressRule.mixin.http.pathsType,
 
-    'alertmanager-main':
-      ingress.new() +
-      ingress.mixin.metadata.withName('alertmanager-main') +
-      ingress.mixin.metadata.withNamespace($._config.namespace) +
-      // ingress.mixin.metadata.withAnnotations({
-      //   'nginx.ingress.kubernetes.io/auth-type': 'basic',
-      //   'nginx.ingress.kubernetes.io/auth-secret': 'basic-auth',
-      //   'nginx.ingress.kubernetes.io/auth-realm': 'Authentication Required',
-      // }) +
-      ingress.mixin.spec.withRules(
-        ingressRule.new() +
-        ingressRule.withHost($._config.urls.alert_ingress) +
-        ingressRule.mixin.http.withPaths(
-          httpIngressPath.new() +
-          httpIngressPath.withPath('/') +
-          httpIngressPath.mixin.backend.withServiceName('alertmanager-main') +
-          httpIngressPath.mixin.backend.withServicePort('web')
-        ),
-      ),
-    'grafana':
-      ingress.new() +
-      ingress.mixin.metadata.withName('grafana') +
-      ingress.mixin.metadata.withNamespace($._config.namespace) +
-      // ingress.mixin.metadata.withAnnotations({
-      //   'nginx.ingress.kubernetes.io/auth-type': 'basic',
-      //   'nginx.ingress.kubernetes.io/auth-secret': 'basic-auth',
-      //   'nginx.ingress.kubernetes.io/auth-realm': 'Authentication Required',
-      // }) +
-      ingress.mixin.spec.withRules(
-        ingressRule.new() +
-        ingressRule.withHost($._config.urls.grafana_ingress) +
-        ingressRule.mixin.http.withPaths(
-          httpIngressPath.new() +
-          httpIngressPath.withPath('/') +
-          httpIngressPath.mixin.backend.withServiceName('grafana') +
-          httpIngressPath.mixin.backend.withServicePort('http')
-        ),
-      ),
-    'prometheus-k8s':
-      ingress.new() +
-      ingress.mixin.metadata.withName('prometheus-k8s') +
-      ingress.mixin.metadata.withNamespace($._config.namespace) +
-      // ingress.mixin.metadata.withAnnotations({
-      //   'nginx.ingress.kubernetes.io/auth-type': 'basic',
-      //   'nginx.ingress.kubernetes.io/auth-secret': 'basic-auth',
-      //   'nginx.ingress.kubernetes.io/auth-realm': 'Authentication Required',
-      // }) +
-      ingress.mixin.spec.withRules(
-        ingressRule.new() +
-        ingressRule.withHost($._config.urls.prom_ingress) +
-        ingressRule.mixin.http.withPaths(
-          httpIngressPath.new() +
-          httpIngressPath.withPath('/') +
-          httpIngressPath.mixin.backend.withServiceName('prometheus-k8s') +
-          httpIngressPath.mixin.backend.withServicePort('web')
-        ),
-      ),
-    },
-  };
-  // + {
-    // Create basic auth secret - replace 'auth' file with your own
-    // Create with htpasswd -c auth [USERNAME]
-//     ingress+:: {
-//       'basic-auth-secret':
-//         secret.new('basic-auth', { auth: std.base64(importstr 'auth') }) +
-//         secret.mixin.metadata.withNamespace($._config.namespace),
-//     },
-// };
+        'alertmanager-main':
+            ingress.new() +
+            ingress.mixin.metadata.withName('alertmanager-main') +
+            ingress.mixin.metadata.withNamespace($._config.namespace) +
+            ingress.mixin.spec.withRules(
+                ingressRule.new() +
+                ingressRule.withHost($._config.urls.alert_ingress) +
+                ingressRule.mixin.http.withPaths(
+                    httpIngressPath.new() +
+                    httpIngressPath.withPath('/') +
+                    httpIngressPath.mixin.backend.withServiceName('alertmanager-main') +
+                    httpIngressPath.mixin.backend.withServicePort('web')
+                ),
+            ),
+        'grafana':
+            ingress.new() +
+            ingress.mixin.metadata.withName('grafana') +
+            ingress.mixin.metadata.withNamespace($._config.namespace) +
+            ingress.mixin.spec.withRules(
+                ingressRule.new() +
+                ingressRule.withHost($._config.urls.grafana_ingress) +
+                ingressRule.mixin.http.withPaths(
+                    httpIngressPath.new() +
+                    httpIngressPath.withPath('/') +
+                    httpIngressPath.mixin.backend.withServiceName('grafana') +
+                    httpIngressPath.mixin.backend.withServicePort('http')
+                ),
+            ),
+        'prometheus-k8s':
+            ingress.new() +
+            ingress.mixin.metadata.withName('prometheus-k8s') +
+            ingress.mixin.metadata.withNamespace($._config.namespace) +
+            ingress.mixin.spec.withRules(
+                ingressRule.new() +
+                ingressRule.withHost($._config.urls.prom_ingress) +
+                ingressRule.mixin.http.withPaths(
+                    httpIngressPath.new() +
+                    httpIngressPath.withPath('/') +
+                    httpIngressPath.mixin.backend.withServiceName('prometheus-k8s') +
+                    httpIngressPath.mixin.backend.withServicePort('web')
+                ),
+            ),
+        // 'grafana-external':
+        // // Example external ingress with authentication
+        //     ingress.new() +
+        //     ingress.mixin.metadata.withName('grafana-external') +
+        //     ingress.mixin.metadata.withNamespace($._config.namespace) +
+        //     ingress.mixin.metadata.withLabels({'traffic-type': 'external'}) +
+        //     ingress.mixin.metadata.withAnnotations({
+        //       'ingress.kubernetes.io/auth-type': 'basic',
+        //       'ingress.kubernetes.io/auth-secret': 'basic-auth',
+        //     }) +
+        //     ingress.mixin.spec.withRules(
+        //         ingressRule.new() +
+        //         ingressRule.withHost($._config.urls.grafana_ingress_external) +
+        //         ingressRule.mixin.http.withPaths(
+        //             httpIngressPath.new() +
+        //             httpIngressPath.withPath('/') +
+        //             httpIngressPath.mixin.backend.withServiceName('grafana') +
+        //             httpIngressPath.mixin.backend.withServicePort('http')
+        //         ),
+        //     ),
+        // 'basic-auth-secret':
+        //     // First generate the auth secret with gen_auth.sh script
+        //     secret.new('basic-auth', { auth: std.base64(importstr 'auth') }) +
+        //     secret.mixin.metadata.withNamespace($._config.namespace),
+        },
+    };
 
 { ['00namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) } +
 { ['0prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator) } +
