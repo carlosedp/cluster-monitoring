@@ -89,46 +89,36 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
         },
     },
 
-  # Override command for Grafana persist data
-    // grafana+:: {
-    //     local pvc = k.core.v1.persistentVolumeClaim,
-    //     local deployment = k.apps.v1beta2.deployment,
-    //     local container = deployment.mixin.spec.template.spec.containersType,
-    //     local containerVolumeMount = container.volumeMountsType,
-    //     local volume = deployment.mixin.spec.template.spec.volumesType,
-    //     local grafanaStorage = pvc.new() + pvc.mixin.metadata.withNamespace($._config.namespace) +
-    //                 pvc.mixin.metadata.withName("grafana-storage") +
-    //                 pvc.mixin.spec.withAccessModes('ReadWriteMany') +
-    //                 pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }),
-    //     deployment+: {
-    // //     local storageVolumeName = grafanaStorage,
-    // //     local storageVolume = volume.fromPersistentVolumeClaim(grafanaStorage),
-    // //     },
-    //     // {
-    //         spec+: {
-    //         template+: {
-    //             spec+: {
-    //             containers:
-    //                 std.map(
-    //                 function(c)
-    //                     if c.name == 'grafana' then
-    //                     c {
-    //                         volumeMounts+: [
-    //                             containerVolumeMount.new("grafana-storage", "/var/lib/grafana"),
-    //                         ],
-    //                     }
-    //                     else
-    //                     c,
-    //                 super.containers,
-    //                 ),
-    //             volumes+: [
-    //                 volume.fromPersistentVolumeClaim(grafanaStorage, "grafana-storage"),
-    //             ],
-    //             },
-    //         },
-    //         },
-    //     },
-    // },
+  # Override deployment for Grafana data persistence
+    grafana+:: {
+        deployment+: {
+            spec+: {
+            template+: {
+                spec+: {
+                volumes:
+                    std.map(
+                        function(v)
+                            if v.name == 'grafana-storage' then
+                            {'name':'grafana-storage',
+                                'persistentVolumeClaim': {
+                                    'claimName': 'grafana-storage'}
+                            }
+                            else
+                                v,
+                    super.volumes
+                    ),
+                },
+            },
+            },
+        },
+        storage:
+            local pvc = k.core.v1.persistentVolumeClaim;
+            local deployment = k.apps.v1beta2.deployment;
+            pvc.new() + pvc.mixin.metadata.withNamespace($._config.namespace) +
+                        pvc.mixin.metadata.withName("grafana-storage") +
+                        pvc.mixin.spec.withAccessModes('ReadWriteMany') +
+                        pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }),
+    },
 
     // Add custom dashboards
     grafanaDashboards+:: {
