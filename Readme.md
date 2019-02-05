@@ -1,32 +1,66 @@
-# Prometheus Operator for ARM platform
+# Prometheus Operator for ARM / X86-64 platforms
 
 The Prometheus Operator for Kubernetes provides easy monitoring definitions for Kubernetes services and deployment and management of Prometheus instances.
 
-This project aims on porting the [official manifests](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus) and images to the ARM platform. This have been tested on a ARM64 Kubernetes cluster deployed as [this article](https://medium.com/@carlosedp/building-an-arm-kubernetes-cluster-ef31032636f9).
+This have been tested on a hybrid ARM64 / X84-64 Kubernetes cluster deployed as [this article](https://medium.com/@carlosedp/building-a-hybrid-x86-64-and-arm-kubernetes-cluster-e7f94ff6e51d).
 
-## Changes to Kubeadm for Prometheus Operator
+This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator. 
 
-According to the official deployment documentation [here](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/kube-prometheus-on-kubeadm.md), a couple of changes on the cluster are required:
+The content of this project is written in jsonnet and is an extension of the fantastic [kube-prometheus](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus) project.
 
-We need to expose the cadvisor that is installed and managed by the kubelet daemon and allow webhook token authentication. To do so, we do the following on **all the masters and nodes**:
+Components included in this package:
 
-```bash
-# Enable cadvisor port
-sudo sed -e "/cadvisor-port=0/d" -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+* The Prometheus Operator
+* Highly available Prometheus
+* Highly available Alertmanager
+* Prometheus node-exporter
+* ARM_exporter to generate temperature metrics
+* MetalLB metrics
+* Traefik metrics
+* kube-state-metrics
+* Grafana
 
-# Enable Webhook authorization
-sudo perl -pi -e "s/(?:--authentication-token-webhook=true )*--authorization-mode=Webhook/--authentication-token-webhook=true --authorization-mode=Webhook/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+## Quickstart
 
-sudo systemctl daemon-reload
-sudo systemctl restart kubelet
+The repository already provides a set of compiled manifests to be applied into the cluster. The deployment can be customized thru the jsonnet files.
+
+To simply deploy the stack, run:
+
+```
+$ kubectl apply -f manifests/
+
+# It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
+$ until kubectl get customresourcedefinitions servicemonitors.monitoring.coreos.com ; do date; sleep 1; echo ""; done
+$ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
+
+$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition).
 ```
 
-In case you already have a Kubernetes deployed with kubeadm, change the address kube-controller-manager and kube-scheduler listens **on master node** in addition to previous kubelet change:
+## Customizing
 
-```bash
-# Make kube-controller ad kube-scheduler listen on all addresses
-sudo sed -e "s/- --address=127.0.0.1/- --address=0.0.0.0/" -i /etc/kubernetes/manifests/kube-controller-manager.yaml
-sudo sed -e "s/- --address=127.0.0.1/- --address=0.0.0.0/" -i /etc/kubernetes/manifests/kube-scheduler.yaml
+The content of this project consists of a set of jsonnet files making up a library to be consumed.
+
+### Pre-reqs
+
+The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing:
+
+```
+git clone https://github.com/carlosedp/prometheus-operator-ARM
+cd prometheus-operator-ARM
+make vendor
+# Change the jsonnet files...
+make
+```
+After this, a new customized set of manifests is built into the `manifests` dir. To apply to your cluster, run:
+
+```
+make deploy
+```
+
+To uninstall, run:
+
+```
+make teardown
 ```
 
 ## Images
@@ -60,11 +94,17 @@ This project depends on the following images:
 * Autobuild: No autobuild yet. Use provided `build_images.sh` script.
 * Images: https://hub.docker.com/r/carlosedp/prometheus-operator
 
+**Prometheus-adapter**
+
+* Source: https://github.com/DirectXMan12/k8s-prometheus-adapter
+* Autobuild: No autobuild yet. Use provided `build_images.sh` script.
+* Images: https://hub.docker.com/r/carlosedp/k8s-prometheus-adapter
+
 **Grafana**
 
 * Source: https://github.com/carlosedp/grafana-ARM
 * Autobuild: https://travis-ci.org/carlosedp/grafana-ARM
-* Images: https://hub.docker.com/r/carlosedp/monitoring-grafana/
+* Images: https://hub.docker.com/r/grafana/grafana/
 
 **Kube-state-metrics**
 
@@ -74,7 +114,7 @@ This project depends on the following images:
 
 **Addon-resizer**
 
-* Source:
+* Source: https://github.com/kubernetes/autoscaler/tree/master/addon-resizer
 * Autobuild: No autobuild yet. Use provided `build_images.sh` script.
 * Images: https://hub.docker.com/r/carlosedp/addon-resizer
 
@@ -97,3 +137,9 @@ This project depends on the following images:
 Source: https://github.com/carlosedp/docker-smtp
 Autobuild: https://travis-ci.org/carlosedp/docker-smtp
 Images: https://hub.docker.com/r/carlosedp/docker-smtp
+
+**Kube-rbac-proxy**
+
+Source: https://github.com/brancz/kube-rbac-proxy
+Autobuild: No autobuild yet. Use provided `build_images.sh` script.
+Images: https://hub.docker.com/r/carlosedp/kube-rbac-proxy
