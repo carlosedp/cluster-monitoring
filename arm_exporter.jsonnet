@@ -22,7 +22,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
       local proxy =
         container.new('kube-rbac-proxy', $._config.imageRepos.kubeRbacProxy + ':' + $._config.versions.kubeRbacProxy) +
         container.withArgs([
-          '--secure-listen-address=$(IP):9243',
+          '--secure-listen-address=:9243',
           '--upstream=http://127.0.0.1:9243/',
         ]) +
         container.withPorts(containerPort.new(9243) + containerPort.withHostPort(9243) + containerPort.withName('https')) +

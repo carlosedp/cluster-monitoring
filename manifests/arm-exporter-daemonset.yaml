@@ -25,7 +25,7 @@ spec:
             cpu: 50m
             memory: 50Mi
       - args:
-        - --secure-listen-address=$(IP):9243
+        - --secure-listen-address=:9243
         - --upstream=http://127.0.0.1:9243/
         image: carlosedp/kube-rbac-proxy:v0.4.1
         name: kube-rbac-proxy
