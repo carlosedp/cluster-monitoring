@@ -36,7 +36,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
       daemonset.mixin.metadata.withLabels(podLabels) +
       daemonset.mixin.spec.selector.withMatchLabels(podLabels) +
       daemonset.mixin.spec.template.metadata.withLabels(podLabels) +
-      daemonset.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/os': 'linux' }) +
+      daemonset.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/arch': 'arm64' }) +
       daemonset.mixin.spec.template.spec.withContainers(c),
     serviceMonitor:
       {
