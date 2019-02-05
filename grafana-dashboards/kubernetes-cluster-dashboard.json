@@ -16,7 +16,7 @@
     "editable": true,
     "gnetId": 162,
     "graphTooltip": 1,
-    "id": 13,
+    "id": 7,
     "links": [],
     "panels": [
       {
@@ -1358,10 +1358,10 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "topk(10,sum(rate(container_network_transmit_bytes_total{name=~\".+\"}[5m])) by (name))",
+            "expr": "topk(10,sum(rate(container_network_transmit_bytes_total{pod_name=~\".+\"}[5m])) by (pod_name))",
             "format": "time_series",
             "intervalFactor": 2,
-            "legendFormat": "{{ name }}",
+            "legendFormat": "{{ pod_name }}",
             "refId": "A",
             "step": 240
           },
@@ -1383,7 +1383,7 @@
         "tooltip": {
           "msResolution": true,
           "shared": true,
-          "sort": 1,
+          "sort": 2,
           "value_type": "cumulative"
         },
         "transparent": false,
@@ -1465,19 +1465,19 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "topk(10,sum(rate(container_network_receive_bytes_total{name=~\".+\"}[5m])) by (name))",
+            "expr": "topk(10,sum(rate(container_network_receive_bytes_total{pod_name=~\".+\"}[5m])) by (pod_name))",
             "format": "time_series",
             "intervalFactor": 2,
-            "legendFormat": "{{name}}",
+            "legendFormat": "{{pod_name}}",
             "refId": "A",
             "step": 240
           },
           {
-            "expr": "- rate(container_network_transmit_bytes_total{name=~\".+\"}[$interval])",
+            "expr": "- rate(container_network_transmit_bytes_total{pod_name=~\".+\"}[$interval])",
             "format": "time_series",
             "hide": true,
             "intervalFactor": 2,
-            "legendFormat": "{{name}}",
+            "legendFormat": "{{pod_name}}",
             "refId": "B",
             "step": 10
           }
@@ -1490,7 +1490,7 @@
         "tooltip": {
           "msResolution": true,
           "shared": true,
-          "sort": 1,
+          "sort": 2,
           "value_type": "cumulative"
         },
         "transparent": false,
