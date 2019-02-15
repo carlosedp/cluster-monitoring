@@ -31,7 +31,7 @@ spec:
           value: "True"
         - name: RELAY_DOMAINS
           value: :192.168.0.0/24:10.0.0.0/16
-        image: carlosedp/docker-smtp:latest
+        image: carlosedp/docker-smtp:v1.0.1
         name: smtp-server
         ports:
         - containerPort: 25

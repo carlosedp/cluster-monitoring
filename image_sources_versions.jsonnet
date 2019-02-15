@@ -13,7 +13,7 @@
             configmapReloader: "v0.2.2",
             prometheusConfigReloader: "v0.28.0",
             armExporter: 'latest',
-            smtpServer: 'latest',
+            smtpServer: 'v1.0.1',
         },
 
         imageRepos+:: {
