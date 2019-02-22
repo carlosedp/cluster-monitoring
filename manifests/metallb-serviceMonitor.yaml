@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: metallb-controller
+  name: metallb
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: http
+    scheme: http
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - metallb-system
+  selector:
+    matchLabels:
+      k8s-app: metallb-controller

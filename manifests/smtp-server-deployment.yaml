@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels:
+    run: smtp-server
+  name: smtp-server
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: smtp-server
+  template:
+    metadata:
+      labels:
+        run: smtp-server
+    spec:
+      containers:
+      - env:
+        - name: GMAIL_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: smtp-account
+        - name: GMAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: smtp-account
+        - name: DISABLE_IPV6
+          value: "True"
+        - name: RELAY_DOMAINS
+          value: :192.168.0.0/24:10.0.0.0/16
+        image: carlosedp/docker-smtp:v1.0.1
+        name: smtp-server
+        ports:
+        - containerPort: 25
+          name: smtp
