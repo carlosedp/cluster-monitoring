@@ -2281,35 +2281,6 @@ items:
   data:
     elasticsearch-dashboard.json: |-
       {
-          "__inputs": [
-
-          ],
-          "__requires": [
-              {
-                  "id": "grafana",
-                  "name": "Grafana",
-                  "type": "grafana",
-                  "version": "5.4.0"
-              },
-              {
-                  "id": "graph",
-                  "name": "Graph",
-                  "type": "panel",
-                  "version": "5.0.0"
-              },
-              {
-                  "id": "prometheus",
-                  "name": "Prometheus",
-                  "type": "datasource",
-                  "version": "5.0.0"
-              },
-              {
-                  "id": "singlestat",
-                  "name": "Singlestat",
-                  "type": "panel",
-                  "version": "5.0.0"
-              }
-          ],
           "annotations": {
               "list": [
                   {
@@ -2326,8 +2297,8 @@ items:
           "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
-          "id": null,
-          "iteration": 1549021227642,
+          "id": 16,
+          "iteration": 1551271295198,
           "links": [
 
           ],
@@ -2354,6 +2325,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -2542,6 +2514,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -2623,6 +2596,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -2719,6 +2693,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -2801,6 +2776,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -2882,6 +2858,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -2963,6 +2940,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -3044,6 +3022,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -3125,6 +3104,7 @@ items:
                       "rgba(237, 129, 40, 0.89)",
                       "#d44a3a"
                   ],
+                  "datasource": "$server",
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -3425,6 +3405,7 @@ items:
                   "bars": false,
                   "dashLength": 10,
                   "dashes": false,
+                  "datasource": "$server",
                   "fill": 1,
                   "gridPos": {
                       "h": 9,
@@ -3522,6 +3503,7 @@ items:
                   "bars": false,
                   "dashLength": 10,
                   "dashes": false,
+                  "datasource": "$server",
                   "fill": 1,
                   "gridPos": {
                       "h": 9,
@@ -3662,6 +3644,7 @@ items:
                   "targets": [
                       {
                           "expr": "sum(elasticsearch_thread_pool_queue_count{cluster=\u007e\"$cluster\", type!=\"management\"}) by (type)",
+                          "format": "time_series",
                           "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "Type: {{type}}",
@@ -3796,7 +3779,8 @@ items:
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "sum(node_memory_MemTotal{cluster=\u007e\"$cluster\"})",
+                          "expr": "sum(node_memory_MemTotal_bytes)",
+                          "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "",
                           "metric": "",
@@ -3883,7 +3867,8 @@ items:
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "sum(node_memory_MemFree{cluster=\u007e\"$cluster\"})",
+                          "expr": "sum(node_memory_MemFree_bytes)",
+                          "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "",
                           "refId": "A",
@@ -3969,7 +3954,8 @@ items:
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "sum(node_memory_MemAvailable{cluster=\u007e\"$cluster\"})",
+                          "expr": "sum(node_memory_MemAvailable_bytes)",
+                          "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "",
                           "refId": "A",
@@ -4141,6 +4127,7 @@ items:
                   "targets": [
                       {
                           "expr": "rate(elasticsearch_thread_pool_rejected_count{cluster=\u007e\"$cluster\", type!=\"management\"}[5m])",
+                          "format": "time_series",
                           "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "{{ name }} {{ type }}",
@@ -4202,6 +4189,7 @@ items:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": "$server",
+                  "decimals": null,
                   "fill": 1,
                   "gridPos": {
                       "h": 9,
@@ -4211,13 +4199,17 @@ items:
                   },
                   "id": 57,
                   "legend": {
-                      "avg": false,
-                      "current": false,
-                      "max": false,
-                      "min": false,
+                      "alignAsTable": true,
+                      "avg": true,
+                      "current": true,
+                      "hideEmpty": false,
+                      "hideZero": false,
+                      "max": true,
+                      "min": true,
+                      "rightSide": false,
                       "show": true,
                       "total": false,
-                      "values": false
+                      "values": true
                   },
                   "lines": true,
                   "linewidth": 1,
@@ -4247,10 +4239,10 @@ items:
                               }
                           ],
                           "dsType": "elasticsearch",
-                          "expr": "avg(irate(node_cpu{cluster=\u007e\"$cluster\"}[10s])) by(mode) *100",
+                          "expr": "elasticsearch_process_cpu_percent{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
                           "intervalFactor": 2,
-                          "legendFormat": "{{ mode }}",
+                          "legendFormat": "{{ name }}",
                           "metric": "elasticsearch_breakers_tripped",
                           "metrics": [
                               {
@@ -4271,7 +4263,7 @@ items:
 
                   ],
                   "timeShift": null,
-                  "title": "Avg. CPU Usage",
+                  "title": "Process CPU Usage",
                   "tooltip": {
                       "shared": true,
                       "sort": 0,
@@ -4289,7 +4281,7 @@ items:
                   },
                   "yaxes": [
                       {
-                          "format": "short",
+                          "format": "percent",
                           "label": "",
                           "logBase": 1,
                           "max": null,
@@ -4302,7 +4294,7 @@ items:
                           "logBase": 1,
                           "max": null,
                           "min": null,
-                          "show": true
+                          "show": false
                       }
                   ],
                   "yaxis": {
@@ -4466,7 +4458,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "sum(rate(elasticsearch_transport_rx_packets_total{cluster=\u007e\"$cluster\"}[5m]))",
+                          "expr": "sum(rate(elasticsearch_transport_rx_size_bytes_total{cluster=\u007e\"$cluster\"}[5m]))",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "RX",
@@ -4474,7 +4466,7 @@ items:
                           "step": 240
                       },
                       {
-                          "expr": "sum(rate(elasticsearch_transport_tx_packets_total{cluster=\u007e\"$cluster\"}[5m])) * -1",
+                          "expr": "sum(rate(elasticsearch_transport_tx_size_bytes_total{cluster=\u007e\"$cluster\"}[5m])) * -1",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "TX",
@@ -4509,14 +4501,14 @@ items:
                   },
                   "yaxes": [
                       {
-                          "format": "short",
+                          "format": "decbytes",
                           "logBase": 1,
                           "max": null,
                           "min": null,
                           "show": true
                       },
                       {
-                          "format": "short",
+                          "format": "decbytes",
                           "logBase": 1,
                           "max": null,
                           "min": null,
@@ -4577,6 +4569,7 @@ items:
                   "targets": [
                       {
                           "expr": "irate(elasticsearch_jvm_gc_collection_seconds_sum{cluster=\u007e\"$cluster\"}[1m])",
+                          "format": "time_series",
                           "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "{{ name }} {{ gc }}",
@@ -4643,8 +4636,8 @@ items:
               "list": [
                   {
                       "current": {
-                          "text": "Prometheus",
-                          "value": "Prometheus"
+                          "text": "prometheus",
+                          "value": "prometheus"
                       },
                       "hide": 0,
                       "label": "Server",
@@ -4661,7 +4654,8 @@ items:
                   {
                       "allValue": null,
                       "current": {
-
+                          "text": "All",
+                          "value": "$__all"
                       },
                       "datasource": "$server",
                       "definition": "",
@@ -4689,7 +4683,7 @@ items:
               ]
           },
           "time": {
-              "from": "now-12h",
+              "from": "now-3h",
               "to": "now"
           },
           "timepicker": {
@@ -4718,8 +4712,8 @@ items:
               ]
           },
           "timezone": "utc",
-          "title": "ElasticSearch Example",
-          "uid": "n_nxrE_mk",
+          "title": "ElasticSearch Cluster",
+          "uid": "n_nxrE_mk78",
           "version": 1
       }
   kind: ConfigMap
