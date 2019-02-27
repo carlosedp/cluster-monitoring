@@ -1,8 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
-local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
-           (import 'image_sources_versions.jsonnet') +
-  {
+{
   _config+:: {
     namespace: 'monitoring',
   },
@@ -81,6 +79,4 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
       service.mixin.metadata.withLabels({ 'k8s-app': 'arm-exporter' }) +
       service.mixin.spec.withClusterIp('None'),
   },
-};
-
-{ ['arm-exporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
+}

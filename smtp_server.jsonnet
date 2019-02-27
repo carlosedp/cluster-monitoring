@@ -1,8 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
-local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
-           (import 'image_sources_versions.jsonnet') +
-  {
+{
   _config+:: {
     namespace: 'monitoring',
   },
@@ -52,6 +50,4 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
         service.mixin.metadata.withNamespace($._config.namespace) +
         service.mixin.metadata.withLabels({ 'run': 'smtp-server' })
   },
-};
-
-{ ['smtp-server-' + name]: kp.smtpServer[name] for name in std.objectFields(kp.smtpServer) }
+}

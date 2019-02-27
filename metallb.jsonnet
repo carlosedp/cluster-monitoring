@@ -1,8 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
-local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
-           (import 'image_sources_versions.jsonnet') +
-  {
+{
   _config+:: {
     namespace: 'monitoring',
   },
@@ -45,7 +43,6 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
     service:
       local service = k.core.v1.service;
       local servicePort = k.core.v1.service.mixin.spec.portsType;
-
       local metallbPort = servicePort.newNamed('http', 7472, 7472);
 
       service.new('metallb-controller', {"app": "metallb", "component": "controller"}, metallbPort) +
@@ -53,6 +50,4 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet') +
       service.mixin.metadata.withLabels({ 'k8s-app': 'metallb-controller' }) +
       service.mixin.spec.withClusterIp('None'),
   },
-};
-
-{ ['metallb-' + name]: kp.metallb[name] for name in std.objectFields(kp.metallb) }
+}
