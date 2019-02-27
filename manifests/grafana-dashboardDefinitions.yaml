@@ -2297,8 +2297,8 @@ items:
           "editable": true,
           "gnetId": null,
           "graphTooltip": 1,
-          "id": 16,
-          "iteration": 1551271295198,
+          "id": 19,
+          "iteration": 1551275508525,
           "links": [
 
           ],
@@ -3772,14 +3772,14 @@ items:
                   ],
                   "sparkline": {
                       "fillColor": "rgba(31, 118, 189, 0.18)",
-                      "full": false,
+                      "full": true,
                       "lineColor": "rgb(31, 120, 193)",
                       "show": true
                   },
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "sum(node_memory_MemTotal_bytes)",
+                          "expr": "sum(elasticsearch_jvm_memory_committed_bytes)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "",
@@ -3789,7 +3789,7 @@ items:
                       }
                   ],
                   "thresholds": "",
-                  "title": "Total Memory",
+                  "title": "Total Memory Available",
                   "type": "singlestat",
                   "valueFontSize": "80%",
                   "valueMaps": [
@@ -3860,14 +3860,14 @@ items:
                   ],
                   "sparkline": {
                       "fillColor": "rgba(31, 118, 189, 0.18)",
-                      "full": false,
+                      "full": true,
                       "lineColor": "rgb(31, 120, 193)",
                       "show": true
                   },
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "sum(node_memory_MemFree_bytes)",
+                          "expr": "sum(elasticsearch_jvm_memory_used_bytes)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "",
@@ -3876,7 +3876,7 @@ items:
                       }
                   ],
                   "thresholds": "",
-                  "title": "Total Memory Free",
+                  "title": "Memory Usage",
                   "type": "singlestat",
                   "valueFontSize": "80%",
                   "valueMaps": [
@@ -3947,14 +3947,14 @@ items:
                   ],
                   "sparkline": {
                       "fillColor": "rgba(31, 118, 189, 0.18)",
-                      "full": false,
+                      "full": true,
                       "lineColor": "rgb(31, 120, 193)",
                       "show": true
                   },
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "sum(node_memory_MemAvailable_bytes)",
+                          "expr": "sum(elasticsearch_jvm_memory_committed_bytes)-sum(elasticsearch_jvm_memory_used_bytes)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "",
@@ -3963,7 +3963,7 @@ items:
                       }
                   ],
                   "thresholds": "",
-                  "title": "Total Memory Available",
+                  "title": "Free Memory",
                   "type": "singlestat",
                   "valueFontSize": "80%",
                   "valueMaps": [
@@ -4658,7 +4658,7 @@ items:
                           "value": "$__all"
                       },
                       "datasource": "$server",
-                      "definition": "",
+                      "definition": "label_values(elasticsearch_cluster_health_status,cluster)",
                       "hide": 0,
                       "includeAll": true,
                       "label": null,
@@ -4712,8 +4712,8 @@ items:
               ]
           },
           "timezone": "utc",
-          "title": "ElasticSearch Cluster",
-          "uid": "n_nxrE_mk78",
+          "title": "ElasticSearch Cluster 2",
+          "uid": "n_nxrE_mk7",
           "version": 1
       }
   kind: ConfigMap
