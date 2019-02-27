@@ -305,6 +305,7 @@ items:
                       "#d44a3a"
                   ],
                   "datasource": "prometheus",
+                  "decimals": null,
                   "format": "none",
                   "gauge": {
                       "maxValue": 100,
@@ -358,7 +359,7 @@ items:
                   "tableColumn": "",
                   "targets": [
                       {
-                          "expr": "apcups_status == 1",
+                          "expr": "topk(1,apcups_status == 1)",
                           "format": "time_series",
                           "intervalFactor": 1,
                           "legendFormat": "{{ status }}",
@@ -792,7 +793,7 @@ items:
           "timezone": "",
           "title": "UPS",
           "uid": "CZrVv8rmk",
-          "version": 4
+          "version": 5
       }
   kind: ConfigMap
   metadata:
