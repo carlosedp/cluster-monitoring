@@ -10,7 +10,7 @@ generate: manifests
 
 manifests: $(JSONNET)
 	rm -rf manifests
-	./build.sh main.jsonnet
+	./scripts/build.sh main.jsonnet
 
 update:
 	jb update
