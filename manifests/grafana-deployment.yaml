@@ -42,8 +42,14 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards
           name: grafana-dashboards
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/apc-ups-dashboard
+          name: grafana-dashboard-apc-ups-dashboard
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/coredns-dashboard
           name: grafana-dashboard-coredns-dashboard
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/elasticsearch-dashboard
+          name: grafana-dashboard-elasticsearch-dashboard
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-cluster-rsrc-use
           name: grafana-dashboard-k8s-cluster-rsrc-use
@@ -101,8 +107,14 @@ spec:
           name: grafana-dashboards
         name: grafana-dashboards
       - configMap:
+          name: grafana-dashboard-apc-ups-dashboard
+        name: grafana-dashboard-apc-ups-dashboard
+      - configMap:
           name: grafana-dashboard-coredns-dashboard
         name: grafana-dashboard-coredns-dashboard
+      - configMap:
+          name: grafana-dashboard-elasticsearch-dashboard
+        name: grafana-dashboard-elasticsearch-dashboard
       - configMap:
           name: grafana-dashboard-k8s-cluster-rsrc-use
         name: grafana-dashboard-k8s-cluster-rsrc-use
