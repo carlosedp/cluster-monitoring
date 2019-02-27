@@ -8,6 +8,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     // Add custom dashboards
     grafanaDashboards+:: {
       'elasticsearch-dashboard.json': (import 'grafana-dashboards/elasticsearch-dashboard.json'),
+      'fluentd-dashboard.json': (import 'grafana-dashboards/fluentd-dashboard.json'),
     },
   },
 

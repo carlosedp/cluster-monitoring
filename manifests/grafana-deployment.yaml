@@ -51,6 +51,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/elasticsearch-dashboard
           name: grafana-dashboard-elasticsearch-dashboard
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/fluentd-dashboard
+          name: grafana-dashboard-fluentd-dashboard
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-cluster-rsrc-use
           name: grafana-dashboard-k8s-cluster-rsrc-use
           readOnly: false
@@ -115,6 +118,9 @@ spec:
       - configMap:
           name: grafana-dashboard-elasticsearch-dashboard
         name: grafana-dashboard-elasticsearch-dashboard
+      - configMap:
+          name: grafana-dashboard-fluentd-dashboard
+        name: grafana-dashboard-fluentd-dashboard
       - configMap:
           name: grafana-dashboard-k8s-cluster-rsrc-use
         name: grafana-dashboard-k8s-cluster-rsrc-use
