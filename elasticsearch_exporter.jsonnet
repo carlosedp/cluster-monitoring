@@ -29,7 +29,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
         container.mixin.securityContext.capabilities.withDrop(['SETPCAP' , 'MKNOD' , 'AUDIT_WRITE' , 'CHOWN' , 'NET_RAW' , 'DAC_OVERRIDE' , 'FOWNER' , 'FSETID' , 'KILL' , 'SETGID' , 'SETUID' , 'NET_BIND_SERVICE' , 'SYS_CHROOT' , 'SETFCAP']) +
         container.mixin.securityContext.withRunAsNonRoot(true) +
         container.mixin.securityContext.withRunAsUser(1000) +
-        container.mixin.securityContext.withReadOnlyRootFilesystem('true') +
+        container.mixin.securityContext.withReadOnlyRootFilesystem(true) +
         container.mixin.resources.withRequests({memory: "64Mi", cpu: "25m"}) +
         container.mixin.resources.withLimits({memory: "128Mi", cpu: "100m"}) +
         container.mixin.livenessProbe.httpGet.withPath('/health') +
