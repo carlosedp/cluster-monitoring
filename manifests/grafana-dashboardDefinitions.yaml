@@ -2299,7 +2299,7 @@ items:
           "gnetId": null,
           "graphTooltip": 1,
           "id": 19,
-          "iteration": 1551275508525,
+          "iteration": 1551392637363,
           "links": [
 
           ],
@@ -2483,6 +2483,7 @@ items:
                       {
                           "expr": "sum(elasticsearch_cluster_health_number_of_nodes{cluster=\u007e\"$cluster\"})/count(elasticsearch_cluster_health_number_of_nodes{cluster=\u007e\"$cluster\"})",
                           "format": "time_series",
+                          "instant": true,
                           "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "",
@@ -2571,6 +2572,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_number_of_data_nodes{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -2653,6 +2655,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_number_of_pending_tasks{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -2750,6 +2753,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_active_shards{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -2833,6 +2837,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_active_primary_shards{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -2915,6 +2920,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_initializing_shards{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -2997,6 +3003,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_relocating_shards{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -3079,6 +3086,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_unassigned_shards{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -3161,6 +3169,7 @@ items:
                       {
                           "expr": "elasticsearch_cluster_health_delayed_unassigned_shards{cluster=\u007e\"$cluster\"}",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 1,
                           "refId": "A"
                       }
@@ -4713,9 +4722,9 @@ items:
               ]
           },
           "timezone": "utc",
-          "title": "ElasticSearch Cluster 2",
-          "uid": "n_nxrE_mk7",
-          "version": 1
+          "title": "ElasticSearch Cluster",
+          "uid": "n_nxrE_m5k",
+          "version": 2
       }
   kind: ConfigMap
   metadata:

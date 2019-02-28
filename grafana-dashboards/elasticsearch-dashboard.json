@@ -16,7 +16,7 @@
     "gnetId": null,
     "graphTooltip": 1,
     "id": 19,
-    "iteration": 1551275508525,
+    "iteration": 1551392637363,
     "links": [],
     "panels": [
       {
@@ -194,6 +194,7 @@
           {
             "expr": "sum(elasticsearch_cluster_health_number_of_nodes{cluster=~\"$cluster\"})/count(elasticsearch_cluster_health_number_of_nodes{cluster=~\"$cluster\"})",
             "format": "time_series",
+            "instant": true,
             "interval": "",
             "intervalFactor": 2,
             "legendFormat": "",
@@ -280,6 +281,7 @@
           {
             "expr": "elasticsearch_cluster_health_number_of_data_nodes{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -360,6 +362,7 @@
           {
             "expr": "elasticsearch_cluster_health_number_of_pending_tasks{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -453,6 +456,7 @@
           {
             "expr": "elasticsearch_cluster_health_active_shards{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -534,6 +538,7 @@
           {
             "expr": "elasticsearch_cluster_health_active_primary_shards{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -614,6 +619,7 @@
           {
             "expr": "elasticsearch_cluster_health_initializing_shards{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -694,6 +700,7 @@
           {
             "expr": "elasticsearch_cluster_health_relocating_shards{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -774,6 +781,7 @@
           {
             "expr": "elasticsearch_cluster_health_unassigned_shards{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -854,6 +862,7 @@
           {
             "expr": "elasticsearch_cluster_health_delayed_unassigned_shards{cluster=~\"$cluster\"}",
             "format": "time_series",
+            "instant": true,
             "intervalFactor": 1,
             "refId": "A"
           }
@@ -2242,7 +2251,7 @@
       ]
     },
     "timezone": "utc",
-    "title": "ElasticSearch Cluster 2",
-    "uid": "n_nxrE_mk7",
-    "version": 1
+    "title": "ElasticSearch Cluster",
+    "uid": "n_nxrE_m5k",
+    "version": 2
   }
