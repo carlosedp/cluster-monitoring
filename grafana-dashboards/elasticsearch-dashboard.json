@@ -16,7 +16,7 @@
     "gnetId": null,
     "graphTooltip": 1,
     "id": 19,
-    "iteration": 1551392637363,
+    "iteration": 1551399203180,
     "links": [],
     "panels": [
       {
@@ -1109,7 +1109,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(elasticsearch_indices_indexing_index_total{cluster=~\"$cluster\"}[1h])",
+            "expr": "sum by (name) (rate(elasticsearch_indices_indexing_index_total{cluster=~\"$cluster\"}[1h]))",
             "format": "time_series",
             "intervalFactor": 1,
             "legendFormat": "{{name}}",
@@ -1195,7 +1195,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(elasticsearch_indices_search_fetch_total{cluster=~\"$cluster\"}[1h])",
+            "expr": "sum by (name) (rate(elasticsearch_indices_search_fetch_total{cluster=~\"$cluster\"}[1h]))",
             "format": "time_series",
             "intervalFactor": 1,
             "legendFormat": "{{name}}",
@@ -1731,7 +1731,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "rate(elasticsearch_thread_pool_rejected_count{cluster=~\"$cluster\", type!=\"management\"}[5m])",
+            "expr": "sum by (name,type) (rate(elasticsearch_thread_pool_rejected_count{cluster=~\"$cluster\", type!=\"management\"}[5m]))",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 2,
@@ -1832,7 +1832,7 @@
               }
             ],
             "dsType": "elasticsearch",
-            "expr": "elasticsearch_process_cpu_percent{cluster=~\"$cluster\"}",
+            "expr": "sum by (name) (elasticsearch_process_cpu_percent{cluster=~\"$cluster\"})",
             "format": "time_series",
             "intervalFactor": 2,
             "legendFormat": "{{ name }}",
@@ -1931,7 +1931,7 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "avg_over_time(elasticsearch_jvm_memory_used_bytes{area=\"heap\",cluster=~\"$cluster\"}[15m]) / elasticsearch_jvm_memory_max_bytes{area=\"heap\",cluster=~\"$cluster\"}",
+            "expr": "sum by (name) (avg_over_time(elasticsearch_jvm_memory_used_bytes{area=\"heap\",cluster=~\"$cluster\"}[15m]) / elasticsearch_jvm_memory_max_bytes{area=\"heap\",cluster=~\"$cluster\"})",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 2,
@@ -2252,6 +2252,6 @@
     },
     "timezone": "utc",
     "title": "ElasticSearch Cluster",
-    "uid": "n_nxrE_m5k",
-    "version": 2
+    "uid": "n_nxrE_mk7",
+    "version": 4
   }
