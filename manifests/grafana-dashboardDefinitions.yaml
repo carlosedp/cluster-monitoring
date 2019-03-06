@@ -2299,7 +2299,7 @@ items:
           "gnetId": null,
           "graphTooltip": 1,
           "id": 19,
-          "iteration": 1551392637363,
+          "iteration": 1551399203180,
           "links": [
 
           ],
@@ -3452,7 +3452,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "rate(elasticsearch_indices_indexing_index_total{cluster=\u007e\"$cluster\"}[1h])",
+                          "expr": "sum by (name) (rate(elasticsearch_indices_indexing_index_total{cluster=\u007e\"$cluster\"}[1h]))",
                           "format": "time_series",
                           "intervalFactor": 1,
                           "legendFormat": "{{name}}",
@@ -3550,7 +3550,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "rate(elasticsearch_indices_search_fetch_total{cluster=\u007e\"$cluster\"}[1h])",
+                          "expr": "sum by (name) (rate(elasticsearch_indices_search_fetch_total{cluster=\u007e\"$cluster\"}[1h]))",
                           "format": "time_series",
                           "intervalFactor": 1,
                           "legendFormat": "{{name}}",
@@ -4136,7 +4136,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "rate(elasticsearch_thread_pool_rejected_count{cluster=\u007e\"$cluster\", type!=\"management\"}[5m])",
+                          "expr": "sum by (name,type) (rate(elasticsearch_thread_pool_rejected_count{cluster=\u007e\"$cluster\", type!=\"management\"}[5m]))",
                           "format": "time_series",
                           "interval": "",
                           "intervalFactor": 2,
@@ -4249,7 +4249,7 @@ items:
                               }
                           ],
                           "dsType": "elasticsearch",
-                          "expr": "elasticsearch_process_cpu_percent{cluster=\u007e\"$cluster\"}",
+                          "expr": "sum by (name) (elasticsearch_process_cpu_percent{cluster=\u007e\"$cluster\"})",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "{{ name }}",
@@ -4362,7 +4362,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "avg_over_time(elasticsearch_jvm_memory_used_bytes{area=\"heap\",cluster=\u007e\"$cluster\"}[15m]) / elasticsearch_jvm_memory_max_bytes{area=\"heap\",cluster=\u007e\"$cluster\"}",
+                          "expr": "sum by (name) (avg_over_time(elasticsearch_jvm_memory_used_bytes{area=\"heap\",cluster=\u007e\"$cluster\"}[15m]) / elasticsearch_jvm_memory_max_bytes{area=\"heap\",cluster=\u007e\"$cluster\"})",
                           "format": "time_series",
                           "interval": "",
                           "intervalFactor": 2,
@@ -4723,8 +4723,8 @@ items:
           },
           "timezone": "utc",
           "title": "ElasticSearch Cluster",
-          "uid": "n_nxrE_m5k",
-          "version": 2
+          "uid": "n_nxrE_mk7",
+          "version": 4
       }
   kind: ConfigMap
   metadata:
@@ -4766,6 +4766,7 @@ items:
                       "rgba(50, 172, 45, 0.97)"
                   ],
                   "datasource": "prometheus",
+                  "decimals": null,
                   "format": "percentunit",
                   "gauge": {
                       "maxValue": 1,
@@ -4821,6 +4822,7 @@ items:
                       {
                           "expr": "count(kube_pod_info{pod=\u007e\"fluentd.*\"}) / count(node_boot_time_seconds)",
                           "format": "time_series",
+                          "instant": true,
                           "intervalFactor": 2,
                           "refId": "A",
                           "step": 40
@@ -4882,7 +4884,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "fluentd_output_status_buffer_queue_length * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}",
+                          "expr": "sum(fluentd_output_status_buffer_queue_length * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}) by (host_ip)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "{{host_ip}}",
@@ -4981,7 +4983,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "fluentd_output_status_buffer_total_bytes * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}",
+                          "expr": "sum(fluentd_output_status_buffer_total_bytes * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}) by (host_ip)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "{{host_ip}}",
@@ -5080,7 +5082,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "fluentd_output_status_emit_records * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}",
+                          "expr": "sum(fluentd_output_status_emit_records * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}) by (host_ip,plugin_id)",
                           "format": "time_series",
                           "intervalFactor": 1,
                           "legendFormat": "{{ host_ip }} - {{ plugin_id }}",
@@ -5177,7 +5179,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "fluentd_output_status_num_errors * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}",
+                          "expr": "sum(fluentd_output_status_num_errors * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}) by (host_ip, plugin_id)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "{{host_ip}} - {{plugin_id}}",
@@ -5276,7 +5278,7 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "fluentd_output_status_retry_count * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}",
+                          "expr": "sum(fluentd_output_status_retry_count * on(pod) group_left(host_ip) kube_pod_info{pod=\u007e\"fluentd.*\"}) by (host_ip, plugin_id)",
                           "format": "time_series",
                           "intervalFactor": 2,
                           "legendFormat": "{{host_ip}} - {{plugin_id}}",
@@ -5376,7 +5378,7 @@ items:
           "timezone": "browser",
           "title": "Fluentd dashboard (Prometheus exporter)",
           "uid": "d-gE2jnmz",
-          "version": 1
+          "version": 2
       }
   kind: ConfigMap
   metadata:
