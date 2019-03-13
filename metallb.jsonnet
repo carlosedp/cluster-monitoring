@@ -32,10 +32,10 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
             },
           ],
           namespaceSelector: {
-              matchNames: [
-                'metallb-system',
-              ]
-            },
+            matchNames: [
+              'metallb-system',
+            ],
+          },
 
         },
       },
@@ -45,7 +45,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       local servicePort = k.core.v1.service.mixin.spec.portsType;
       local metallbPort = servicePort.newNamed('http', 7472, 7472);
 
-      service.new('metallb-controller', {"app": "metallb", "component": "controller"}, metallbPort) +
+      service.new('metallb-controller', { app: 'metallb', component: 'controller' }, metallbPort) +
       service.mixin.metadata.withNamespace('metallb-system') +
       service.mixin.metadata.withLabels({ 'k8s-app': 'metallb-controller' }) +
       service.mixin.spec.withClusterIp('None'),

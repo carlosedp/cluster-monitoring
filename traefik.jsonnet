@@ -5,7 +5,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     namespace: 'monitoring',
     // Add custom dashboards
     grafanaDashboards+:: {
-            'traefik-dashboard.json': (import 'grafana-dashboards/traefik-dashboard.json'),
+      'traefik-dashboard.json': (import 'grafana-dashboards/traefik-dashboard.json'),
     },
   },
 
@@ -38,7 +38,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
           namespaceSelector: {
             matchNames: [
               'kube-system',
-            ]
+            ],
           },
         },
       },

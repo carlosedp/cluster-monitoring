@@ -29,25 +29,27 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
               secretKeyRef: { name: 'smtp-account', key: 'password' },
             },
           },
-          {name: 'DISABLE_IPV6',
-          value: 'True'},
-          {name: 'RELAY_DOMAINS', value: ':192.168.0.0/24:10.0.0.0/16'},
+          {
+            name: 'DISABLE_IPV6',
+            value: 'True',
+          },
+          { name: 'RELAY_DOMAINS', value: ':192.168.0.0/24:10.0.0.0/16' },
         ]);
 
-        local c = [smtpServer];
+      local c = [smtpServer];
 
-        deployment.new('smtp-server', 1, c, podLabels) +
-        deployment.mixin.metadata.withNamespace($._config.namespace) +
-        deployment.mixin.metadata.withLabels(podLabels) +
-        deployment.mixin.spec.selector.withMatchLabels(podLabels),
+      deployment.new('smtp-server', 1, c, podLabels) +
+      deployment.mixin.metadata.withNamespace($._config.namespace) +
+      deployment.mixin.metadata.withLabels(podLabels) +
+      deployment.mixin.spec.selector.withMatchLabels(podLabels),
 
     service:
-        local service = k.core.v1.service;
-        local servicePort = k.core.v1.service.mixin.spec.portsType;
-        local smtpServerPorts = servicePort.newNamed('smtp', 25, 'smtp');
+      local service = k.core.v1.service;
+      local servicePort = k.core.v1.service.mixin.spec.portsType;
+      local smtpServerPorts = servicePort.newNamed('smtp', 25, 'smtp');
 
-        service.new('smtp-server', $.smtpServer.deployment.spec.selector.matchLabels, smtpServerPorts) +
-        service.mixin.metadata.withNamespace($._config.namespace) +
-        service.mixin.metadata.withLabels({ 'run': 'smtp-server' })
+      service.new('smtp-server', $.smtpServer.deployment.spec.selector.matchLabels, smtpServerPorts) +
+      service.mixin.metadata.withNamespace($._config.namespace) +
+      service.mixin.metadata.withLabels({ run: 'smtp-server' }),
   },
 }

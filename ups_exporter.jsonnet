@@ -14,8 +14,8 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     },
   },
 
-    upsExporter+:: {
-      serviceMonitor:
+  upsExporter+:: {
+    serviceMonitor:
       {
         apiVersion: 'monitoring.coreos.com/v1',
         kind: 'ServiceMonitor',
@@ -30,14 +30,14 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
           jobLabel: 'k8s-app',
           selector: {
             matchLabels: {
-            'k8s-app': 'ups-exporter',
+              'k8s-app': 'ups-exporter',
             },
           },
           endpoints: [
             {
-            port: 'metrics',
-            scheme: 'http',
-            interval: '30s',
+              port: 'metrics',
+              scheme: 'http',
+              interval: '30s',
             },
           ],
         },
@@ -65,11 +65,11 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
                       endpointPort.withProtocol('TCP');
 
       local subset = endpointSubset.new() +
-                      endpointSubset.withAddresses([
-                          { ip: IP }
-                          for IP in $._config.ups.ips
-                          ]) +
-                      endpointSubset.withPorts(upsPort);
+                     endpointSubset.withAddresses([
+                       { ip: IP }
+                       for IP in $._config.ups.ips
+                     ]) +
+                     endpointSubset.withPorts(upsPort);
 
       endpoints.new() +
       endpoints.mixin.metadata.withName('ups-exporter') +
