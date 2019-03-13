@@ -1,6 +1,7 @@
 JSONNET_FMT := jsonnet fmt -n 2 --max-blank-lines 2 --string-style s --comment-style s
 
-JB_BINARY:=$(GOPATH)/bin/jb
+JSONNET_BIN := $(GOPATH)/bin/jsonnet
+JB_BINARY := $(GOPATH)/bin/jb
 
 .PHONY: generate vendor fmt manifests
 
@@ -8,7 +9,7 @@ all: manifests
 
 manifests: jsonnet
 	rm -rf manifests
-	./scripts/build.sh main.jsonnet
+	./scripts/build.sh main.jsonnet $(JSONNET_BIN)
 
 update:
 	jb update
