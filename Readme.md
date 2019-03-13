@@ -16,11 +16,20 @@ Components included in this package:
 * Highly available Prometheus
 * Highly available Alertmanager
 * Prometheus node-exporter
+* kube-state-metrics
+* CoreDNS
+* Grafana
+* SMTP relay to Gmail for Grafana notifications
+
+There are additional modules (enabled by default) to monitor other components of the infra-structure. These can be disabled on `main.jsonnet` file by setting the module in `local installModules` to `false`.
+
+The additional modules are:
+
 * ARM_exporter to generate temperature metrics
 * MetalLB metrics
 * Traefik metrics
-* kube-state-metrics
-* Grafana
+* ElasticSearch metrics
+* APC UPS metrics
 
 ## Quickstart
 
@@ -28,7 +37,11 @@ The repository already provides a set of compiled manifests to be applied into t
 
 To simply deploy the stack, run:
 
-```
+```bash
+$ make deploy
+
+# Or manually:
+
 $ kubectl apply -f manifests/
 
 # It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
@@ -44,24 +57,25 @@ The content of this project consists of a set of jsonnet files making up a libra
 
 ### Pre-reqs
 
-The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing:
+The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need [Go](https://golang.org/dl/) already installed:
 
-```
+```bash
 git clone https://github.com/carlosedp/prometheus-operator-ARM
 cd prometheus-operator-ARM
 make vendor
 # Change the jsonnet files...
 make
 ```
+
 After this, a new customized set of manifests is built into the `manifests` dir. To apply to your cluster, run:
 
-```
+```bash
 make deploy
 ```
 
 To uninstall, run:
 
-```
+```bash
 make teardown
 ```
 
