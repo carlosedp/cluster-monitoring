@@ -37,7 +37,6 @@ jsonnet_bundler:
 ifeq (, $(shell which jb))
 	@echo "Installing jsonnet-bundler"
 	@go get -u github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
-	@go get github.com/brancz/gojsontoyaml
 endif
 
 jsonnet:
