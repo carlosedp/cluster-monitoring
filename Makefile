@@ -4,25 +4,23 @@ JB_BINARY:=$(GOPATH)/bin/jb
 
 .PHONY: generate vendor fmt manifests
 
-all: generate
+all: manifests
 
-generate: manifests
-
-manifests: $(JSONNET)
+manifests: jsonnet
 	rm -rf manifests
 	./scripts/build.sh main.jsonnet
 
 update:
 	jb update
 
-vendor: $(JB_BINARY) jsonnetfile.json jsonnetfile.lock.json
+vendor: jsonnet_bundler jsonnetfile.json jsonnetfile.lock.json
 	rm -rf vendor
 	$(JB_BINARY) install
 
 fmt:
 	find . -name 'vendor' -prune -o -name '*.libsonnet' -o -name '*.jsonnet' -print | xargs -n 1 -- $(JSONNET_FMT) -i
 
-deploy:
+deploy: manifests
 	kubectl apply -f ./manifests/
 	echo "Will wait 40 seconds to reapply manifests"
 	sleep 40
@@ -35,9 +33,16 @@ tar: manifests
 	rm -rf manifests.tar
 	tar -cf manifests.tar manifests
 
-$(JB_BINARY):
-	go get -u github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
+jsonnet_bundler:
+ifeq (, $(shell which jb))
+	@echo "Installing jsonnet-bundler"
+	@go get -u github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
+	@go get github.com/brancz/gojsontoyaml
+endif
 
-$(JSONNET):
-	go get github.com/google/go-jsonnet/jsonnet
-	go get github.com/brancz/gojsontoyaml
+jsonnet:
+ifeq (, $(shell which jsonnet))
+	@echo "Installing jsonnet"
+	@go get github.com/google/go-jsonnet/jsonnet
+	@go get github.com/brancz/gojsontoyaml
+endif
