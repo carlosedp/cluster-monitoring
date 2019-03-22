@@ -5,6 +5,14 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     namespace: 'monitoring',
     replicas: 1,
 
+    versions+:: {
+      elasticExporter: '1.0.2',
+    },
+
+    imageRepos+:: {
+      elasticExporter: 'justwatch/elasticsearch_exporter',
+    },
+
     // Add custom dashboards
     grafanaDashboards+:: {
       'elasticsearch-dashboard.json': (import 'grafana-dashboards/elasticsearch-dashboard.json'),

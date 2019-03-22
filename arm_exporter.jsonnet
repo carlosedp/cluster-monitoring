@@ -3,6 +3,14 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 {
   _config+:: {
     namespace: 'monitoring',
+
+    versions+:: {
+      armExporter: 'latest',
+    },
+
+    imageRepos+:: {
+      armExporter: 'carlosedp/arm_exporter',
+    },
   },
 
   armExporter+:: {

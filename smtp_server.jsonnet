@@ -3,6 +3,14 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 {
   _config+:: {
     namespace: 'monitoring',
+
+    versions+:: {
+      smtpServer: 'v1.0.1',
+    },
+
+    imageRepos+:: {
+      smtpServer: 'carlosedp/docker-smtp',
+    },
   },
 
   smtpServer+:: {
