@@ -11,7 +11,7 @@ manifests: jsonnet
 	rm -rf manifests
 	./scripts/build.sh main.jsonnet $(JSONNET_BIN)
 
-update:
+update: jsonnet_bundler
 	jb update
 
 vendor: jsonnet_bundler jsonnetfile.json jsonnetfile.lock.json

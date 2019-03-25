@@ -120,6 +120,38 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
   grafanaDashboards+:: $._config.grafanaDashboards,
 
+  kubeStateMetrics+:: {
+    // Override command for addon-resizer due to change from parameter --threshold to --acceptance-offset
+    deployment+: {
+      spec+: {
+        template+: {
+          spec+: {
+            containers:
+              std.map(
+                function(c)
+                  if std.startsWith(c.name, 'addon-resizer') then
+                    c {
+                      command: [
+                        '/pod_nanny',
+                        '--container=kube-state-metrics',
+                        '--cpu=100m',
+                        '--extra-cpu=2m',
+                        '--memory=150Mi',
+                        '--extra-memory=30Mi',
+                        '--acceptance-offset=5',
+                        '--deployment=kube-state-metrics',
+                      ],
+                    }
+                  else
+                    c,
+                super.containers,
+              ),
+          },
+        },
+      },
+    },
+  },
+
   // Create ingress objects per application
   ingress+: {
     local secret = k.core.v1.secret,

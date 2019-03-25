@@ -12736,7 +12736,7 @@ items:
                           ],
                           "timeFrom": null,
                           "timeShift": null,
-                          "title": "CPU Utilizaion",
+                          "title": "CPU Utilization",
                           "tooltip": {
                               "shared": false,
                               "sort": 0,
@@ -14361,11 +14361,25 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\",container_name!=\"POD\",pod_name=\"$pod\"}[1m]))",
+                                  "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total{job=\"kubelet\", cluster=\"$cluster\", namespace=\"$namespace\", image!=\"\", pod_name=\"$pod\", container_name=~\"$container\", container_name!=\"POD\"}[1m]))",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{ container_name }}",
+                                  "legendFormat": "Current: {{ container_name }}",
                                   "refId": "A"
+                              },
+                              {
+                                  "expr": "sum by(container) (kube_pod_container_resource_requests_cpu_cores{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\"})",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "Requested: {{ container }}",
+                                  "refId": "B"
+                              },
+                              {
+                                  "expr": "sum by(container) (kube_pod_container_resource_limits_cpu_cores{job=\"kube-state-metrics\", cluster=\"$cluster\", namespace=\"$namespace\", pod=\"$pod\", container=~\"$container\"})",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "Limit: {{ container }}",
+                                  "refId": "C"
                               }
                           ],
                           "thresholds": [
