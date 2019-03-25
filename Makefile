@@ -7,7 +7,7 @@ JB_BINARY := $(GOPATH)/bin/jb
 
 all: manifests
 
-manifests: jsonnet fmt
+manifests: fmt
 	rm -rf manifests
 	./scripts/build.sh main.jsonnet $(JSONNET_BIN)
 
