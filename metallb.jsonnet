@@ -3,6 +3,11 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 {
   _config+:: {
     namespace: 'monitoring',
+
+    prometheus+:: {
+      namespaces+:: ['metallb-system'],
+    },
+
   },
 
   metallb+:: {

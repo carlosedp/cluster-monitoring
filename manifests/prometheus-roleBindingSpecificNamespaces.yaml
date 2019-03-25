@@ -43,7 +43,7 @@ items:
   kind: RoleBinding
   metadata:
     name: prometheus-k8s
-    namespace: logging
+    namespace: metallb-system
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: Role
@@ -56,7 +56,7 @@ items:
   kind: RoleBinding
   metadata:
     name: prometheus-k8s
-    namespace: metallb-system
+    namespace: logging
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: Role

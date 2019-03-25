@@ -13,6 +13,10 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       elasticExporter: 'justwatch/elasticsearch_exporter',
     },
 
+    prometheus+:: {
+      namespaces+:: ['logging'],
+    },
+
     // Add custom dashboards
     grafanaDashboards+:: {
       'elasticsearch-dashboard.json': (import 'grafana-dashboards/elasticsearch-dashboard.json'),

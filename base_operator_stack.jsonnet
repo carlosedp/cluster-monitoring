@@ -13,7 +13,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     prometheus+:: {
       names: 'k8s',
       replicas: 1,
-      namespaces: ['default', 'kube-system', 'monitoring', 'logging', 'metallb-system'],
+      namespaces: ['default', 'kube-system', 'monitoring'],
     },
 
     alertmanager+:: {

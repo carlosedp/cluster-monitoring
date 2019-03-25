@@ -52,7 +52,7 @@ items:
   kind: Role
   metadata:
     name: prometheus-k8s
-    namespace: logging
+    namespace: metallb-system
   rules:
   - apiGroups:
     - ""
@@ -68,7 +68,7 @@ items:
   kind: Role
   metadata:
     name: prometheus-k8s
-    namespace: metallb-system
+    namespace: logging
   rules:
   - apiGroups:
     - ""
