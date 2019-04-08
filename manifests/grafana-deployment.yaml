@@ -42,17 +42,8 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards
           name: grafana-dashboards
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/apc-ups-dashboard
-          name: grafana-dashboard-apc-ups-dashboard
-          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/coredns-dashboard
           name: grafana-dashboard-coredns-dashboard
-          readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/elasticsearch-dashboard
-          name: grafana-dashboard-elasticsearch-dashboard
-          readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/fluentd-dashboard
-          name: grafana-dashboard-fluentd-dashboard
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-cluster-rsrc-use
           name: grafana-dashboard-k8s-cluster-rsrc-use
@@ -87,9 +78,6 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/statefulset
           name: grafana-dashboard-statefulset
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/traefik-dashboard
-          name: grafana-dashboard-traefik-dashboard
-          readOnly: false
         - mountPath: /etc/grafana
           name: grafana-config
           readOnly: false
@@ -100,9 +88,8 @@ spec:
         runAsUser: 65534
       serviceAccountName: grafana
       volumes:
-      - name: grafana-storage
-        persistentVolumeClaim:
-          claimName: grafana-storage
+      - emptyDir: {}
+        name: grafana-storage
       - name: grafana-datasources
         secret:
           secretName: grafana-datasources
@@ -110,17 +97,8 @@ spec:
           name: grafana-dashboards
         name: grafana-dashboards
       - configMap:
-          name: grafana-dashboard-apc-ups-dashboard
-        name: grafana-dashboard-apc-ups-dashboard
-      - configMap:
           name: grafana-dashboard-coredns-dashboard
         name: grafana-dashboard-coredns-dashboard
-      - configMap:
-          name: grafana-dashboard-elasticsearch-dashboard
-        name: grafana-dashboard-elasticsearch-dashboard
-      - configMap:
-          name: grafana-dashboard-fluentd-dashboard
-        name: grafana-dashboard-fluentd-dashboard
       - configMap:
           name: grafana-dashboard-k8s-cluster-rsrc-use
         name: grafana-dashboard-k8s-cluster-rsrc-use
@@ -154,9 +132,6 @@ spec:
       - configMap:
           name: grafana-dashboard-statefulset
         name: grafana-dashboard-statefulset
-      - configMap:
-          name: grafana-dashboard-traefik-dashboard
-        name: grafana-dashboard-traefik-dashboard
       - name: grafana-config
         secret:
           secretName: grafana-config

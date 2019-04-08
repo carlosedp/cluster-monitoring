@@ -319,32 +319,6 @@ spec:
     - expr: cluster:node_cpu_seconds_total:rate5m / count(sum(node_cpu_seconds_total)
         BY (instance, cpu))
       record: cluster:node_cpu:ratio
-  - name: elasticsearch-k8s-rules
-    rules:
-    - expr: 100 * (elasticsearch_filesystem_data_size_bytes - elasticsearch_filesystem_data_free_bytes)
-        / elasticsearch_filesystem_data_size_bytes
-      record: elasticsearch_filesystem_data_used_percent
-    - expr: 100 - elasticsearch_filesystem_data_used_percent
-      record: elasticsearch_filesystem_data_free_percent
-    - alert: ElasticsearchTooFewNodesRunning
-      annotations:
-        message: There are only {{$value}} < 3 ElasticSearch nodes running
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-elasticsearchtoofewnodesrunning
-        summary: ElasticSearch running on less than 3 nodes
-      expr: elasticsearch_cluster_health_number_of_nodes < 3
-      for: 5m
-      labels:
-        severity: critical
-    - alert: ElasticsearchHeapTooHigh
-      annotations:
-        message: The heap usage is over 90% for 15m
-        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-elasticsearchheaptoohigh
-        summary: ElasticSearch node {{$labels.node}} heap usage is high
-      expr: elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"}
-        > 0.9
-      for: 15m
-      labels:
-        severity: critical
   - name: kubernetes-absent
     rules:
     - alert: AlertmanagerDown
