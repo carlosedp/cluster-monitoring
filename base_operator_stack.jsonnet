@@ -1,13 +1,15 @@
 local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
+local vars = import 'vars.jsonnet';
+
 {
   _config+:: {
     namespace: 'monitoring',
 
     urls+:: {
-      prom_ingress: 'prometheus.internal.carlosedp.com',
-      alert_ingress: 'alertmanager.internal.carlosedp.com',
-      grafana_ingress: 'grafana.internal.carlosedp.com',
-      grafana_ingress_external: 'grafana.cloud.carlosedp.com',
+      prom_ingress: 'prometheus.' + vars.suffixDomain,
+      alert_ingress: 'alertmanager.' + vars.suffixDomain,
+      grafana_ingress: 'grafana.' + vars.suffixDomain,
+      grafana_ingress_external: 'grafana.' + vars.suffixDomain,
     },
 
     prometheus+:: {
@@ -41,13 +43,6 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     grafana+:: {
       config: {
         sections: {
-          //   database: { path: '/data/grafana.db' },
-          //   paths: {
-          //     data: '/var/lib/grafana',
-          //     logs: '/var/lib/grafana/log',
-          //     plugins: '/var/lib/grafana/plugins',
-          //     provisioning: '/etc/grafana/provisioning',
-          //   },
           session: { provider: 'memory' },
           'auth.basic': { enabled: false },
           'auth.anonymous': { enabled: false },
@@ -56,7 +51,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
             host: 'smtp-server.monitoring.svc:25',
             user: '',
             password: '',
-            from_address: 'carlosedp@gmail.com',
+            from_address: vars.grafana.from_address,
             from_name: 'Grafana Alert',
             skip_verify: true,
           },
@@ -74,6 +69,8 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       spec+: {
         retention: '15d',
         externalUrl: 'http://' + $._config.urls.prom_ingress,
+      }
+      + ( if vars.enablePersistence['prometheus'] then {
         storage: {
           volumeClaimTemplate:
             pvc.new() +
@@ -82,12 +79,12 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
           // Uncomment below to define a StorageClass name
           //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
         },
-      },
+      } else {}),
     },
   },
 
   // Override deployment for Grafana data persistence
-  grafana+:: {
+  grafana+:: if vars.enablePersistence['grafana'] then {
     deployment+: {
       spec+: {
         template+: {
@@ -116,7 +113,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       pvc.mixin.metadata.withName('grafana-storage') +
       pvc.mixin.spec.withAccessModes('ReadWriteMany') +
       pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }),
-  },
+  } else {},
 
   grafanaDashboards+:: $._config.grafanaDashboards,
 
