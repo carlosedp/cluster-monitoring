@@ -4,11 +4,11 @@
             "name": "kube-prometheus",
             "source": {
                 "git": {
-                    "remote": "https://github.com/coreos/prometheus-operator",
-                    "subdir": "contrib/kube-prometheus/jsonnet/kube-prometheus"
+                    "remote": "https://github.com/coreos/kube-prometheus",
+                    "subdir": "jsonnet/kube-prometheus"
                 }
             },
-            "version": "650359b3e627ae97a1f18cbd10d7ed9b2293c240"
+            "version": "7bd745ef78dce3c14ef9e315506d0c1c32fdcc9e"
         },
         {
             "name": "ksonnet",
@@ -28,7 +28,7 @@
                     "subdir": ""
                 }
             },
-            "version": "19db38fc449df024446059f21d5a329babaa3927"
+            "version": "7360753d27aa428758c918434503c1c35afcd3bb"
         },
         {
             "name": "grafonnet",
@@ -48,7 +48,7 @@
                     "subdir": "grafana-builder"
                 }
             },
-            "version": "e30a6040f3d7270655a980ab04d16142da4b429d"
+            "version": "ecaeaed2e21c0db29098811e7826a9b923e706c5"
         },
         {
             "name": "grafana",
@@ -78,7 +78,7 @@
                     "subdir": "Documentation/etcd-mixin"
                 }
             },
-            "version": "7a5acb4a43aa06bd9e32ab59a46271ab88d497e4"
+            "version": "216808eab50f74e02410e96878bbf2175d2916cb"
         }
     ]
 }
