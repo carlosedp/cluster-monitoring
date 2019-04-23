@@ -1,0 +1,54 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: arm-exporter
+  name: arm-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      k8s-app: arm-exporter
+  template:
+    metadata:
+      labels:
+        k8s-app: arm-exporter
+    spec:
+      containers:
+      - command:
+        - /bin/rpi_exporter
+        - --web.listen-address=127.0.0.1:9243
+        image: carlosedp/arm_exporter:latest
+        name: arm-exporter
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+      - args:
+        - --secure-listen-address=$(IP):9243
+        - --upstream=http://127.0.0.1:9243/
+        - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+        env:
+        - name: IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: carlosedp/kube-rbac-proxy:v0.4.1
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 9243
+          hostPort: 9243
+          name: https
+        resources:
+          limits:
+            cpu: 20m
+            memory: 40Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+      nodeSelector:
+        beta.kubernetes.io/arch: arm64
+      serviceAccountName: arm-exporter

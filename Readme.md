@@ -21,7 +21,7 @@ Components included in this package:
 * Grafana
 * SMTP relay to Gmail for Grafana notifications
 
-There are additional modules (enabled by default) to monitor other components of the infra-structure. These can be disabled on `vars.jsonnet` file by setting the module in `installModules` to `false`.
+There are additional modules (disabled by default) to monitor other components of the infra-structure. These can be disabled on `vars.jsonnet` file by setting the module in `installModules` to `false`.
 
 The additional modules are:
 
@@ -32,6 +32,8 @@ The additional modules are:
 * APC UPS metrics
 
 There are also options to set the ingress domain suffix and enable persistence for Grafana and Prometheus.
+
+After changing these parameters, rebuild the manifests with `make`.
 
 ## Quickstart
 

@@ -14,6 +14,46 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
   },
 
   armExporter+:: {
+    clusterRoleBinding:
+      local clusterRoleBinding = k.rbac.v1.clusterRoleBinding;
+
+      clusterRoleBinding.new() +
+      clusterRoleBinding.mixin.metadata.withName('arm-exporter') +
+      clusterRoleBinding.mixin.roleRef.withApiGroup('rbac.authorization.k8s.io') +
+      clusterRoleBinding.mixin.roleRef.withName('arm-exporter') +
+      clusterRoleBinding.mixin.roleRef.mixinInstance({ kind: 'ClusterRole' }) +
+      clusterRoleBinding.withSubjects([{ kind: 'ServiceAccount', name: 'arm-exporter', namespace: $._config.namespace }]),
+
+    clusterRole:
+      local clusterRole = k.rbac.v1.clusterRole;
+      local policyRule = clusterRole.rulesType;
+
+      local authenticationRole = policyRule.new() +
+                                 policyRule.withApiGroups(['authentication.k8s.io']) +
+                                 policyRule.withResources([
+                                   'tokenreviews',
+                                 ]) +
+                                 policyRule.withVerbs(['create']);
+
+      local authorizationRole = policyRule.new() +
+                                policyRule.withApiGroups(['authorization.k8s.io']) +
+                                policyRule.withResources([
+                                  'subjectaccessreviews',
+                                ]) +
+                                policyRule.withVerbs(['create']);
+
+      local rules = [authenticationRole, authorizationRole];
+
+      clusterRole.new() +
+      clusterRole.mixin.metadata.withName('arm-exporter') +
+      clusterRole.withRules(rules),
+
+    serviceAccount:
+      local serviceAccount = k.core.v1.serviceAccount;
+
+      serviceAccount.new('arm-exporter') +
+      serviceAccount.mixin.metadata.withNamespace($._config.namespace),
+
     daemonset:
       local daemonset = k.apps.v1beta2.daemonSet;
       local container = daemonset.mixin.spec.template.spec.containersType;
@@ -37,6 +77,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
         container.withArgs([
           '--secure-listen-address=$(IP):9243',
           '--upstream=http://127.0.0.1:9243/',
+          '--tls-cipher-suites=' + std.join(',', $._config.tlsCipherSuites),
         ]) +
         container.withPorts(containerPort.new(9243) + containerPort.withHostPort(9243) + containerPort.withName('https')) +
         container.mixin.resources.withRequests({ cpu: '10m', memory: '20Mi' }) +
@@ -51,6 +92,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       daemonset.mixin.spec.selector.withMatchLabels(podLabels) +
       daemonset.mixin.spec.template.metadata.withLabels(podLabels) +
       daemonset.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/arch': 'arm64' }) +
+      daemonset.mixin.spec.template.spec.withServiceAccountName('arm-exporter') +
       daemonset.mixin.spec.template.spec.withContainers(c),
     serviceMonitor:
       {
