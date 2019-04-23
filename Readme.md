@@ -1,4 +1,4 @@
-# Prometheus Operator for ARM / X86-64 platforms
+# Cluster Monitoring stack for ARM / X86-64 platforms
 
 The Prometheus Operator for Kubernetes provides easy monitoring definitions for Kubernetes services and deployment and management of Prometheus instances.
 
