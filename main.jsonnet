@@ -5,6 +5,8 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet')
+           // Use http Kubelet targets. Comment to revert to https
+           + (import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet')
            + (import 'base_operator_stack.jsonnet')
            + (import 'smtp_server.jsonnet')
            // Additional Modules

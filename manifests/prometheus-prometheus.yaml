@@ -26,7 +26,7 @@ spec:
       namespace: monitoring
       port: web
   baseImage: carlosedp/prometheus
-  externalUrl: http://prometheus.internal.carlosedp.com
+  externalUrl: http://prometheus.192.168.99.102.nip.io
   nodeSelector:
     beta.kubernetes.io/os: linux
   replicas: 1
