@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: alertmanager.internal.carlosedp.com
+  - host: alertmanager.192.168.99.100.nip.io
     http:
       paths:
       - backend:

@@ -15,10 +15,10 @@
   },
 
   // Domain suffix for the ingresses
-  suffixDomain: "internal.carlosedp.com",
+  suffixDomain: "192.168.99.100.nip.io",
 
-  // Grafana from email
+  // Grafana "from" email
   grafana: {
-    from_address: 'carlosedp@gmail.com',
+    from_address: 'myemail@gmail.com',
   },
 }

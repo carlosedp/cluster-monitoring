@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: prometheus.internal.carlosedp.com
+  - host: prometheus.192.168.99.100.nip.io
     http:
       paths:
       - backend:

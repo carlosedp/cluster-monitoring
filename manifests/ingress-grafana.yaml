@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: grafana.internal.carlosedp.com
+  - host: grafana.192.168.99.100.nip.io
     http:
       paths:
       - backend:
