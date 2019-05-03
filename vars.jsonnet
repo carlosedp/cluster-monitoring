@@ -1,7 +1,7 @@
 {
   // Enable or disable additional modules
   installModules: {
-    'arm-exporter': true,
+    'arm-exporter': false,
     metallb: false,
     traefik: false,
     'ups-exporter': false,
