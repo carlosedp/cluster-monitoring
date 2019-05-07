@@ -67,24 +67,24 @@ local vars = import 'vars.jsonnet';
     local pvc = k.core.v1.persistentVolumeClaim,
     prometheus+: {
       spec+: {
-        retention: '15d',
-        externalUrl: 'http://' + $._config.urls.prom_ingress,
-      }
-      + ( if vars.enablePersistence['prometheus'] then {
-        storage: {
-          volumeClaimTemplate:
-            pvc.new() +
-            pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
-            pvc.mixin.spec.resources.withRequests({ storage: '20Gi' }),
-          // Uncomment below to define a StorageClass name
-          //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
-        },
-      } else {}),
+               retention: '15d',
+               externalUrl: 'http://' + $._config.urls.prom_ingress,
+             }
+             + (if vars.enablePersistence.prometheus then {
+                  storage: {
+                    volumeClaimTemplate:
+                      pvc.new() +
+                      pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
+                      pvc.mixin.spec.resources.withRequests({ storage: '20Gi' }),
+                    // Uncomment below to define a StorageClass name
+                    //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
+                  },
+                } else {}),
     },
   },
 
   // Override deployment for Grafana data persistence
-  grafana+:: if vars.enablePersistence['grafana'] then {
+  grafana+:: if vars.enablePersistence.grafana then {
     deployment+: {
       spec+: {
         template+: {
