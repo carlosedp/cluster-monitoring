@@ -71,7 +71,7 @@ spec:
         - --extra-cpu=2m
         - --memory=150Mi
         - --extra-memory=30Mi
-        - --acceptance-offset=5
+        - --threshold=5
         - --deployment=kube-state-metrics
         env:
         - name: MY_POD_NAME
@@ -84,7 +84,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: carlosedp/addon-resizer:2.1
+        image: carlosedp/addon-resizer:v1.8.4
         name: addon-resizer
         resources:
           limits:

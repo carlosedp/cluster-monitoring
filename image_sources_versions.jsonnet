@@ -5,7 +5,7 @@
       alertmanager: 'v0.16.0',
       kubeStateMetrics: 'v1.5.0',
       kubeRbacProxy: 'v0.4.1',
-      addonResizer: '2.1',
+      addonResizer: 'v1.8.4',
       nodeExporter: 'v0.17.0',
       prometheusOperator: 'v0.28.0',
       prometheusAdapter: 'v0.4.1',

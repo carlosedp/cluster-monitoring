@@ -64,27 +64,28 @@ local vars = import 'vars.jsonnet';
   //---------------------------------------
 
   prometheus+:: {
+    # Add option (from vars.yaml) to enable persistence
     local pvc = k.core.v1.persistentVolumeClaim,
     prometheus+: {
       spec+: {
-        retention: '15d',
-        externalUrl: 'http://' + $._config.urls.prom_ingress,
-      }
-      + ( if vars.enablePersistence['prometheus'] then {
-        storage: {
-          volumeClaimTemplate:
-            pvc.new() +
-            pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
-            pvc.mixin.spec.resources.withRequests({ storage: '20Gi' }),
-          // Uncomment below to define a StorageClass name
-          //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
-        },
-      } else {}),
+               retention: '15d',
+               externalUrl: 'http://' + $._config.urls.prom_ingress,
+             }
+             + (if vars.enablePersistence.prometheus then {
+                  storage: {
+                    volumeClaimTemplate:
+                      pvc.new() +
+                      pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
+                      pvc.mixin.spec.resources.withRequests({ storage: '20Gi' }),
+                    // Uncomment below to define a StorageClass name
+                    //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
+                  },
+                } else {}),
     },
   },
 
   // Override deployment for Grafana data persistence
-  grafana+:: if vars.enablePersistence['grafana'] then {
+  grafana+:: if vars.enablePersistence.grafana then {
     deployment+: {
       spec+: {
         template+: {
@@ -116,38 +117,6 @@ local vars = import 'vars.jsonnet';
   } else {},
 
   grafanaDashboards+:: $._config.grafanaDashboards,
-
-  kubeStateMetrics+:: {
-    // Override command for addon-resizer due to change from parameter --threshold to --acceptance-offset
-    deployment+: {
-      spec+: {
-        template+: {
-          spec+: {
-            containers:
-              std.map(
-                function(c)
-                  if std.startsWith(c.name, 'addon-resizer') then
-                    c {
-                      command: [
-                        '/pod_nanny',
-                        '--container=kube-state-metrics',
-                        '--cpu=100m',
-                        '--extra-cpu=2m',
-                        '--memory=150Mi',
-                        '--extra-memory=30Mi',
-                        '--acceptance-offset=5',
-                        '--deployment=kube-state-metrics',
-                      ],
-                    }
-                  else
-                    c,
-                super.containers,
-              ),
-          },
-        },
-      },
-    },
-  },
 
   // Create ingress objects per application
   ingress+: {
