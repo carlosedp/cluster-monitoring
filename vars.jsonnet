@@ -2,8 +2,8 @@
   // Enable or disable additional modules
   installModules: {
     'arm-exporter': false,
-    metallb: false,
-    traefik: false,
+    'metallb-exporter': false,
+    'traefik-exporter': false,
     'ups-exporter': false,
     'elastic-exporter': false,
   },
@@ -15,7 +15,7 @@
   },
 
   // Domain suffix for the ingresses
-  suffixDomain: "192.168.99.100.nip.io",
+  suffixDomain: '192.168.99.100.nip.io',
 
   // Grafana "from" email
   grafana: {

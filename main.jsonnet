@@ -11,8 +11,8 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'smtp_server.jsonnet')
            // Additional Modules
            + (if vars.installModules['arm-exporter'] then (import 'arm_exporter.jsonnet') else {})
-           + (if vars.installModules.metallb then (import 'metallb.jsonnet') else {})
-           + (if vars.installModules.traefik then (import 'traefik.jsonnet') else {})
+           + (if vars.installModules['metallb-exporter'] then (import 'metallb.jsonnet') else {})
+           + (if vars.installModules['traefik-exporter'] then (import 'traefik.jsonnet') else {})
            + (if vars.installModules['ups-exporter'] then (import 'ups_exporter.jsonnet') else {})
            + (if vars.installModules['elastic-exporter'] then (import 'elasticsearch_exporter.jsonnet') else {})
            // Load image versions last to override default from modules
@@ -31,9 +31,9 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
 // Additional Modules
 (if vars.installModules['arm-exporter'] then
    { ['arm-exporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) } else {}) +
-(if vars.installModules.metallb then
+(if vars.installModules['metallb-exporter'] then
    { ['metallb-' + name]: kp.metallb[name] for name in std.objectFields(kp.metallb) } else {}) +
-(if vars.installModules.traefik then
+(if vars.installModules['traefik-exporter'] then
    { ['traefik-' + name]: kp.traefik[name] for name in std.objectFields(kp.traefik) } else {}) +
 (if vars.installModules['ups-exporter'] then
    { ['ups-exporter-' + name]: kp.upsExporter[name] for name in std.objectFields(kp.upsExporter) } else {}) +
