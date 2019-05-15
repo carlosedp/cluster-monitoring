@@ -1,12 +1,32 @@
 {
   // Enable or disable additional modules
-  installModules: {
-    'arm-exporter': false,
-    'metallb-exporter': false,
-    'traefik-exporter': false,
-    'ups-exporter': false,
-    'elastic-exporter': false,
-  },
+  modules: [
+    {
+      name: 'armExporter',
+      enabled: false,
+      file: import 'arm_exporter.jsonnet',
+    },
+    {
+      name: 'upsExporter',
+      enabled: false,
+      file: import 'ups_exporter.jsonnet',
+    },
+    {
+      name: 'metallbExporter',
+      enabled: false,
+      file: import 'metallb.jsonnet',
+    },
+    {
+      name: 'traefikExporter',
+      enabled: false,
+      file: import 'traefik.jsonnet',
+    },
+    {
+      name: 'elasticExporter',
+      enabled: false,
+      file: import 'elasticsearch_exporter.jsonnet',
+    },
+  ],
 
   // Setting these to false, defaults to emptyDirs
   enablePersistence: {

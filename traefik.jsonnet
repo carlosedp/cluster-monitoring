@@ -9,7 +9,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     },
   },
 
-  traefik+:: {
+  traefikExporter+:: {
     serviceMonitor:
       {
         apiVersion: 'monitoring.coreos.com/v1',
