@@ -3,27 +3,27 @@
   modules: [
     {
       name: 'armExporter',
-      enabled: true,
+      enabled: false,
       file: import 'arm_exporter.jsonnet',
     },
     {
       name: 'upsExporter',
-      enabled: true,
+      enabled: false,
       file: import 'ups_exporter.jsonnet',
     },
     {
       name: 'metallbExporter',
-      enabled: true,
+      enabled: false,
       file: import 'metallb.jsonnet',
     },
     {
       name: 'traefikExporter',
-      enabled: true,
+      enabled: false,
       file: import 'traefik.jsonnet',
     },
     {
       name: 'elasticExporter',
-      enabled: true,
+      enabled: false,
       file: import 'elasticsearch_exporter.jsonnet',
     },
   ],
