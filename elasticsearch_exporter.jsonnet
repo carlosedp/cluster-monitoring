@@ -40,7 +40,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
           '-es.timeout=60s',
           '-es.all=true',
         ]) +
-        container.withPorts(containerPort.newNamed('es-metrics', 9108)) +
+        container.withPorts(containerPort.newNamed(9108, 'es-metrics')) +
         container.mixin.securityContext.capabilities.withDrop(['SETPCAP', 'MKNOD', 'AUDIT_WRITE', 'CHOWN', 'NET_RAW', 'DAC_OVERRIDE', 'FOWNER', 'FSETID', 'KILL', 'SETGID', 'SETUID', 'NET_BIND_SERVICE', 'SYS_CHROOT', 'SETFCAP']) +
         container.mixin.securityContext.withRunAsNonRoot(true) +
         container.mixin.securityContext.withRunAsUser(1000) +

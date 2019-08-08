@@ -23,7 +23,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
       local smtpServer =
         container.new('smtp-server', $._config.imageRepos.smtpServer + ':' + $._config.versions.smtpServer) +
-        container.withPorts(containerPort.newNamed('smtp', 25)) +
+        container.withPorts(containerPort.newNamed(25, 'smtp')) +
         container.withEnv([
           {
             name: 'GMAIL_USER',
