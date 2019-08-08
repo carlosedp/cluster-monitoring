@@ -34,5 +34,5 @@ spec:
         image: carlosedp/docker-smtp:v1.0.1
         name: smtp-server
         ports:
-        - containerPort: smtp
-          name: 25
+        - containerPort: 25
+          name: smtp

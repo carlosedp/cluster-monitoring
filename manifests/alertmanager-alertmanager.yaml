@@ -20,7 +20,7 @@ spec:
           - monitoring
           topologyKey: kubernetes.io/hostname
         weight: 100
-  baseImage: carlosedp/alertmanager
+  baseImage: prom/alertmanager
   nodeSelector:
     kubernetes.io/os: linux
   replicas: 1
@@ -29,4 +29,4 @@ spec:
     runAsNonRoot: true
     runAsUser: 1000
   serviceAccountName: alertmanager-main
-  version: v0.16.0
+  version: v0.18.0
