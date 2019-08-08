@@ -80,26 +80,21 @@ IMAGE=carlosedp/kube-state-metrics
 ALL_ARCH='amd64 arm arm64'
 VERSION=$KSM_VERSION
 
-go get github.com/kubernetes/kube-state-metrics
-#mv $HOME/go/src/github.com/kubernetes/kube-state-metrics $HOME/go/src/k8s.io/kube-state-metrics
-pushd $GOPATH/src/k8s.io/kube-state-metrics
-git fetch
+rm -rf $GOPATH/src/k8s.io/kube-state-metrics
+mkdir $GOPATH/src/k8s.io/
+pushd $GOPATH/src/k8s.io/
+git clone https://github.com/kubernetes/kube-state-metrics
+cd kube-state-metrics
 git checkout ${KSM_VERSION}
 
-cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/alpine:3.7/' > Dockerfile.arm
-
-cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm64v8\/alpine:3.7/' > Dockerfile.arm64
-
-cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/alpine:3.7/' > Dockerfile.amd64
-
 CGO_ENABLED=0 GOOS=linux GOARCH=arm go build .
-docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm -f Dockerfile.arm .
+docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm .
 
 CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build .
-docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm64  -f Dockerfile.arm64 .
+docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-arm64 .
 
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags '-extldflags "-static"' .
-docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-amd64  -f Dockerfile.amd64 .
+docker build -t $REPO/kube-state-metrics:${KSM_VERSION}-amd64  .
 
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm
 docker push $REPO/kube-state-metrics:$KSM_VERSION-arm64
@@ -116,9 +111,11 @@ IMAGE=carlosedp/prometheus-operator
 ALL_ARCH='amd64 arm arm64'
 VERSION=$PROM_OP_VERSION
 
-go get github.com/coreos/prometheus-operator
-cd $HOME/go/src/github.com/coreos/prometheus-operator
-git fetch
+rm -rf $GOPATH/src/github.com/coreos/prometheus-operator
+mkdir $GOPATH/src/github.com/coreos/
+pushd $GOPATH/src/github.com/coreos/
+git clone https://github.com/coreos/prometheus-operator
+cd prometheus-operator
 git checkout ${VERSION}
 
 go get -u github.com/prometheus/promu
@@ -148,7 +145,8 @@ docker manifest push --purge $IMAGE:$VERSION
 
 rm Dockerfile.arm
 rm Dockerfile.arm64
-
+rm Dockerfile.amd64
+popd
 #-------------------------------------------------------------------------------
 # kube-rbac-proxy
 IMAGE=carlosedp/kube-rbac-proxy
@@ -218,24 +216,24 @@ IMAGE=carlosedp/prometheus-config-reloader
 VERSION=$PROM_CONFIG_RELOADER_VERSION
 ALL_ARCH='amd64 arm arm64'
 
-go get github.com/coreos/prometheus-operator
-cd $HOME/go/src/github.com/coreos/prometheus-operator/cmd/prometheus-config-reloader
-git fetch
+
+pushd $GOPATH/src/github.com/coreos/prometheus-operator
+cd $GOPATH/src/github.com/coreos/prometheus-operator/cmd/prometheus-config-reloader
 git checkout ${VERSION}
+
+cp ../../Dockerfile ./Dockerfile.new
+cat Dockerfile.new |sed -e 's/ADD operator.*/ADD prometheus-config-reloader /bin/prometheus-config-reloader/' |sed -e 's/^ENTRYPOINT.*/ENTRYPOINT ["/bin/prometheus-config-reloader"]/' > Dockerfile.arm
+
 
 wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-arm-static
 wget https://github.com/multiarch/qemu-user-static/releases/download/v3.0.0/qemu-aarch64-static
 chmod +x qemu*
 
-cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm32v6\/busybox/' > Dockerfile.arm
-sed -i '/^FROM/a COPY qemu-arm-static /usr/bin/qemu-arm-static' Dockerfile.arm
-sed -i '/^RUN/a RUN rm /usr/bin/qemu-arm-static' Dockerfile.arm
+cat Dockerfile.new |sed -e 's/^FROM.*/FROM arm32v6\/busybox/'|sed -e 's/ADD operator.*/ADD prometheus-config-reloader \/bin\/prometheus-config-reloader/' |sed -e 's/^ENTRYPOINT.*/ENTRYPOINT \["\/bin\/prometheus-config-reloader"\]/' > Dockerfile.arm
 
-cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM arm64v8\/busybox/' > Dockerfile.arm64
-sed -i '/^FROM/a COPY qemu-aarch64-static /usr/bin/qemu-aarch64-static' Dockerfile.arm64
-sed -i '/^RUN/a RUN rm /usr/bin/qemu-aarch64-static' Dockerfile.arm64
+cat Dockerfile.new |sed -e 's/^FROM.*/FROM arm64v8\/busybox/'|sed -e 's/ADD operator.*/ADD prometheus-config-reloader \/bin\/prometheus-config-reloader/' |sed -e 's/^ENTRYPOINT.*/ENTRYPOINT \["\/bin\/prometheus-config-reloader"\]/' > Dockerfile.arm64
 
-cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e 's/^FROM.*/FROM amd64\/busybox/' > Dockerfile.amd64
+cat Dockerfile.new |sed -e 's/^FROM.*/FROM amd64\/busybox/'|sed -e 's/ADD operator.*/ADD prometheus-config-reloader \/bin\/prometheus-config-reloader/' |sed -e 's/^ENTRYPOINT.*/ENTRYPOINT \["\/bin\/prometheus-config-reloader"\]/' > Dockerfile.amd64
 
 GOOS=linux GOARCH=arm CGO_ENABLED=0 go build -o prometheus-config-reloader main.go
 docker build -t $IMAGE:$VERSION-arm -f Dockerfile.arm .
@@ -257,6 +255,7 @@ docker manifest push --purge $IMAGE:$VERSION
 rm Dockerfile.arm
 rm Dockerfile.arm64
 rm Dockerfile.amd64
+rm Dockerfile.new
 
 #-------------------------------------------------------------------------------
 # configmap-reload
