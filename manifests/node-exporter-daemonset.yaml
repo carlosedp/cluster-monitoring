@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
@@ -61,23 +61,20 @@ spec:
         resources:
           limits:
             cpu: 20m
-            memory: 40Mi
+            memory: 60Mi
           requests:
             cpu: 10m
             memory: 20Mi
       hostNetwork: true
       hostPID: true
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
       serviceAccountName: node-exporter
       tolerations:
-      - effect: NoExecute
-        operator: Exists
-      - effect: NoSchedule
-        operator: Exists
+      - operator: Exists
       volumes:
       - hostPath:
           path: /proc

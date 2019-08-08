@@ -28,7 +28,8 @@ spec:
   baseImage: carlosedp/prometheus
   externalUrl: http://prometheus.192.168.99.100.nip.io
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    kubernetes.io/os: linux
+  podMonitorSelector: {}
   replicas: 1
   resources:
     requests:

@@ -22,7 +22,7 @@ spec:
         weight: 100
   baseImage: carlosedp/alertmanager
   nodeSelector:
-    beta.kubernetes.io/os: linux
+    kubernetes.io/os: linux
   replicas: 1
   securityContext:
     fsGroup: 2000

@@ -1,19 +1,24 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: prometheus-operator
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/version: v0.28.0
   name: prometheus-operator
   namespace: monitoring
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: prometheus-operator
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/name: prometheus-operator
   template:
     metadata:
       labels:
-        k8s-app: prometheus-operator
+        app.kubernetes.io/component: controller
+        app.kubernetes.io/name: prometheus-operator
+        app.kubernetes.io/version: v0.28.0
     spec:
       containers:
       - args:
@@ -35,7 +40,6 @@ spec:
             memory: 100Mi
         securityContext:
           allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:

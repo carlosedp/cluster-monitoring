@@ -42,6 +42,12 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards
           name: grafana-dashboards
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/apiserver
+          name: grafana-dashboard-apiserver
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/controller-manager
+          name: grafana-dashboard-controller-manager
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/coredns-dashboard
           name: grafana-dashboard-coredns-dashboard
           readOnly: false
@@ -66,6 +72,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-workloads-namespace
           name: grafana-dashboard-k8s-resources-workloads-namespace
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/kubelet
+          name: grafana-dashboard-kubelet
+          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/kubernetes-cluster-dashboard
           name: grafana-dashboard-kubernetes-cluster-dashboard
           readOnly: false
@@ -80,6 +89,18 @@ spec:
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/prometheus-dashboard
           name: grafana-dashboard-prometheus-dashboard
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus-remote-write
+          name: grafana-dashboard-prometheus-remote-write
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus
+          name: grafana-dashboard-prometheus
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/proxy
+          name: grafana-dashboard-proxy
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/scheduler
+          name: grafana-dashboard-scheduler
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/statefulset
           name: grafana-dashboard-statefulset
@@ -102,6 +123,12 @@ spec:
       - configMap:
           name: grafana-dashboards
         name: grafana-dashboards
+      - configMap:
+          name: grafana-dashboard-apiserver
+        name: grafana-dashboard-apiserver
+      - configMap:
+          name: grafana-dashboard-controller-manager
+        name: grafana-dashboard-controller-manager
       - configMap:
           name: grafana-dashboard-coredns-dashboard
         name: grafana-dashboard-coredns-dashboard
@@ -127,6 +154,9 @@ spec:
           name: grafana-dashboard-k8s-resources-workloads-namespace
         name: grafana-dashboard-k8s-resources-workloads-namespace
       - configMap:
+          name: grafana-dashboard-kubelet
+        name: grafana-dashboard-kubelet
+      - configMap:
           name: grafana-dashboard-kubernetes-cluster-dashboard
         name: grafana-dashboard-kubernetes-cluster-dashboard
       - configMap:
@@ -141,6 +171,18 @@ spec:
       - configMap:
           name: grafana-dashboard-prometheus-dashboard
         name: grafana-dashboard-prometheus-dashboard
+      - configMap:
+          name: grafana-dashboard-prometheus-remote-write
+        name: grafana-dashboard-prometheus-remote-write
+      - configMap:
+          name: grafana-dashboard-prometheus
+        name: grafana-dashboard-prometheus
+      - configMap:
+          name: grafana-dashboard-proxy
+        name: grafana-dashboard-proxy
+      - configMap:
+          name: grafana-dashboard-scheduler
+        name: grafana-dashboard-scheduler
       - configMap:
           name: grafana-dashboard-statefulset
         name: grafana-dashboard-statefulset
