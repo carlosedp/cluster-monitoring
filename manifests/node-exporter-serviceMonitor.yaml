@@ -7,9 +7,8 @@ metadata:
   namespace: monitoring
 spec:
   endpoints:
-  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    interval: 30s
-    port: https
+  - interval: 30s
+    port: http
     relabelings:
     - action: replace
       regex: (.*)
@@ -17,9 +16,7 @@ spec:
       sourceLabels:
       - __meta_kubernetes_pod_node_name
       targetLabel: instance
-    scheme: https
-    tlsConfig:
-      insecureSkipVerify: true
+    scheme: http
   jobLabel: k8s-app
   selector:
     matchLabels:

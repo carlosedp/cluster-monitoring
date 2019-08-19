@@ -28,6 +28,8 @@
     },
   ],
 
+  k3s: true,
+
   // Setting these to false, defaults to emptyDirs
   enablePersistence: {
     prometheus: false,
