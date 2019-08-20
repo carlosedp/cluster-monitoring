@@ -10,9 +10,9 @@ spec:
   ports:
   - name: http-main
     port: 8080
-    targetPort: "8080"
+    targetPort: http-main
   - name: http-self
     port: 8081
-    targetPort: "8081"
+    targetPort: http-self
   selector:
     app: kube-state-metrics

@@ -84,6 +84,15 @@ local vars = import 'vars.jsonnet';
                         '--port=8080',
                         '--telemetry-port=8081',
                       ],
+                      ports: [
+                        {
+                          containerPort: 8080,
+                          name: 'http-main'
+                        },
+                        {
+                          containerPort: 8081,
+                          name: 'http-self'
+                        }],
                     }
                   else
                     c,
@@ -100,12 +109,12 @@ local vars = import 'vars.jsonnet';
           ports: [{
             name: 'http-main',
             port: 8080,
-            targetPort: '8080'
+            targetPort: 'http-main'
           },
           {
             name: 'http-self',
             port: 8081,
-            targetPort: '8081'
+            targetPort: 'http-self'
           }]
         }
       },

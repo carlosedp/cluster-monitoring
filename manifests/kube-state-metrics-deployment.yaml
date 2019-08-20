@@ -21,6 +21,11 @@ spec:
         - --telemetry-port=8081
         image: carlosedp/kube-state-metrics:v1.7.2
         name: kube-state-metrics
+        ports:
+        - containerPort: 8080
+          name: http-main
+        - containerPort: 8081
+          name: http-self
         resources:
           limits:
             cpu: 100m
