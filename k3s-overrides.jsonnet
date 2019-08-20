@@ -100,12 +100,12 @@ local vars = import 'vars.jsonnet';
           ports: [{
             name: 'http-main',
             port: 8080,
-            targetPort: 'http'
+            targetPort: '8080'
           },
           {
             name: 'http-self',
             port: 8081,
-            targetPort: 'http'
+            targetPort: '8081'
           }]
         }
       },

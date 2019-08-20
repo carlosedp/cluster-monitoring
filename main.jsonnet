@@ -14,7 +14,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet')
            // Use http Kubelet targets. Comment to revert to https
-           + (import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet')
+           + join_objects([m for m in [import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet'] if vars.k3s == false])
            + (import 'smtp_server.jsonnet')
            // Additional modules are loaded dynamically from vars.jsonnet
            + join_objects([module.file for module in vars.modules if module.enabled])
