@@ -55,6 +55,27 @@ $ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""
 $ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition).
 ```
 
+If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
+
+## Customizing for K3s
+
+To have your [K3s](https://github.com/rancher/k3s) cluster and the monitoring stack on it, deploy K3s with `curl -sfL https://get.k3s.io | sh -`.
+
+Now to deploy the monitoring stack on your K3s cluster, there are three parameters to be configured on `vars.jsonnet`:
+
+1. Set `k3s.enabled` to `true`.
+2. Change your K3s master node IP(your VM or host IP) on `k3s.master_ip`.
+3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix. This will be your ingress URL suffix.
+
+After changing these values, run `make` to build the manifests and `k3s kubectl apply -f manifests/` to apply the stack to your cluster. In case of errors on some resources, re-run the command.
+
+If you already have the manifests and don't want to rebuilt from Jsonnet, just run `make ingressip IP="[IP-ADDRESS]"` to change the IP for the ingress routes for Grafana, Prometheus and Alertmanager. Re-apply the ingress manifests after this.
+
+Now you can open the applications: 
+* Grafana on [https://grafana.[your_node_ip].nip.io](https://grafana.[your_node_ip].nip.io), 
+* Prometheus on [https://prometheus.[your_node_ip].nip.io](https://prometheus.[your_node_ip].nip.io) 
+* Alertmanager on [https://alertmanager.[your_node_ip].nip.io](https://alertmanager.[your_node_ip].nip.io)
+
 ## Customizing
 
 The content of this project consists of a set of jsonnet files making up a library to be consumed.

@@ -16,7 +16,7 @@ spec:
       insecureSkipVerify: true
   - interval: 30s
     port: http-self
-    scheme: https
+    scheme: http
     tlsConfig:
       insecureSkipVerify: true
   jobLabel: k8s-app

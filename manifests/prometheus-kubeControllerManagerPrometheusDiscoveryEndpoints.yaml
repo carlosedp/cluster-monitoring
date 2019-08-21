@@ -1,15 +1,14 @@
 apiVersion: v1
-kind: Service
+kind: Endpoints
 metadata:
   labels:
     k8s-app: kube-controller-manager
   name: kube-controller-manager-prometheus-discovery
   namespace: kube-system
-spec:
-  clusterIP: None
+subsets:
+- addresses:
+  - ip: 192.168.99.100
   ports:
   - name: http-metrics
     port: 10252
-    targetPort: 10252
-  selector:
-    k8s-app: kube-controller-manager
+    protocol: TCP

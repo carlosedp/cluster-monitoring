@@ -27,6 +27,10 @@ deploy: manifests
 	sleep 40
 	kubectl apply -f ./manifests/
 
+ingressip:
+	@perl -p -i -e 's/^(\s*)\-\ host:.*/\1- host: alertmanager.${IP}.nip.io/g' manifests/ingress-alertmanager-main.yaml manifests/ingress-prometheus-k8s.yaml manifests/ingress-grafana.yaml
+	@echo "Ingress IPs changed to [service].${IP}.nip.io"
+
 teardown:
 	kubectl delete -f ./manifests/
 

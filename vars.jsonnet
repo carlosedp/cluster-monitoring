@@ -18,7 +18,7 @@
     },
     {
       name: 'traefikExporter',
-      enabled: false,
+      enabled: true,
       file: import 'traefik.jsonnet',
     },
     {
@@ -28,16 +28,20 @@
     },
   ],
 
-  k3s: true,
+  k3s: {
+    enabled: true,
+    master_ip: '192.168.99.100'
+
+  },
+
+  // Domain suffix for the ingresses
+  suffixDomain: '192.168.99.100.nip.io',
 
   // Setting these to false, defaults to emptyDirs
   enablePersistence: {
     prometheus: false,
     grafana: false,
   },
-
-  // Domain suffix for the ingresses
-  suffixDomain: '192.168.99.100.nip.io',
 
   // Grafana "from" email
   grafana: {

@@ -14,12 +14,12 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet')
            // Use http Kubelet targets. Comment to revert to https
-           + join_objects([m for m in [import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet'] if vars.k3s == false])
+           + (import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet')
            + (import 'smtp_server.jsonnet')
            // Additional modules are loaded dynamically from vars.jsonnet
            + join_objects([module.file for module in vars.modules if module.enabled])
            // Load K3s customized modules
-           + join_objects([m for m in [import 'k3s-overrides.jsonnet'] if vars.k3s])
+           + join_objects([m for m in [import 'k3s-overrides.jsonnet'] if vars.k3s.enabled])
            // Base stack is loaded at the end to override previous definitions
            + (import 'base_operator_stack.jsonnet')
            // Load image versions last to override default from modules

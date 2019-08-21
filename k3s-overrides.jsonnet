@@ -1,7 +1,102 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 local vars = import 'vars.jsonnet';
+local service = k.core.v1.service;
+local servicePort = k.core.v1.service.mixin.spec.portsType;
 
 {
+    prometheus+:: {
+    kubeControllerManagerPrometheusDiscoveryService:
+      service.new('kube-controller-manager-prometheus-discovery', { 'k8s-app': 'kube-controller-manager' }, servicePort.newNamed('http-metrics', 10252, 10252)) +
+      service.mixin.metadata.withNamespace('kube-system') +
+      service.mixin.metadata.withLabels({ 'k8s-app': 'kube-controller-manager' }) +
+      service.mixin.spec.withClusterIp('None'),
+    kubeControllerManagerPrometheusDiscoveryEndpoints:
+      local endpoints = k.core.v1.endpoints;
+      local endpointSubset = endpoints.subsetsType;
+      local endpointPort = endpointSubset.portsType;
+
+      local Port = endpointPort.new() +
+                      endpointPort.withName('http-metrics') +
+                      endpointPort.withPort(10252) +
+                      endpointPort.withProtocol('TCP');
+
+      local subset = endpointSubset.new() +
+                     endpointSubset.withAddresses([
+                       { ip: vars.k3s.master_ip }]) +
+                     endpointSubset.withPorts(Port);
+
+      endpoints.new() +
+      endpoints.mixin.metadata.withName('kube-controller-manager-prometheus-discovery') +
+      endpoints.mixin.metadata.withNamespace('kube-system') +
+      endpoints.mixin.metadata.withLabels({ 'k8s-app': 'kube-controller-manager' }) +
+      endpoints.withSubsets(subset),
+
+    kubeSchedulerPrometheusDiscoveryService:
+      service.new('kube-scheduler-prometheus-discovery', { 'k8s-app': 'kube-scheduler' }, servicePort.newNamed('http-metrics', 10251, 10251)) +
+      service.mixin.metadata.withNamespace('kube-system') +
+      service.mixin.metadata.withLabels({ 'k8s-app': 'kube-scheduler' }) +
+      service.mixin.spec.withClusterIp('None'),
+
+    kubeSchedulerPrometheusDiscoveryEndpoints:
+      local endpoints = k.core.v1.endpoints;
+      local endpointSubset = endpoints.subsetsType;
+      local endpointPort = endpointSubset.portsType;
+
+      local Port = endpointPort.new() +
+                      endpointPort.withName('http-metrics') +
+                      endpointPort.withPort(10251) +
+                      endpointPort.withProtocol('TCP');
+
+      local subset = endpointSubset.new() +
+                     endpointSubset.withAddresses([
+                       { ip: vars.k3s.master_ip }]) +
+                     endpointSubset.withPorts(Port);
+
+      endpoints.new() +
+      endpoints.mixin.metadata.withName('kube-scheduler-prometheus-discovery') +
+      endpoints.mixin.metadata.withNamespace('kube-system') +
+      endpoints.mixin.metadata.withLabels({ 'k8s-app': 'kube-scheduler' }) +
+      endpoints.withSubsets(subset),
+
+    serviceMonitorKubelet+:
+      {
+        spec+: {
+          endpoints: [
+            {
+              port: 'https-metrics',
+              scheme: 'https',
+              interval: '30s',
+              honorLabels: true,
+              tlsConfig: {
+                insecureSkipVerify: true,
+              },
+              bearerTokenFile: '/var/run/secrets/kubernetes.io/serviceaccount/token',
+            },
+            {
+              port: 'https-metrics',
+              scheme: 'https',
+              path: '/metrics/cadvisor',
+              interval: '30s',
+              honorLabels: true,
+              tlsConfig: {
+                insecureSkipVerify: true,
+              },
+              bearerTokenFile: '/var/run/secrets/kubernetes.io/serviceaccount/token',
+              metricRelabelings: [
+                // Drop a bunch of metrics which are disabled but still sent, see
+                // https://github.com/google/cadvisor/issues/1925.
+                {
+                  sourceLabels: ['__name__'],
+                  regex: 'container_(network_tcp_usage_total|network_udp_usage_total|tasks_state|cpu_load_average_10s)',
+                  action: 'drop',
+                },
+              ],
+            },
+          ],
+        },
+      },
+  },
+
   nodeExporter+:: {
     daemonset+: {
       spec+: {
@@ -24,6 +119,12 @@ local vars = import 'vars.jsonnet';
                         '--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)',
                         '--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$',
                       ],
+                      ports: [
+                        {
+                          containerPort: 9100,
+                          name: 'http'
+                        }],
+
                     }
                   else
                     c,
@@ -135,7 +236,7 @@ local vars = import 'vars.jsonnet';
             },
             {
               port: 'http-self',
-              scheme: 'https',
+              scheme: 'http',
               interval: '30s',
               tlsConfig: {
                 insecureSkipVerify: true,
