@@ -46,3 +46,10 @@ ifeq (, $(shell which jsonnet))
 	@go get github.com/google/go-jsonnet/cmd/jsonnet
 	@go get github.com/brancz/gojsontoyaml
 endif
+
+change_suffix:
+	@perl -p -i -e 's/^(\s*)\-\ host:.*/\1- host: alertmanager.${IP}.nip.io/g' manifests/ingress-alertmanager-main.yaml manifests/ingress-prometheus-k8s.yaml manifests/ingress-grafana.yaml
+	@echo "Ingress IPs changed to [service].${IP}.nip.io"
+	${K3S} kubectl apply -f manifests/ingress-alertmanager-main.yaml
+	${K3S} kubectl apply -f manifests/ingress-grafana.yaml
+	${K3S} kubectl apply -f manifests/ingress-prometheus-k8s.yaml

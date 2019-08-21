@@ -28,14 +28,19 @@
     },
   ],
 
+  k3s: {
+    enabled: false,
+    master_ip: '192.168.99.100'
+  },
+
+  // Domain suffix for the ingresses
+  suffixDomain: '192.168.99.100.nip.io',
+
   // Setting these to false, defaults to emptyDirs
   enablePersistence: {
     prometheus: false,
     grafana: false,
   },
-
-  // Domain suffix for the ingresses
-  suffixDomain: '192.168.99.100.nip.io',
 
   // Grafana "from" email
   grafana: {

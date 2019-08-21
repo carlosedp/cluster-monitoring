@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -51,12 +51,6 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/coredns-dashboard
           name: grafana-dashboard-coredns-dashboard
           readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/k8s-cluster-rsrc-use
-          name: grafana-dashboard-k8s-cluster-rsrc-use
-          readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/k8s-node-rsrc-use
-          name: grafana-dashboard-k8s-node-rsrc-use
-          readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/k8s-resources-cluster
           name: grafana-dashboard-k8s-resources-cluster
           readOnly: false
@@ -77,9 +71,6 @@ spec:
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/kubernetes-cluster-dashboard
           name: grafana-dashboard-kubernetes-cluster-dashboard
-          readOnly: false
-        - mountPath: /grafana-dashboard-definitions/0/nodes
-          name: grafana-dashboard-nodes
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/persistentvolumesusage
           name: grafana-dashboard-persistentvolumesusage
@@ -133,12 +124,6 @@ spec:
           name: grafana-dashboard-coredns-dashboard
         name: grafana-dashboard-coredns-dashboard
       - configMap:
-          name: grafana-dashboard-k8s-cluster-rsrc-use
-        name: grafana-dashboard-k8s-cluster-rsrc-use
-      - configMap:
-          name: grafana-dashboard-k8s-node-rsrc-use
-        name: grafana-dashboard-k8s-node-rsrc-use
-      - configMap:
           name: grafana-dashboard-k8s-resources-cluster
         name: grafana-dashboard-k8s-resources-cluster
       - configMap:
@@ -159,9 +144,6 @@ spec:
       - configMap:
           name: grafana-dashboard-kubernetes-cluster-dashboard
         name: grafana-dashboard-kubernetes-cluster-dashboard
-      - configMap:
-          name: grafana-dashboard-nodes
-        name: grafana-dashboard-nodes
       - configMap:
           name: grafana-dashboard-persistentvolumesusage
         name: grafana-dashboard-persistentvolumesusage
