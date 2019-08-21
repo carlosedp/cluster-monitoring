@@ -8,11 +8,11 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: http-main
-    port: 8080
-    targetPort: http-main
-  - name: http-self
-    port: 8081
-    targetPort: http-self
+  - name: https-main
+    port: 8443
+    targetPort: https-main
+  - name: https-self
+    port: 9443
+    targetPort: https-self
   selector:
     app: kube-state-metrics

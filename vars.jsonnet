@@ -18,7 +18,7 @@
     },
     {
       name: 'traefikExporter',
-      enabled: true,
+      enabled: false,
       file: import 'traefik.jsonnet',
     },
     {
@@ -29,9 +29,8 @@
   ],
 
   k3s: {
-    enabled: true,
+    enabled: false,
     master_ip: '192.168.99.100'
-
   },
 
   // Domain suffix for the ingresses

@@ -69,12 +69,17 @@ Now to deploy the monitoring stack on your K3s cluster, there are three paramete
 
 After changing these values, run `make` to build the manifests and `k3s kubectl apply -f manifests/` to apply the stack to your cluster. In case of errors on some resources, re-run the command.
 
-If you already have the manifests and don't want to rebuilt from Jsonnet, just run `make ingressip IP="[IP-ADDRESS]"` to change the IP for the ingress routes for Grafana, Prometheus and Alertmanager. Re-apply the ingress manifests after this.
+Now you can open the applications:
 
-Now you can open the applications: 
 * Grafana on [https://grafana.[your_node_ip].nip.io](https://grafana.[your_node_ip].nip.io), 
 * Prometheus on [https://prometheus.[your_node_ip].nip.io](https://prometheus.[your_node_ip].nip.io) 
 * Alertmanager on [https://alertmanager.[your_node_ip].nip.io](https://alertmanager.[your_node_ip].nip.io)
+
+There are some dashboards that shows no values due to some cadvisor metrics not having the complete metadata. Check the open issues for more information.
+
+## Updating the ingress suffixes
+
+To avoid rebuilding all manifests, there is a make target to update the Ingress URL suffix to a different suffix (using nip.io) to match your host IP. Run `make change_suffix IP="[IP-ADDRESS]"` to change the ingress route IP for Grafana, Prometheus and Alertmanager and reapply the manifests. If you have a K3s cluster, run `make change_suffix IP="[IP-ADDRESS] K3S=k3s`.
 
 ## Customizing
 

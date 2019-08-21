@@ -7,16 +7,18 @@ metadata:
   namespace: monitoring
 spec:
   endpoints:
-  - honorLabels: true
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    honorLabels: true
     interval: 30s
-    port: http-main
-    scheme: http
+    port: https-main
+    scheme: https
     scrapeTimeout: 30s
     tlsConfig:
       insecureSkipVerify: true
-  - interval: 30s
-    port: http-self
-    scheme: http
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    interval: 30s
+    port: https-self
+    scheme: https
     tlsConfig:
       insecureSkipVerify: true
   jobLabel: k8s-app
