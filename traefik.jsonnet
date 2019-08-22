@@ -15,22 +15,22 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
         apiVersion: 'monitoring.coreos.com/v1',
         kind: 'ServiceMonitor',
         metadata: {
-          name: 'traefik-ingress-lb',
+          name: 'traefik',
           namespace: $._config.namespace,
           labels: {
-            'k8s-app': 'traefik-ingress-lb',
+            'app': 'traefik',
           },
         },
         spec: {
-          jobLabel: 'k8s-app',
+          jobLabel: 'traefik-exporter',
           selector: {
             matchLabels: {
-              'k8s-app': 'traefik-ingress-lb',
+              'app': 'traefik',
             },
           },
           endpoints: [
             {
-              port: 'admin',
+              port: 'metrics',
               scheme: 'http',
               interval: '30s',
             },
