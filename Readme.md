@@ -79,6 +79,7 @@ Now to deploy the monitoring stack on your K3s cluster, there are three paramete
 1. Set `k3s.enabled` to `true`.
 2. Change your K3s master node IP(your VM or host IP) on `k3s.master_ip`.
 3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix. This will be your ingress URL suffix.
+4. Set _traefikExporter_ `enabled` parameter to `true` to collect Traefik metrics and deploy dashboard.
 
 After changing these values, run `make` to build the manifests and `k3s kubectl apply -f manifests/` to apply the stack to your cluster. In case of errors on some resources, re-run the command.
 
