@@ -59,7 +59,20 @@ If you get an error from applying the manifests, run the `make deploy` or `kubec
 
 ## Customizing for K3s
 
-To have your [K3s](https://github.com/rancher/k3s) cluster and the monitoring stack on it, deploy K3s with `curl -sfL https://get.k3s.io | sh -`.
+To have your [K3s](https://github.com/rancher/k3s) cluster and the monitoring stack on it, follow the steps:
+
+```bash
+# Download K3s binary
+wget https://github.com/rancher/k3s/releases/download/`curl -s https://api.github.com/repos/rancher/k3s/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`/k3s && chmod +x k3s
+
+# Move to your path
+sudo mv k3s /usr/local/bin
+
+# Start K3s
+sudo k3s server --docker &
+```
+
+To generate the metrics with all metadata required by the dashboards, K3s needs to be started with Docker as the runtime.
 
 Now to deploy the monitoring stack on your K3s cluster, there are three parameters to be configured on `vars.jsonnet`:
 
@@ -71,11 +84,13 @@ After changing these values, run `make` to build the manifests and `k3s kubectl 
 
 Now you can open the applications:
 
+To list the created ingresses, run `k3s kubectl get ingress --all-namespaces`.
+
 * Grafana on [https://grafana.[your_node_ip].nip.io](https://grafana.[your_node_ip].nip.io), 
 * Prometheus on [https://prometheus.[your_node_ip].nip.io](https://prometheus.[your_node_ip].nip.io) 
 * Alertmanager on [https://alertmanager.[your_node_ip].nip.io](https://alertmanager.[your_node_ip].nip.io)
 
-There are some dashboards that shows no values due to some cadvisor metrics not having the complete metadata. Check the open issues for more information.
+There are some dashboards that shows no values due to some cadvisor metrics not having the complete metadata if K3s is started with default script or no `--docker` arg. Check the open issues for more information.
 
 ## Updating the ingress suffixes
 
@@ -90,7 +105,7 @@ The content of this project consists of a set of jsonnet files making up a libra
 The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need [Go](https://golang.org/dl/) already installed:
 
 ```bash
-git clone https://github.com/carlosedp/prometheus-operator-ARM
+git clone https://github.com/carlosedp/cluster-monitoring
 cd prometheus-operator-ARM
 make vendor
 # Change the jsonnet files...
