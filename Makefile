@@ -1,5 +1,7 @@
 JSONNET_FMT := jsonnet fmt -n 2 --max-blank-lines 2 --string-style s --comment-style s
 
+GOPATH ?= `$(pwd)`
+
 JSONNET_BIN := $(GOPATH)/bin/jsonnet
 JB_BINARY := $(GOPATH)/bin/jb
 
