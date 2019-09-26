@@ -1,4 +1,5 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local utils = import 'utils.libsonnet';
 
 {
   _config+:: {
@@ -12,38 +13,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   metallbExporter+:: {
     serviceMonitor:
-      {
-        apiVersion: 'monitoring.coreos.com/v1',
-        kind: 'ServiceMonitor',
-        metadata: {
-          name: 'metallb',
-          namespace: $._config.namespace,
-          labels: {
-            'k8s-app': 'metallb-controller',
-          },
-        },
-        spec: {
-          jobLabel: 'k8s-app',
-          selector: {
-            matchLabels: {
-              'k8s-app': 'metallb-controller',
-            },
-          },
-          endpoints: [
-            {
-              port: 'http',
-              scheme: 'http',
-              interval: '30s',
-            },
-          ],
-          namespaceSelector: {
-            matchNames: [
-              'metallb-system',
-            ],
-          },
-
-        },
-      },
+      utils.newServiceMonitor('metallb', $._config.namespace, {'k8s-app': 'metallb-controller'}, 'metallb-system', 'http', 'http'),
 
     service:
       local service = k.core.v1.service;

@@ -1,4 +1,5 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local utils = import 'utils.libsonnet';
 
 {
   _config+:: {
@@ -26,8 +27,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   elasticExporter+:: {
     deployment:
-      local deployment = k.apps.v1beta2.deployment;
-      local container = k.apps.v1beta2.deployment.mixin.spec.template.spec.containersType;
+      local deployment = k.apps.v1.deployment;
+      local container = k.apps.v1.deployment.mixin.spec.template.spec.containersType;
       local containerPort = container.portsType;
 
       local podLabels = { 'k8s-app': 'elasticsearch-exporter' };
@@ -44,7 +45,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
         container.mixin.securityContext.capabilities.withDrop(['SETPCAP', 'MKNOD', 'AUDIT_WRITE', 'CHOWN', 'NET_RAW', 'DAC_OVERRIDE', 'FOWNER', 'FSETID', 'KILL', 'SETGID', 'SETUID', 'NET_BIND_SERVICE', 'SYS_CHROOT', 'SETFCAP']) +
         container.mixin.securityContext.withRunAsNonRoot(true) +
         container.mixin.securityContext.withRunAsUser(1000) +
-        container.mixin.securityContext.withReadOnlyRootFilesystem(true) +
+        // container.mixin.securityContext.withReadOnlyRootFilesystem(true) +
         container.mixin.resources.withRequests({ memory: '64Mi', cpu: '25m' }) +
         container.mixin.resources.withLimits({ memory: '128Mi', cpu: '100m' }) +
         container.mixin.livenessProbe.httpGet.withPath('/health') +
@@ -78,69 +79,22 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       service.mixin.metadata.withLabels({ 'k8s-app': 'elasticsearch-exporter' }),
 
     serviceMonitorElastic:
-      {
-        apiVersion: 'monitoring.coreos.com/v1',
-        kind: 'ServiceMonitor',
-        metadata: {
-          name: 'elasticsearch-exporter',
-          namespace: $._config.namespace,
-          labels: {
-            'k8s-app': 'elasticsearch-exporter',
-          },
-        },
-        spec: {
-          jobLabel: 'k8s-app',
-          selector: {
-            matchLabels: {
-              'k8s-app': 'elasticsearch-exporter',
-            },
-          },
-          endpoints: [
-            {
-              port: 'es-metrics',
-              scheme: 'http',
-              interval: '30s',
-            },
-          ],
-          namespaceSelector: {
-            matchNames: [
-              'monitoring',
-            ],
-          },
-        },
-      },
+      utils.newServiceMonitor(
+        'elasticsearch',
+        $._config.namespace,
+        {'k8s-app': 'elasticsearch-exporter'},
+        'monitoring',
+        'es-metrics',
+        'http'),
+
     serviceMonitorFluentd:
-      {
-        apiVersion: 'monitoring.coreos.com/v1',
-        kind: 'ServiceMonitor',
-        metadata: {
-          name: 'fluentd-es',
-          namespace: $._config.namespace,
-          labels: {
-            'k8s-app': 'fluentd-es',
-          },
-        },
-        spec: {
-          jobLabel: 'k8s-app',
-          selector: {
-            matchLabels: {
-              'k8s-app': 'fluentd-es',
-            },
-          },
-          endpoints: [
-            {
-              port: 'metrics',
-              scheme: 'http',
-              interval: '30s',
-            },
-          ],
-          namespaceSelector: {
-            matchNames: [
-              'logging',
-            ],
-          },
-        },
-      },
+      utils.newServiceMonitor(
+        'fluentd-es',
+        $._config.namespace,
+        {'k8s-app': 'fluentd-es'},
+        'logging',
+        'metrics',
+        'http'),
   },
   // Add Prometheus monitoring rules for ElasticSearch
   prometheusRules+:: {

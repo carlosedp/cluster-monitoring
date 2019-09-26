@@ -1,4 +1,5 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local utils = import 'utils.libsonnet';
 
 {
   _config+:: {
@@ -94,37 +95,16 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       daemonset.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/arch': 'arm64' }) +
       daemonset.mixin.spec.template.spec.withServiceAccountName('arm-exporter') +
       daemonset.mixin.spec.template.spec.withContainers(c),
+
     serviceMonitor:
-      {
-        apiVersion: 'monitoring.coreos.com/v1',
-        kind: 'ServiceMonitor',
-        metadata: {
-          name: 'arm-exporter',
-          namespace: $._config.namespace,
-          labels: {
-            'k8s-app': 'arm-exporter',
-          },
-        },
-        spec: {
-          jobLabel: 'k8s-app',
-          selector: {
-            matchLabels: {
-              'k8s-app': 'arm-exporter',
-            },
-          },
-          endpoints: [
-            {
-              port: 'https',
-              scheme: 'https',
-              interval: '30s',
-              bearerTokenFile: '/var/run/secrets/kubernetes.io/serviceaccount/token',
-              tlsConfig: {
-                insecureSkipVerify: true,
-              },
-            },
-          ],
-        },
-      },
+      utils.newServiceMonitorHTTPS('arm-exporter',
+        $._config.namespace,
+        {'k8s-app': 'arm-exporter'},
+        $._config.namespace,
+        'https',
+        'https',
+        '/var/run/secrets/kubernetes.io/serviceaccount/token',
+      ),
 
     service:
       local service = k.core.v1.service;

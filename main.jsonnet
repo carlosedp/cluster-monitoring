@@ -1,13 +1,5 @@
-local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 local vars = import 'vars.jsonnet';
-
-local join_objects(objs) =
-  local aux(arr, i, running) =
-    if i >= std.length(arr) then
-      running
-    else
-      aux(arr, i + 1, running + arr[i]) tailstrict;
-  aux(objs, 0, {});
+local utils = import 'utils.libsonnet';
 
 local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet')
@@ -17,9 +9,9 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet')
            + (import 'smtp_server.jsonnet')
            // Additional modules are loaded dynamically from vars.jsonnet
-           + join_objects([module.file for module in vars.modules if module.enabled])
+           + utils.join_objects([module.file for module in vars.modules if module.enabled])
            // Load K3s customized modules
-           + join_objects([m for m in [import 'k3s-overrides.jsonnet'] if vars.k3s.enabled])
+           + utils.join_objects([m for m in [import 'k3s-overrides.jsonnet'] if vars.k3s.enabled])
            // Base stack is loaded at the end to override previous definitions
            + (import 'base_operator_stack.jsonnet')
            // Load image versions last to override default from modules

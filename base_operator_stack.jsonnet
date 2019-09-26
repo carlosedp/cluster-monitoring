@@ -1,5 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 local vars = import 'vars.jsonnet';
+local utils = import 'utils.libsonnet';
 
 {
   _config+:: {
@@ -119,55 +120,16 @@ local vars = import 'vars.jsonnet';
   grafanaDashboards+:: $._config.grafanaDashboards,
 
   // Create ingress objects per application
-  ingress+: {
-    local secret = k.core.v1.secret,
-    local ingress = k.extensions.v1beta1.ingress,
-    local ingressTls = ingress.mixin.spec.tlsType,
-    local ingressRule = ingress.mixin.spec.rulesType,
-    local httpIngressPath = ingressRule.mixin.http.pathsType,
+  ingress+:: {
+    alertmanager:
+      utils.newIngress('alertmanager-main', $._config.namespace, $._config.urls.alert_ingress, '/', 'alertmanager-main', 'web'),
 
-    'alertmanager-main':
-      ingress.new() +
-      ingress.mixin.metadata.withName('alertmanager-main') +
-      ingress.mixin.metadata.withNamespace($._config.namespace) +
-      ingress.mixin.spec.withRules(
-        ingressRule.new() +
-        ingressRule.withHost($._config.urls.alert_ingress) +
-        ingressRule.mixin.http.withPaths(
-          httpIngressPath.new() +
-          httpIngressPath.withPath('/') +
-          httpIngressPath.mixin.backend.withServiceName('alertmanager-main') +
-          httpIngressPath.mixin.backend.withServicePort('web')
-        ),
-      ),
     grafana:
-      ingress.new() +
-      ingress.mixin.metadata.withName('grafana') +
-      ingress.mixin.metadata.withNamespace($._config.namespace) +
-      ingress.mixin.spec.withRules(
-        ingressRule.new() +
-        ingressRule.withHost($._config.urls.grafana_ingress) +
-        ingressRule.mixin.http.withPaths(
-          httpIngressPath.new() +
-          httpIngressPath.withPath('/') +
-          httpIngressPath.mixin.backend.withServiceName('grafana') +
-          httpIngressPath.mixin.backend.withServicePort('http')
-        ),
-      ),
-    'prometheus-k8s':
-      ingress.new() +
-      ingress.mixin.metadata.withName('prometheus-k8s') +
-      ingress.mixin.metadata.withNamespace($._config.namespace) +
-      ingress.mixin.spec.withRules(
-        ingressRule.new() +
-        ingressRule.withHost($._config.urls.prom_ingress) +
-        ingressRule.mixin.http.withPaths(
-          httpIngressPath.new() +
-          httpIngressPath.withPath('/') +
-          httpIngressPath.mixin.backend.withServiceName('prometheus-k8s') +
-          httpIngressPath.mixin.backend.withServicePort('web')
-        ),
-      ),
+      utils.newIngress('grafana', $._config.namespace, $._config.urls.grafana_ingress, '/', 'grafana', 'http'),
+
+    prometheus:
+      utils.newIngress('prometheus-k8s', $._config.namespace, $._config.urls.prom_ingress, '/', 'prometheus-k8s', 'web'),
+
     // // Example external ingress with authentication
     // 'grafana-external':
     //     ingress.new() +

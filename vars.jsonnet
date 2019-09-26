@@ -1,4 +1,7 @@
 {
+  _config+:: {
+    namespace: 'monitoring'
+    },
   // Enable or disable additional modules
   modules: [
     {
@@ -30,7 +33,7 @@
 
   k3s: {
     enabled: false,
-    master_ip: '192.168.99.100'
+    master_ip: ['192.168.164.120']
   },
 
   // Domain suffix for the ingresses

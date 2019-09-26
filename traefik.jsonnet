@@ -1,4 +1,5 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local utils = import 'utils.libsonnet';
 
 {
   _config+:: {
@@ -11,36 +12,6 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   traefikExporter+:: {
     serviceMonitor:
-      {
-        apiVersion: 'monitoring.coreos.com/v1',
-        kind: 'ServiceMonitor',
-        metadata: {
-          name: 'traefik',
-          namespace: $._config.namespace,
-          labels: {
-            'app': 'traefik',
-          },
-        },
-        spec: {
-          jobLabel: 'traefik-exporter',
-          selector: {
-            matchLabels: {
-              'app': 'traefik',
-            },
-          },
-          endpoints: [
-            {
-              port: 'metrics',
-              scheme: 'http',
-              interval: '30s',
-            },
-          ],
-          namespaceSelector: {
-            matchNames: [
-              'kube-system',
-            ],
-          },
-        },
-      },
+      utils.newServiceMonitor('traefik', $._config.namespace, {'app': 'traefik'}, 'kube-system', 'metrics', 'http'),
   },
 }
