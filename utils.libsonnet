@@ -11,6 +11,30 @@ local vars = import 'vars.jsonnet';
         aux(arr, i + 1, running + arr[i]) tailstrict;
     aux(objs, 0, {}),
 
+  // Creates ClusterRoles
+  // roles format example: {apis: ['authentication.k8s.io'],
+  //                        res: ['tokenreviews'],
+  //                        verbs: ['create']
+  //                       }
+    newClusterRole(name, roles):: (
+      local clusterRole = k.rbac.v1.clusterRole;
+      local policyRule = clusterRole.rulesType;
+
+      local p(apigroups, resources, verbs) = policyRule.new() +
+                  policyRule.withApiGroups([a for a in apigroups]) +
+                  policyRule.withResources([r for r in resources]) +
+                  policyRule.withVerbs([v for v in verbs]);
+
+      local r = [ p(pol.apis, pol.res, pol.verbs) for pol in roles ];
+
+      local rules = r;
+
+      local c = clusterRole.new() +
+        clusterRole.mixin.metadata.withName(name) +
+        clusterRole.withRules(rules);
+      c
+    ),
+
   // Creates endpoint objects
   newEndpoint(name, namespace, ips, portName, portNumber):: (
     local endpoints = k.core.v1.endpoints;

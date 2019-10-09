@@ -26,28 +26,16 @@ local utils = import 'utils.libsonnet';
       clusterRoleBinding.withSubjects([{ kind: 'ServiceAccount', name: 'arm-exporter', namespace: $._config.namespace }]),
 
     clusterRole:
-      local clusterRole = k.rbac.v1.clusterRole;
-      local policyRule = clusterRole.rulesType;
-
-      local authenticationRole = policyRule.new() +
-                                 policyRule.withApiGroups(['authentication.k8s.io']) +
-                                 policyRule.withResources([
-                                   'tokenreviews',
-                                 ]) +
-                                 policyRule.withVerbs(['create']);
-
-      local authorizationRole = policyRule.new() +
-                                policyRule.withApiGroups(['authorization.k8s.io']) +
-                                policyRule.withResources([
-                                  'subjectaccessreviews',
-                                ]) +
-                                policyRule.withVerbs(['create']);
-
-      local rules = [authenticationRole, authorizationRole];
-
-      clusterRole.new() +
-      clusterRole.mixin.metadata.withName('arm-exporter') +
-      clusterRole.withRules(rules),
+      utils.newClusterRole('arm-exporter', [
+        {apis: ['authentication.k8s.io'],
+         res: ['tokenreviews'],
+         verbs: ['create']
+        },
+        {apis: ['authorization.k8s.io'],
+         res: ['subjectaccessreviews'],
+         verbs: ['create']
+        }
+      ]),
 
     serviceAccount:
       local serviceAccount = k.core.v1.serviceAccount;
