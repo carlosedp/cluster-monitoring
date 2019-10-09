@@ -15,15 +15,8 @@ local utils = import 'utils.libsonnet';
   },
 
   armExporter+:: {
-    clusterRoleBinding:
-      local clusterRoleBinding = k.rbac.v1.clusterRoleBinding;
-
-      clusterRoleBinding.new() +
-      clusterRoleBinding.mixin.metadata.withName('arm-exporter') +
-      clusterRoleBinding.mixin.roleRef.withApiGroup('rbac.authorization.k8s.io') +
-      clusterRoleBinding.mixin.roleRef.withName('arm-exporter') +
-      clusterRoleBinding.mixin.roleRef.mixinInstance({ kind: 'ClusterRole' }) +
-      clusterRoleBinding.withSubjects([{ kind: 'ServiceAccount', name: 'arm-exporter', namespace: $._config.namespace }]),
+    serviceAccount:
+      utils.newServiceAccount('arm-exporter', $._config.namespace, null),
 
     clusterRole:
       utils.newClusterRole('arm-exporter', [
@@ -35,13 +28,10 @@ local utils = import 'utils.libsonnet';
          res: ['subjectaccessreviews'],
          verbs: ['create']
         }
-      ]),
+      ], null),
 
-    serviceAccount:
-      local serviceAccount = k.core.v1.serviceAccount;
-
-      serviceAccount.new('arm-exporter') +
-      serviceAccount.mixin.metadata.withNamespace($._config.namespace),
+    clusterRoleBinding:
+      utils.newClusterRoleBinding('arm-exporter', 'arm-exporter', $._config.namespace, 'arm-exporter', null),
 
     daemonset:
       local daemonset = k.apps.v1.daemonSet;
@@ -84,16 +74,6 @@ local utils = import 'utils.libsonnet';
       daemonset.mixin.spec.template.spec.withServiceAccountName('arm-exporter') +
       daemonset.mixin.spec.template.spec.withContainers(c),
 
-    serviceMonitor:
-      utils.newServiceMonitorHTTPS('arm-exporter',
-        $._config.namespace,
-        {'k8s-app': 'arm-exporter'},
-        $._config.namespace,
-        'https',
-        'https',
-        '/var/run/secrets/kubernetes.io/serviceaccount/token',
-      ),
-
     service:
       local service = k.core.v1.service;
       local servicePort = k.core.v1.service.mixin.spec.portsType;
@@ -104,5 +84,15 @@ local utils = import 'utils.libsonnet';
       service.mixin.metadata.withNamespace($._config.namespace) +
       service.mixin.metadata.withLabels({ 'k8s-app': 'arm-exporter' }) +
       service.mixin.spec.withClusterIp('None'),
+
+    serviceMonitor:
+      utils.newServiceMonitorHTTPS('arm-exporter',
+        $._config.namespace,
+        {'k8s-app': 'arm-exporter'},
+        $._config.namespace,
+        'https',
+        'https',
+        '/var/run/secrets/kubernetes.io/serviceaccount/token',
+      ),
   },
 }

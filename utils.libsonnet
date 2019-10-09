@@ -2,6 +2,15 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 local vars = import 'vars.jsonnet';
 
 {
+  // Generates the manifests for all objects in kp except those starting with "_"
+  generate(kp):: (
+    {
+      [std.asciiLower(module) + '-' + name]: kp[module][name]
+      for module in std.objectFieldsAll(kp) if !std.startsWith(module, '_')
+      for name in std.objectFields(kp[module])
+    }
+  ),
+
   // Join multiple objects into one
   join_objects(objs)::
     local aux(arr, i, running) =
@@ -11,28 +20,51 @@ local vars = import 'vars.jsonnet';
         aux(arr, i + 1, running + arr[i]) tailstrict;
     aux(objs, 0, {}),
 
+  // Creates serviceaccount
+  newServiceAccount(name, namespace, labels):: (
+      local serviceAccount = k.core.v1.serviceAccount;
+
+      serviceAccount.new(name)
+      + (if labels != null then serviceAccount.mixin.metadata.withLabels(labels) else {})
+      + serviceAccount.mixin.metadata.withNamespace(namespace)
+  ),
+
   // Creates ClusterRoles
-  // roles format example: {apis: ['authentication.k8s.io'],
+  // roles format example: [{apis: ['authentication.k8s.io'],
   //                        res: ['tokenreviews'],
   //                        verbs: ['create']
-  //                       }
-    newClusterRole(name, roles):: (
+  //                       },[{...}]]
+    newClusterRole(name, roles, labels):: (
       local clusterRole = k.rbac.v1.clusterRole;
       local policyRule = clusterRole.rulesType;
 
-      local p(apigroups, resources, verbs) = policyRule.new() +
-                  policyRule.withApiGroups([a for a in apigroups]) +
-                  policyRule.withResources([r for r in resources]) +
-                  policyRule.withVerbs([v for v in verbs]);
+      local p(apigroups, resources, verbs) = policyRule.new()
+            + policyRule.withApiGroups([a for a in apigroups])
+            + policyRule.withResources([r for r in resources])
+            + policyRule.withVerbs([v for v in verbs]);
 
       local r = [ p(pol.apis, pol.res, pol.verbs) for pol in roles ];
 
       local rules = r;
 
-      local c = clusterRole.new() +
-        clusterRole.mixin.metadata.withName(name) +
-        clusterRole.withRules(rules);
+      local c = clusterRole.new()
+            + (if labels != null then clusterRole.mixin.metadata.withLabels(labels) else {})
+            + clusterRole.mixin.metadata.withName(name) +
+            + clusterRole.withRules(rules);
       c
+    ),
+
+    // Creates a ClusterRoleBinding between a `clusterRole` and a `serviceAccount` on `serviceAccountNamespace`
+    newClusterRoleBinding(name, serviceAccount, serviceAccountNamespace, clusterRole, labels):: (
+      local clusterRoleBinding = k.rbac.v1.clusterRoleBinding;
+
+      clusterRoleBinding.new()
+      + clusterRoleBinding.mixin.metadata.withName(name) +
+      + (if labels != null then clusterRoleBinding.mixin.metadata.withLabels(labels) else {})
+      + clusterRoleBinding.mixin.roleRef.withApiGroup('rbac.authorization.k8s.io')
+      + clusterRoleBinding.mixin.roleRef.withName(clusterRole)
+      + clusterRoleBinding.mixin.roleRef.mixinInstance({ kind: 'ClusterRole' })
+      + clusterRoleBinding.withSubjects([{ kind: 'ServiceAccount', 'name': serviceAccount, 'namespace': serviceAccountNamespace }])
     ),
 
   // Creates endpoint objects
@@ -79,6 +111,39 @@ local vars = import 'vars.jsonnet';
         httpIngressPath.mixin.backend.withServicePort(servicePort)
       ),
     )
+  ),
+
+  // Creates new basic deployments
+  newDeployment(name, namespace, image, cmd, port):: (
+    local deployment = k.apps.v1.deployment;
+    local container = k.apps.v1.deployment.mixin.spec.template.spec.containersType;
+    local containerPort = container.portsType;
+
+    local con =
+      container.new(name, image)
+      + (if cmd != null then container.withCommand(cmd) else {})
+      + container.withPorts(containerPort.newNamed(port, name+'-port'));
+
+    local c = [con];
+
+    local d = deployment.new(name, 1, c, {'app': name}) +
+      deployment.mixin.metadata.withNamespace(namespace) +
+      deployment.mixin.metadata.withLabels({'app': name}) +
+      deployment.mixin.spec.selector.withMatchLabels({'app': name}) +
+      deployment.mixin.spec.strategy.withType('RollingUpdate') +
+      deployment.mixin.spec.template.spec.withRestartPolicy('Always');
+    d
+  ),
+
+  newService(name, namespace, port):: (
+    local service = k.core.v1.service;
+    local servicePort = k.core.v1.service.mixin.spec.portsType;
+    local p = servicePort.newNamed(name, port, port);
+
+    local s = service.new(name, {'app': name}, p) +
+      service.mixin.metadata.withNamespace(namespace) +
+      service.mixin.metadata.withLabels({'app': name});
+    s
   ),
 
   // Creates http ServiceMonitor objects
