@@ -58,7 +58,7 @@ local vars = import 'vars.jsonnet';
   ),
 
   // Creates http ServiceMonitor objects
-  newServiceMonitor(name, namespace, matchLabel, matchNamespace, portName, portScheme):: (
+  newServiceMonitor(name, namespace, matchLabel, matchNamespace, portName, portScheme, path='metrics'):: (
     {
         apiVersion: 'monitoring.coreos.com/v1',
         kind: 'ServiceMonitor',
@@ -105,6 +105,7 @@ local vars = import 'vars.jsonnet';
             }],
       }
     };
-    s + t
+    std.mergePatch(s, t)
+    // s + t
   ),
 }

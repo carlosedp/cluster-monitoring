@@ -15,8 +15,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   smtpServer+:: {
     deployment:
-      local deployment = k.apps.v1beta2.deployment;
-      local container = k.apps.v1beta2.deployment.mixin.spec.template.spec.containersType;
+      local deployment = k.apps.v1.deployment;
+      local container = k.apps.v1.deployment.mixin.spec.template.spec.containersType;
       local containerPort = container.portsType;
 
       local podLabels = { run: 'smtp-server' };

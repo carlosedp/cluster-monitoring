@@ -56,7 +56,7 @@ local utils = import 'utils.libsonnet';
       serviceAccount.mixin.metadata.withNamespace($._config.namespace),
 
     daemonset:
-      local daemonset = k.apps.v1beta2.daemonSet;
+      local daemonset = k.apps.v1.daemonSet;
       local container = daemonset.mixin.spec.template.spec.containersType;
       local containerPort = container.portsType;
       local containerEnv = container.envType;
