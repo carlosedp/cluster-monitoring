@@ -69,6 +69,7 @@ local utils = import 'utils.libsonnet';
     local pvc = k.core.v1.persistentVolumeClaim,
     prometheus+: {
       spec+: {
+               replicas: $._config.prometheus.replicas,
                retention: '15d',
                externalUrl: 'http://' + $._config.urls.prom_ingress,
              }
