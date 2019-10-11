@@ -49,7 +49,7 @@ local vars = import 'vars.jsonnet';
 
       local c = clusterRole.new()
             + (if labels != null then clusterRole.mixin.metadata.withLabels(labels) else {})
-            + clusterRole.mixin.metadata.withName(name) +
+            + clusterRole.mixin.metadata.withName(name)
             + clusterRole.withRules(rules);
       c
     ),
@@ -59,7 +59,7 @@ local vars = import 'vars.jsonnet';
       local clusterRoleBinding = k.rbac.v1.clusterRoleBinding;
 
       clusterRoleBinding.new()
-      + clusterRoleBinding.mixin.metadata.withName(name) +
+      + clusterRoleBinding.mixin.metadata.withName(name)
       + (if labels != null then clusterRoleBinding.mixin.metadata.withLabels(labels) else {})
       + clusterRoleBinding.mixin.roleRef.withApiGroup('rbac.authorization.k8s.io')
       + clusterRoleBinding.mixin.roleRef.withName(clusterRole)
