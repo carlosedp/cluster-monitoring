@@ -1,5 +1,4 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
-local vars = import 'vars.jsonnet';
 
 {
   // Generates the manifests for all objects in kp except those starting with "_"
@@ -39,18 +38,18 @@ local vars = import 'vars.jsonnet';
       local policyRule = clusterRole.rulesType;
 
       local p(apigroups, resources, verbs) = policyRule.new()
-            + policyRule.withApiGroups([a for a in apigroups])
-            + policyRule.withResources([r for r in resources])
-            + policyRule.withVerbs([v for v in verbs]);
+        + policyRule.withApiGroups([a for a in apigroups])
+        + policyRule.withResources([r for r in resources])
+        + policyRule.withVerbs([v for v in verbs]);
 
       local r = [ p(pol.apis, pol.res, pol.verbs) for pol in roles ];
 
       local rules = r;
 
       local c = clusterRole.new()
-            + (if labels != null then clusterRole.mixin.metadata.withLabels(labels) else {})
-            + clusterRole.mixin.metadata.withName(name)
-            + clusterRole.withRules(rules);
+        + (if labels != null then clusterRole.mixin.metadata.withLabels(labels) else {})
+        + clusterRole.mixin.metadata.withName(name)
+        + clusterRole.withRules(rules);
       c
     ),
 
@@ -72,22 +71,22 @@ local vars = import 'vars.jsonnet';
     local endpoints = k.core.v1.endpoints;
     local endpointSubset = endpoints.subsetsType;
     local endpointPort = endpointSubset.portsType;
-    local Port = endpointPort.new() +
-                    endpointPort.withName(portName) +
-                    endpointPort.withPort(portNumber) +
-                    endpointPort.withProtocol('TCP');
+    local Port = endpointPort.new()
+            + endpointPort.withName(portName)
+            + endpointPort.withPort(portNumber)
+            + endpointPort.withProtocol('TCP');
 
-    local subset = endpointSubset.new() +
-                    endpointSubset.withAddresses([
+    local subset = endpointSubset.new()
+                    + endpointSubset.withAddresses([
                        { ip: IP }
                        for IP in ips
-                     ]) +
-                    endpointSubset.withPorts(Port);
-    endpoints.new() +
-      endpoints.mixin.metadata.withName(name) +
-      endpoints.mixin.metadata.withNamespace(namespace) +
-      endpoints.mixin.metadata.withLabels({ 'k8s-app': name }) +
-      endpoints.withSubsets(subset)
+                     ])
+                    + endpointSubset.withPorts(Port);
+    endpoints.new()
+      + endpoints.mixin.metadata.withName(name)
+      + endpoints.mixin.metadata.withNamespace(namespace)
+      + endpoints.mixin.metadata.withLabels({ 'k8s-app': name })
+      + endpoints.withSubsets(subset)
     ),
 
   // Creates ingress objects
@@ -98,17 +97,17 @@ local vars = import 'vars.jsonnet';
     local ingressRule = ingress.mixin.spec.rulesType;
     local httpIngressPath = ingressRule.mixin.http.pathsType;
 
-    ingress.new() +
-    ingress.mixin.metadata.withName(name) +
-    ingress.mixin.metadata.withNamespace(namespace) +
-    ingress.mixin.spec.withRules(
-      ingressRule.new() +
-      ingressRule.withHost(host) +
-      ingressRule.mixin.http.withPaths(
-        httpIngressPath.new() +
-        httpIngressPath.withPath(path) +
-        httpIngressPath.mixin.backend.withServiceName(serviceName) +
-        httpIngressPath.mixin.backend.withServicePort(servicePort)
+    ingress.new()
+    + ingress.mixin.metadata.withName(name)
+    + ingress.mixin.metadata.withNamespace(namespace)
+    + ingress.mixin.spec.withRules(
+      ingressRule.new()
+      + ingressRule.withHost(host)
+      + ingressRule.mixin.http.withPaths(
+        httpIngressPath.new()
+        + httpIngressPath.withPath(path)
+        + httpIngressPath.mixin.backend.withServiceName(serviceName)
+        + httpIngressPath.mixin.backend.withServicePort(servicePort)
       ),
     )
   ),
@@ -122,16 +121,16 @@ local vars = import 'vars.jsonnet';
     local con =
       container.new(name, image)
       + (if cmd != null then container.withCommand(cmd) else {})
-      + container.withPorts(containerPort.newNamed(port, name+'-port'));
+      + container.withPorts(containerPort.newNamed(port, name));
 
     local c = [con];
 
-    local d = deployment.new(name, 1, c, {'app': name}) +
-      deployment.mixin.metadata.withNamespace(namespace) +
-      deployment.mixin.metadata.withLabels({'app': name}) +
-      deployment.mixin.spec.selector.withMatchLabels({'app': name}) +
-      deployment.mixin.spec.strategy.withType('RollingUpdate') +
-      deployment.mixin.spec.template.spec.withRestartPolicy('Always');
+    local d = deployment.new(name, 1, c, {'app': name})
+      + deployment.mixin.metadata.withNamespace(namespace)
+      + deployment.mixin.metadata.withLabels({'app': name})
+      + deployment.mixin.spec.selector.withMatchLabels({'app': name})
+      + deployment.mixin.spec.strategy.withType('RollingUpdate')
+      + deployment.mixin.spec.template.spec.withRestartPolicy('Always');
     d
   ),
 
@@ -140,9 +139,9 @@ local vars = import 'vars.jsonnet';
     local servicePort = k.core.v1.service.mixin.spec.portsType;
     local p = servicePort.newNamed(name, port, port);
 
-    local s = service.new(name, {'app': name}, p) +
-      service.mixin.metadata.withNamespace(namespace) +
-      service.mixin.metadata.withLabels({'app': name});
+    local s = service.new(name, {'app': name}, p)
+      + service.mixin.metadata.withNamespace(namespace)
+      + service.mixin.metadata.withLabels({'app': name});
     s
   ),
 
@@ -197,4 +196,45 @@ local vars = import 'vars.jsonnet';
     std.mergePatch(s, t)
     // s + t
   ),
+
+
+  # Adds arguments to a container in a deployment
+  # args is an array of arguments in the format
+  # ["arg1","arg2",]
+    addArguments(deployment, container, args):: (
+      {spec+: {
+        template+: {
+          spec+: {
+            containers:
+              std.map(
+                function(c)
+                  if c.name == container then
+                    c { args+: args }
+                  else c,
+                super.containers
+              ),
+          },
+        },
+      }}
+    ),
+
+  # Adds environment variables to a container in a deployment
+  # envs is an array of environment variables in the format
+  # [{name: 'VARNAME', value: 'var_value'},{...},]
+    addEnviromnentVars(deployment, container, envs):: (
+    {spec+: {
+        template+: {
+          spec+: {
+            containers:
+              std.map(
+                function(c)
+                  if c.name == container then
+                    c { env+: envs }
+                  else c,
+                super.containers
+              ),
+          },
+        },
+      }}
+    ),
 }
