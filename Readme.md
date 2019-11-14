@@ -69,10 +69,8 @@ wget https://github.com/rancher/k3s/releases/download/`curl -s https://api.githu
 sudo mv k3s /usr/local/bin
 
 # Start K3s
-sudo k3s server --docker &
+sudo k3s server &
 ```
-
-To generate the metrics with all metadata required by the dashboards, K3s needs to be started with Docker as the runtime.
 
 Now to deploy the monitoring stack on your K3s cluster, there are three parameters to be configured on `vars.jsonnet`:
 
@@ -89,9 +87,7 @@ To list the created ingresses, run `k3s kubectl get ingress --all-namespaces`.
 
 * Grafana on [https://grafana.[your_node_ip].nip.io](https://grafana.[your_node_ip].nip.io), 
 * Prometheus on [https://prometheus.[your_node_ip].nip.io](https://prometheus.[your_node_ip].nip.io) 
-* Alertmanager on [https://alertmanager.[your_node_ip].nip.io](https://alertmanager.[your_node_ip].nip.io)
-
-There are some dashboards that shows no values due to some cadvisor metrics not having the complete metadata if K3s is started with default script or no `--docker` arg. Check the open issues for more information.
+* Alertmanager on [https://alertmanager.[your_node_ip].nip.io](https://alertmanager.[your_node_ip].nip.io) 
 
 ## Updating the ingress suffixes
 
