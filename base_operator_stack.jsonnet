@@ -114,7 +114,7 @@ local utils = import 'utils.libsonnet';
       pvc.new() +
       pvc.mixin.metadata.withNamespace($._config.namespace) +
       pvc.mixin.metadata.withName('grafana-storage') +
-      pvc.mixin.spec.withAccessModes('ReadWriteMany') +
+      pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
       pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }),
   } else {},
 
