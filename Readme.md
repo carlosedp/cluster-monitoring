@@ -66,7 +66,25 @@ To deploy the monitoring stack on your K3s cluster, there are three parameters t
 3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix. This will be your ingress URL suffix.
 4. Set _traefikExporter_ `enabled` parameter to `true` to collect Traefik metrics and deploy dashboard.
 
-After changing these values, run `make` to build the manifests and `kubectl apply -f manifests/` to apply the stack to your cluster. In case of errors on some resources, re-run the command.
+After changing these values, to simply deploy the stack, run:
+```bash
+$ make deploy
+
+# Or manually:
+
+$ kubectl apply -f manifests/
+
+# It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
+$ until kubectl get customresourcedefinitions servicemonitors.monitoring.coreos.com ; do date; sleep 1; echo ""; done
+$ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
+
+$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition).
+```
+
+
+If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
+
+## Ingress 
 
 Now you can open the applications:
 
