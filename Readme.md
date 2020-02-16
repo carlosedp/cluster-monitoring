@@ -35,7 +35,7 @@ There are also options to set the ingress domain suffix and enable persistence f
 
 After changing these parameters, rebuild the manifests with `make`.
 
-## Quickstart
+## Quickstart (non K3s)
 
 The repository already provides a set of compiled manifests to be applied into the cluster. The deployment can be customized thru the jsonnet files.
 
@@ -57,33 +57,20 @@ $ kubectl apply -f manifests/ # This command sometimes may need to be done twice
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
 
-## Customizing for K3s
+## Quickstart (K3s)
 
-To have your [K3s](https://github.com/rancher/k3s) cluster and the monitoring stack on it, follow the steps:
-
-```bash
-# Download K3s binary
-wget https://github.com/rancher/k3s/releases/download/`curl -s https://api.github.com/repos/rancher/k3s/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`/k3s && chmod +x k3s
-
-# Move to your path
-sudo mv k3s /usr/local/bin
-
-# Start K3s
-sudo k3s server &
-```
-
-Now to deploy the monitoring stack on your K3s cluster, there are three parameters to be configured on `vars.jsonnet`:
+To deploy the monitoring stack on your K3s cluster, there are three parameters that need to be configured in the  `vars.jsonnet` file:
 
 1. Set `k3s.enabled` to `true`.
 2. Change your K3s master node IP(your VM or host IP) on `k3s.master_ip`.
 3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix. This will be your ingress URL suffix.
 4. Set _traefikExporter_ `enabled` parameter to `true` to collect Traefik metrics and deploy dashboard.
 
-After changing these values, run `make` to build the manifests and `k3s kubectl apply -f manifests/` to apply the stack to your cluster. In case of errors on some resources, re-run the command.
+After changing these values, run `make` to build the manifests and `kubectl apply -f manifests/` to apply the stack to your cluster. In case of errors on some resources, re-run the command.
 
 Now you can open the applications:
 
-To list the created ingresses, run `k3s kubectl get ingress --all-namespaces`.
+To list the created ingresses, run `kubectl get ingress --all-namespaces`, you will notice they need to be updated to include `your_node_ip`.
 
 * Grafana on [https://grafana.[your_node_ip].nip.io](https://grafana.[your_node_ip].nip.io), 
 * Prometheus on [https://prometheus.[your_node_ip].nip.io](https://prometheus.[your_node_ip].nip.io) 
