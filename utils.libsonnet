@@ -100,6 +100,10 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     ingress.new()
     + ingress.mixin.metadata.withName(name)
     + ingress.mixin.metadata.withNamespace(namespace)
+    + ingress.mixin.spec.withTls(
+      ingressTls.new()
+      + ingressTls.withHosts(host)
+    )
     + ingress.mixin.spec.withRules(
       ingressRule.new()
       + ingressRule.withHost(host)
