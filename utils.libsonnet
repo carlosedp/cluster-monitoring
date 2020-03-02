@@ -91,7 +91,6 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   // Creates ingress objects
   newIngress(name, namespace, host, path, serviceName, servicePort):: (
-    local secret = k.core.v1.secret;
     local ingress = k.extensions.v1beta1.ingress;
     local ingressTls = ingress.mixin.spec.tlsType;
     local ingressRule = ingress.mixin.spec.rulesType;
@@ -100,10 +99,6 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     ingress.new()
     + ingress.mixin.metadata.withName(name)
     + ingress.mixin.metadata.withNamespace(namespace)
-    + ingress.mixin.spec.withTls(
-      ingressTls.new()
-      + ingressTls.withHosts(host)
-    )
     + ingress.mixin.spec.withRules(
       ingressRule.new()
       + ingressRule.withHost(host)
@@ -114,6 +109,34 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
         + httpIngressPath.mixin.backend.withServicePort(servicePort)
       ),
     )
+  ),
+
+  // Add TLS to Ingress resource with secret containing the certificates if exists
+  addIngressTLS(I, S=''):: (
+    local ingress = k.extensions.v1beta1.ingress;
+    local ingressTls = ingress.mixin.spec.tlsType;
+    local host = I.spec.rules[0].host;
+    local namespace = I.metadata.namespace;
+
+    I + ingress.mixin.spec.withTls(
+      ingressTls.new() +
+        ingressTls.withHosts(host) +
+        (if S != '' then {'secretName': S} else {})
+    )
+  ),
+
+  // Creates a new TLS Secred with Certificate and Key
+  newTLSSecret(name, namespace, crt, key):: (
+    local secret = k.core.v1.secret;
+
+    secret.new('ingress-secret') +
+      secret.mixin.metadata.withNamespace(namespace) +
+      secret.withType('kubernetes.io/tls') +
+      secret.withData(
+        {
+        'tls.crt': std.base64(crt),
+        'tls.key': std.base64(key),
+        })
   ),
 
   // Creates new basic deployments

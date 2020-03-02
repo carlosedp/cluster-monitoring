@@ -1,2 +1,4 @@
 vendor
 auth
+server.crt
+server.key

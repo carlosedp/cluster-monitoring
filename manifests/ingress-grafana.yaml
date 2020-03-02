@@ -12,3 +12,6 @@ spec:
           serviceName: grafana
           servicePort: http
         path: /
+  tls:
+  - hosts:
+    - grafana.192.168.99.100.nip.io

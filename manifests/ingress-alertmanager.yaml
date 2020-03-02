@@ -12,3 +12,6 @@ spec:
           serviceName: alertmanager-main
           servicePort: web
         path: /
+  tls:
+  - hosts:
+    - alertmanager.192.168.99.100.nip.io

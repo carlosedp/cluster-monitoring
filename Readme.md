@@ -33,6 +33,8 @@ The additional modules are:
 
 There are also options to set the ingress domain suffix and enable persistence for Grafana and Prometheus.
 
+The ingresses can use TLS with the default self-signed certificate from your Ingress controller by setting `TLSingress` to `true` and use a custom certificate by creating the files `server.crt` and `server.key` and enabling the `UseProvidedCerts` parameter at `vars.jsonnet`.
+
 After changing these parameters, rebuild the manifests with `make`.
 
 ## Quickstart

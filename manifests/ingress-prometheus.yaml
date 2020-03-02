@@ -12,3 +12,6 @@ spec:
           serviceName: prometheus-k8s
           servicePort: web
         path: /
+  tls:
+  - hosts:
+    - prometheus.192.168.99.100.nip.io
