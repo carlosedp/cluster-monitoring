@@ -39,13 +39,16 @@ After changing these parameters, rebuild the manifests with `make`.
 
 The repository already provides a set of compiled manifests to be applied into the cluster. The deployment can be customized thru the jsonnet files.
 
-To simply deploy the stack, run:
+For the ingresses, edit `suffixDomain` to have your cluster URL suffix. This will be your ingresses will be exposed (ex. grafana.yourcluster.domain.com).
+
+To deploy the stack, run:
 
 ```bash
 $ make deploy
 
 # Or manually:
 
+$ make
 $ kubectl apply -f manifests/
 
 # It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
@@ -57,21 +60,23 @@ $ kubectl apply -f manifests/ # This command sometimes may need to be done twice
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
 
-## Quickstart (K3s)
+## Quickstart for K3s
 
-To deploy the monitoring stack on your K3s cluster, there are three parameters that need to be configured in the  `vars.jsonnet` file:
+To deploy the monitoring stack on your K3s cluster, there are four parameters that need to be configured in the  `vars.jsonnet` file:
 
 1. Set `k3s.enabled` to `true`.
 2. Change your K3s master node IP(your VM or host IP) on `k3s.master_ip`.
-3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix. This will be your ingress URL suffix.
+3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix or your cluster URL. This will be your ingress URL suffix.
 4. Set _traefikExporter_ `enabled` parameter to `true` to collect Traefik metrics and deploy dashboard.
 
-After changing these values, to simply deploy the stack, run:
+After changing these values to deploy the stack, run:
+
 ```bash
 $ make deploy
 
 # Or manually:
 
+$ make
 $ kubectl apply -f manifests/
 
 # It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
@@ -81,14 +86,13 @@ $ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""
 $ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition).
 ```
 
-
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
 
-## Ingress 
+## Ingress
 
 Now you can open the applications:
 
-To list the created ingresses, run `kubectl get ingress --all-namespaces`, you will notice they need to be updated to include `your_node_ip`.
+To list the created ingresses, run `kubectl get ingress --all-namespaces`, if you added your cluster IP or URL suffix in `vars.jsonnet` before rebuilding the manifests, the applications will be exposed on:
 
 * Grafana on [https://grafana.[your_node_ip].nip.io](https://grafana.[your_node_ip].nip.io), 
 * Prometheus on [https://prometheus.[your_node_ip].nip.io](https://prometheus.[your_node_ip].nip.io) 
