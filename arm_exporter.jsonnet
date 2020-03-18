@@ -20,14 +20,16 @@ local utils = import 'utils.libsonnet';
 
     clusterRole:
       utils.newClusterRole('arm-exporter', [
-        {apis: ['authentication.k8s.io'],
-         res: ['tokenreviews'],
-         verbs: ['create']
+        {
+          apis: ['authentication.k8s.io'],
+          res: ['tokenreviews'],
+          verbs: ['create'],
         },
-        {apis: ['authorization.k8s.io'],
-         res: ['subjectaccessreviews'],
-         verbs: ['create']
-        }
+        {
+          apis: ['authorization.k8s.io'],
+          res: ['subjectaccessreviews'],
+          verbs: ['create'],
+        },
       ], null),
 
     clusterRoleBinding:
@@ -86,9 +88,10 @@ local utils = import 'utils.libsonnet';
       service.mixin.spec.withClusterIp('None'),
 
     serviceMonitor:
-      utils.newServiceMonitorHTTPS('arm-exporter',
+      utils.newServiceMonitorHTTPS(
+        'arm-exporter',
         $._config.namespace,
-        {'k8s-app': 'arm-exporter'},
+        { 'k8s-app': 'arm-exporter' },
         $._config.namespace,
         'https',
         'https',

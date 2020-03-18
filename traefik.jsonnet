@@ -12,6 +12,6 @@ local utils = import 'utils.libsonnet';
 
   traefikExporter+:: {
     serviceMonitor:
-      utils.newServiceMonitor('traefik', $._config.namespace, {'app': 'traefik'}, 'kube-system', 'metrics', 'http'),
+      utils.newServiceMonitor('traefik', $._config.namespace, { app: 'traefik' }, 'kube-system', 'metrics', 'http'),
   },
 }

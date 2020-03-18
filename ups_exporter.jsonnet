@@ -17,7 +17,7 @@ local utils = import 'utils.libsonnet';
 
   upsExporter+:: {
     serviceMonitor:
-      utils.newServiceMonitor('ups-exporter', $._config.namespace, {'k8s-app': 'ups-exporter'}, $._config.namespace, 'metrics', 'http'),
+      utils.newServiceMonitor('ups-exporter', $._config.namespace, { 'k8s-app': 'ups-exporter' }, $._config.namespace, 'metrics', 'http'),
 
     service:
       local service = k.core.v1.service;

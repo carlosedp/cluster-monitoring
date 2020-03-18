@@ -82,19 +82,21 @@ local utils = import 'utils.libsonnet';
       utils.newServiceMonitor(
         'elasticsearch',
         $._config.namespace,
-        {'k8s-app': 'elasticsearch-exporter'},
+        { 'k8s-app': 'elasticsearch-exporter' },
         'monitoring',
         'es-metrics',
-        'http'),
+        'http'
+      ),
 
     serviceMonitorFluentd:
       utils.newServiceMonitor(
         'fluentd-es',
         $._config.namespace,
-        {'k8s-app': 'fluentd-es'},
+        { 'k8s-app': 'fluentd-es' },
         'logging',
         'metrics',
-        'http'),
+        'http'
+      ),
   },
   // Add Prometheus monitoring rules for ElasticSearch
   prometheusRules+:: {

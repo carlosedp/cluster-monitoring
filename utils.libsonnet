@@ -5,7 +5,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
   generate(kp):: (
     {
       [std.asciiLower(module) + '-' + name]: kp[module][name]
-      for module in std.objectFieldsAll(kp) if !std.startsWith(module, '_')
+      for module in std.objectFieldsAll(kp)
+      if !std.startsWith(module, '_')
       for name in std.objectFields(kp[module])
     }
   ),
@@ -21,11 +22,11 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   // Creates serviceaccount
   newServiceAccount(name, namespace, labels):: (
-      local serviceAccount = k.core.v1.serviceAccount;
+    local serviceAccount = k.core.v1.serviceAccount;
 
-      serviceAccount.new(name)
-      + (if labels != null then serviceAccount.mixin.metadata.withLabels(labels) else {})
-      + serviceAccount.mixin.metadata.withNamespace(namespace)
+    serviceAccount.new(name)
+    + (if labels != null then serviceAccount.mixin.metadata.withLabels(labels) else {})
+    + serviceAccount.mixin.metadata.withNamespace(namespace)
   ),
 
   // Creates ClusterRoles
@@ -33,38 +34,38 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
   //                        res: ['tokenreviews'],
   //                        verbs: ['create']
   //                       },[{...}]]
-    newClusterRole(name, roles, labels):: (
-      local clusterRole = k.rbac.v1.clusterRole;
-      local policyRule = clusterRole.rulesType;
+  newClusterRole(name, roles, labels):: (
+    local clusterRole = k.rbac.v1.clusterRole;
+    local policyRule = clusterRole.rulesType;
 
-      local p(apigroups, resources, verbs) = policyRule.new()
-        + policyRule.withApiGroups([a for a in apigroups])
-        + policyRule.withResources([r for r in resources])
-        + policyRule.withVerbs([v for v in verbs]);
+    local p(apigroups, resources, verbs) = policyRule.new()
+                                           + policyRule.withApiGroups([a for a in apigroups])
+                                           + policyRule.withResources([r for r in resources])
+                                           + policyRule.withVerbs([v for v in verbs]);
 
-      local r = [ p(pol.apis, pol.res, pol.verbs) for pol in roles ];
+    local r = [p(pol.apis, pol.res, pol.verbs) for pol in roles];
 
-      local rules = r;
+    local rules = r;
 
-      local c = clusterRole.new()
-        + (if labels != null then clusterRole.mixin.metadata.withLabels(labels) else {})
-        + clusterRole.mixin.metadata.withName(name)
-        + clusterRole.withRules(rules);
-      c
-    ),
+    local c = clusterRole.new()
+              + (if labels != null then clusterRole.mixin.metadata.withLabels(labels) else {})
+              + clusterRole.mixin.metadata.withName(name)
+              + clusterRole.withRules(rules);
+    c
+  ),
 
-    // Creates a ClusterRoleBinding between a `clusterRole` and a `serviceAccount` on `serviceAccountNamespace`
-    newClusterRoleBinding(name, serviceAccount, serviceAccountNamespace, clusterRole, labels):: (
-      local clusterRoleBinding = k.rbac.v1.clusterRoleBinding;
+  // Creates a ClusterRoleBinding between a `clusterRole` and a `serviceAccount` on `serviceAccountNamespace`
+  newClusterRoleBinding(name, serviceAccount, serviceAccountNamespace, clusterRole, labels):: (
+    local clusterRoleBinding = k.rbac.v1.clusterRoleBinding;
 
-      clusterRoleBinding.new()
-      + clusterRoleBinding.mixin.metadata.withName(name)
-      + (if labels != null then clusterRoleBinding.mixin.metadata.withLabels(labels) else {})
-      + clusterRoleBinding.mixin.roleRef.withApiGroup('rbac.authorization.k8s.io')
-      + clusterRoleBinding.mixin.roleRef.withName(clusterRole)
-      + clusterRoleBinding.mixin.roleRef.mixinInstance({ kind: 'ClusterRole' })
-      + clusterRoleBinding.withSubjects([{ kind: 'ServiceAccount', 'name': serviceAccount, 'namespace': serviceAccountNamespace }])
-    ),
+    clusterRoleBinding.new()
+    + clusterRoleBinding.mixin.metadata.withName(name)
+    + (if labels != null then clusterRoleBinding.mixin.metadata.withLabels(labels) else {})
+    + clusterRoleBinding.mixin.roleRef.withApiGroup('rbac.authorization.k8s.io')
+    + clusterRoleBinding.mixin.roleRef.withName(clusterRole)
+    + clusterRoleBinding.mixin.roleRef.mixinInstance({ kind: 'ClusterRole' })
+    + clusterRoleBinding.withSubjects([{ kind: 'ServiceAccount', name: serviceAccount, namespace: serviceAccountNamespace }])
+  ),
 
   // Creates endpoint objects
   newEndpoint(name, namespace, ips, portName, portNumber):: (
@@ -72,22 +73,22 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     local endpointSubset = endpoints.subsetsType;
     local endpointPort = endpointSubset.portsType;
     local Port = endpointPort.new()
-            + endpointPort.withName(portName)
-            + endpointPort.withPort(portNumber)
-            + endpointPort.withProtocol('TCP');
+                 + endpointPort.withName(portName)
+                 + endpointPort.withPort(portNumber)
+                 + endpointPort.withProtocol('TCP');
 
     local subset = endpointSubset.new()
-                    + endpointSubset.withAddresses([
-                       { ip: IP }
-                       for IP in ips
-                     ])
-                    + endpointSubset.withPorts(Port);
+                   + endpointSubset.withAddresses([
+                     { ip: IP }
+                     for IP in ips
+                   ])
+                   + endpointSubset.withPorts(Port);
     endpoints.new()
-      + endpoints.mixin.metadata.withName(name)
-      + endpoints.mixin.metadata.withNamespace(namespace)
-      + endpoints.mixin.metadata.withLabels({ 'k8s-app': name })
-      + endpoints.withSubsets(subset)
-    ),
+    + endpoints.mixin.metadata.withName(name)
+    + endpoints.mixin.metadata.withNamespace(namespace)
+    + endpoints.mixin.metadata.withLabels({ 'k8s-app': name })
+    + endpoints.withSubsets(subset)
+  ),
 
   // Creates ingress objects
   newIngress(name, namespace, host, path, serviceName, servicePort):: (
@@ -120,8 +121,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
     I + ingress.mixin.spec.withTls(
       ingressTls.new() +
-        ingressTls.withHosts(host) +
-        (if S != '' then {'secretName': S} else {})
+      ingressTls.withHosts(host) +
+      (if S != '' then { secretName: S } else {})
     )
   ),
 
@@ -130,13 +131,14 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     local secret = k.core.v1.secret;
 
     secret.new('ingress-secret') +
-      secret.mixin.metadata.withNamespace(namespace) +
-      secret.withType('kubernetes.io/tls') +
-      secret.withData(
-        {
+    secret.mixin.metadata.withNamespace(namespace) +
+    secret.withType('kubernetes.io/tls') +
+    secret.withData(
+      {
         'tls.crt': std.base64(crt),
         'tls.key': std.base64(key),
-        })
+      }
+    )
   ),
 
   // Creates new basic deployments
@@ -152,12 +154,12 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
     local c = [con];
 
-    local d = deployment.new(name, 1, c, {'app': name})
-      + deployment.mixin.metadata.withNamespace(namespace)
-      + deployment.mixin.metadata.withLabels({'app': name})
-      + deployment.mixin.spec.selector.withMatchLabels({'app': name})
-      + deployment.mixin.spec.strategy.withType('RollingUpdate')
-      + deployment.mixin.spec.template.spec.withRestartPolicy('Always');
+    local d = deployment.new(name, 1, c, { app: name })
+              + deployment.mixin.metadata.withNamespace(namespace)
+              + deployment.mixin.metadata.withLabels({ app: name })
+              + deployment.mixin.spec.selector.withMatchLabels({ app: name })
+              + deployment.mixin.spec.strategy.withType('RollingUpdate')
+              + deployment.mixin.spec.template.spec.withRestartPolicy('Always');
     d
   ),
 
@@ -166,40 +168,40 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     local servicePort = k.core.v1.service.mixin.spec.portsType;
     local p = servicePort.newNamed(name, port, port);
 
-    local s = service.new(name, {'app': name}, p)
-      + service.mixin.metadata.withNamespace(namespace)
-      + service.mixin.metadata.withLabels({'app': name});
+    local s = service.new(name, { app: name }, p)
+              + service.mixin.metadata.withNamespace(namespace)
+              + service.mixin.metadata.withLabels({ app: name });
     s
   ),
 
   // Creates http ServiceMonitor objects
   newServiceMonitor(name, namespace, matchLabel, matchNamespace, portName, portScheme, path='metrics'):: (
     {
-        apiVersion: 'monitoring.coreos.com/v1',
-        kind: 'ServiceMonitor',
-        metadata: {
-          name: name,
-          namespace: namespace,
-          labels: {
-            'app': name,
-          },
+      apiVersion: 'monitoring.coreos.com/v1',
+      kind: 'ServiceMonitor',
+      metadata: {
+        name: name,
+        namespace: namespace,
+        labels: {
+          app: name,
         },
-        spec: {
-          jobLabel: name+'-exporter',
-          selector: {
-            matchLabels: matchLabel,
-          },
-          endpoints: [
-            {
-              port: portName,
-              scheme: portScheme,
-              interval: '30s',
-            },
-          ],
-          namespaceSelector: {
-            matchNames: [matchNamespace],
-          },
+      },
+      spec: {
+        jobLabel: name + '-exporter',
+        selector: {
+          matchLabels: matchLabel,
         },
+        endpoints: [
+          {
+            port: portName,
+            scheme: portScheme,
+            interval: '30s',
+          },
+        ],
+        namespaceSelector: {
+          matchNames: [matchNamespace],
+        },
+      },
     }
   ),
 
@@ -210,58 +212,58 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     local t = {
       spec: {
         endpoints: [{
-              port: portName,
-              scheme: portScheme,
-              interval: '30s',
-              bearerTokenFile: token,
-              tlsConfig: {
-                insecureSkipVerify: true,
-              }
-            }],
-      }
+          port: portName,
+          scheme: portScheme,
+          interval: '30s',
+          bearerTokenFile: token,
+          tlsConfig: {
+            insecureSkipVerify: true,
+          },
+        }],
+      },
     };
     std.mergePatch(s, t)
     // s + t
   ),
 
 
-  # Adds arguments to a container in a deployment
-  # args is an array of arguments in the format
-  # ["arg1","arg2",]
-    addArguments(deployment, container, args):: (
-      {spec+: {
-        template+: {
-          spec+: {
-            containers:
-              std.map(
-                function(c)
-                  if c.name == container then
-                    c { args+: args }
-                  else c,
-                super.containers
-              ),
-          },
+  // Adds arguments to a container in a deployment
+  // args is an array of arguments in the format
+  // ["arg1","arg2",]
+  addArguments(deployment, container, args):: (
+    { spec+: {
+      template+: {
+        spec+: {
+          containers:
+            std.map(
+              function(c)
+                if c.name == container then
+                  c { args+: args }
+                else c,
+              super.containers
+            ),
         },
-      }}
-    ),
+      },
+    } }
+  ),
 
-  # Adds environment variables to a container in a deployment
-  # envs is an array of environment variables in the format
-  # [{name: 'VARNAME', value: 'var_value'},{...},]
-    addEnviromnentVars(deployment, container, envs):: (
-    {spec+: {
-        template+: {
-          spec+: {
-            containers:
-              std.map(
-                function(c)
-                  if c.name == container then
-                    c { env+: envs }
-                  else c,
-                super.containers
-              ),
-          },
+  // Adds environment variables to a container in a deployment
+  // envs is an array of environment variables in the format
+  // [{name: 'VARNAME', value: 'var_value'},{...},]
+  addEnviromnentVars(deployment, container, envs):: (
+    { spec+: {
+      template+: {
+        spec+: {
+          containers:
+            std.map(
+              function(c)
+                if c.name == container then
+                  c { env+: envs }
+                else c,
+              super.containers
+            ),
         },
-      }}
-    ),
+      },
+    } }
+  ),
 }

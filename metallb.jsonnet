@@ -13,7 +13,7 @@ local utils = import 'utils.libsonnet';
 
   metallbExporter+:: {
     serviceMonitor:
-      utils.newServiceMonitor('metallb', $._config.namespace, {'k8s-app': 'metallb-controller'}, 'metallb-system', 'http', 'http'),
+      utils.newServiceMonitor('metallb', $._config.namespace, { 'k8s-app': 'metallb-controller' }, 'metallb-system', 'http', 'http'),
 
     service:
       local service = k.core.v1.service;
