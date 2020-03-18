@@ -1,6 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
-local vars = import 'vars.jsonnet';
 local utils = import 'utils.libsonnet';
+local vars = import 'vars.jsonnet';
 
 {
   _config+:: {
@@ -65,7 +65,7 @@ local utils = import 'utils.libsonnet';
   //---------------------------------------
 
   prometheus+:: {
-    # Add option (from vars.yaml) to enable persistence
+    // Add option (from vars.yaml) to enable persistence
     local pvc = k.core.v1.persistentVolumeClaim,
     prometheus+: {
       spec+: {
@@ -177,7 +177,7 @@ local utils = import 'utils.libsonnet';
     //     secret.new('basic-auth', { auth: std.base64(importstr 'auth') }) +
     //     secret.mixin.metadata.withNamespace($._config.namespace),
   } + if vars.UseProvidedCerts then {
-      secret:
-        utils.newTLSSecret('ingress-TLS-secret', $._config.namespace, vars.TLSCertificate, vars.TLSKey)
-    } else {},
+    secret:
+      utils.newTLSSecret('ingress-TLS-secret', $._config.namespace, vars.TLSCertificate, vars.TLSKey),
+  } else {},
 }

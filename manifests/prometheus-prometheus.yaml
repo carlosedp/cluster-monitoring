@@ -25,10 +25,11 @@ spec:
     - name: alertmanager-main
       namespace: monitoring
       port: web
-  baseImage: prom/prometheus
-  externalUrl: http://prometheus.192.168.99.100.nip.io
+  externalUrl: http://prometheus.192.168.15.15.nip.io
+  image: prom/prometheus:v2.16.0
   nodeSelector:
     kubernetes.io/os: linux
+  podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   replicas: 1
   resources:
@@ -46,4 +47,4 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: v2.11.1
+  version: v2.16.0
