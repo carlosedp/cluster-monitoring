@@ -19,7 +19,7 @@ Components included in this package:
 * kube-state-metrics
 * CoreDNS
 * Grafana
-* SMTP relay to Gmail for Grafana notifications
+* SMTP relay to Gmail for Grafana notifications (optional)
 
 There are additional modules (disabled by default) to monitor other components of the infra-structure. These can be disabled on `vars.jsonnet` file by setting the module in `installModules` to `false`.
 
@@ -46,6 +46,7 @@ For the ingresses, edit `suffixDomain` to have your cluster URL suffix. This wil
 To deploy the stack, run:
 
 ```bash
+$ make vendor
 $ make deploy
 
 # Or manually:
@@ -57,7 +58,7 @@ $ kubectl apply -f manifests/
 $ until kubectl get customresourcedefinitions servicemonitors.monitoring.coreos.com ; do date; sleep 1; echo ""; done
 $ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
 
-$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition).
+$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition)
 ```
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
@@ -89,6 +90,8 @@ $ kubectl apply -f manifests/ # This command sometimes may need to be done twice
 ```
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
+
+If you enable the SMTP relay for Gmail in `vars.jsonnet`, the pod will be in an error state after deployed since it would not find the user and password on the "smtp-account" secret. To generate, run the `scripts/create_gmail_auth.sh` script.
 
 ## Ingress
 
