@@ -10,27 +10,4 @@ local vars = import 'vars.jsonnet';
     kubeSchedulerPrometheusDiscoveryEndpoints:
       utils.newEndpoint('kube-scheduler-prometheus-discovery', 'kube-system', vars.k3s.master_ip, 'http-metrics', 10251),
   },
-
-  // Temporary workaround until merge of https://github.com/coreos/kube-prometheus/pull/456
-  kubeStateMetrics+:: {
-    deployment+: {
-      spec+: {
-        template+: {
-          spec+: {
-            containers:
-              std.map(
-                function(c)
-                  if std.startsWith(c.name, 'kube-state-metrics') then
-                    c {
-                      image: $._config.imageRepos.kubeStateMetrics + ':' + $._config.versions.kubeStateMetrics,
-                    }
-                  else
-                    c,
-                super.containers,
-              ),
-          },
-        },
-      },
-    },
-  },
 }

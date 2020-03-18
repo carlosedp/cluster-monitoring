@@ -3,7 +3,7 @@
     versions+:: {
       prometheus: 'v2.16.0',
       alertmanager: 'v0.20.0',
-      kubeStateMetrics: 'v1.7.2',
+      kubeStateMetrics: '1.7.2',
       kubeRbacProxy: 'v0.4.1',
       addonResizer: 'v1.8.4',
       nodeExporter: 'v0.18.1',

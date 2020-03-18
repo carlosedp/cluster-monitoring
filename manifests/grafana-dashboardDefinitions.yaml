@@ -15130,7 +15130,7 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])\n* on (namespace,pod) \ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
+                                  "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\"$workload\", workload_type=\"$type\"}) by (pod))\n",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "{{pod}}",
@@ -15306,7 +15306,7 @@ items:
                           "value": ""
                       },
                       "datasource": "$datasource",
-                      "hide": 2,
+                      "hide": 0,
                       "includeAll": false,
                       "label": null,
                       "multi": false,
