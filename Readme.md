@@ -63,22 +63,51 @@ $ kubectl apply -f manifests/ # This command sometimes may need to be done twice
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
 
+If you enable the SMTP relay for Gmail in `vars.jsonnet`, the pod will be in an error state after deployed since it would not find the user and password on the "smtp-account" secret. To generate, run the `scripts/create_gmail_auth.sh` script.
+
+## Quickstart on Minikube
+
+You can also test and develop the monitoring stack on Minikube. First install minikube by following the instructions [here](https://kubernetes.io/docs/tasks/tools/install-minikube/) for your platform.
+
+Then, adjust and deploy the stack:
+
+```bash
+# Start minikube (if not started)
+minikube start
+
+# Enable minikube ingress to allow access to the web interfaces
+minikube addons enable ingress
+
+# Get the minikube instance IP
+minikube ip
+
+# Adjust the "suffixDomain" line in `vars.jsonnet` to the IP of the minikube instance keeping the "nip.io"
+# Build and deploy the monitoring stack
+make vendor
+make deploy
+
+# Get the URLs for the exposed applications and open in your browser
+kubectl get ingress -n monitoring
+```
+
 ## Quickstart for K3s
 
 To deploy the monitoring stack on your K3s cluster, there are four parameters that need to be configured in the  `vars.jsonnet` file:
 
 1. Set `k3s.enabled` to `true`.
-2. Change your K3s master node IP(your VM or host IP) on `k3s.master_ip`.
+2. Change your K3s master node IP(your VM or host IP) on `k3s.master_ip` parameter.
 3. Edit `suffixDomain` to have your node IP with the `.nip.io` suffix or your cluster URL. This will be your ingress URL suffix.
 4. Set _traefikExporter_ `enabled` parameter to `true` to collect Traefik metrics and deploy dashboard.
 
 After changing these values to deploy the stack, run:
 
 ```bash
+$ make vendor
 $ make deploy
 
 # Or manually:
 
+$ make vendor
 $ make
 $ kubectl apply -f manifests/
 
@@ -86,7 +115,7 @@ $ kubectl apply -f manifests/
 $ until kubectl get customresourcedefinitions servicemonitors.monitoring.coreos.com ; do date; sleep 1; echo ""; done
 $ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
 
-$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition).
+$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition)
 ```
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
