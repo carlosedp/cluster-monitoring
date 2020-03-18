@@ -54,7 +54,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        image: carlosedp/kube-rbac-proxy:v0.4.1
+        image: carlosedp/kube-rbac-proxy:v0.5.0
         name: kube-rbac-proxy
         ports:
         - containerPort: 9100
