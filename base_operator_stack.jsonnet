@@ -92,6 +92,11 @@ local vars = import 'vars.jsonnet';
       spec+: {
         template+: {
           spec+: {
+            securityContext: {
+              runAsUser: 472,
+              fsGroup: 472,
+              runAsNonRoot: true,
+            },
             volumes:
               std.map(
                 function(v)

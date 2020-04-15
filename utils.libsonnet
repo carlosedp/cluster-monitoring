@@ -223,7 +223,6 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       },
     };
     std.mergePatch(s, t)
-    // s + t
   ),
 
 
