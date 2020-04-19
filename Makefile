@@ -64,4 +64,4 @@ change_suffix:       ## Changes suffix for the ingress
 	@echo "Ingress IPs changed to [service].${IP}.nip.io"
 	${K3S} kubectl apply -f manifests/ingress-alertmanager.yaml
 	${K3S} kubectl apply -f manifests/ingress-grafana.yaml
-	${K3S} kubectl apply -f manifests/ingress-prometheus-k8s.yaml
+	${K3S} kubectl apply -f manifests/ingress-prometheus.yaml
