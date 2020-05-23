@@ -1,4 +1,4 @@
-GOPATH ?= `$(pwd)`
+GOPATH = $(shell go env GOPATH)
 
 JSONNET_BIN := $(GOPATH)/bin/jsonnet
 JB_BINARY := $(GOPATH)/bin/jb
