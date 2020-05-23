@@ -2,19 +2,17 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app.kubernetes.io/name: node-exporter
-    app.kubernetes.io/version: v0.18.1
+    app: node-exporter
   name: node-exporter
   namespace: monitoring
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: node-exporter
+      app: node-exporter
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: node-exporter
-        app.kubernetes.io/version: v0.18.1
+        app: node-exporter
     spec:
       containers:
       - args:
@@ -24,7 +22,8 @@ spec:
         - --path.rootfs=/host/root
         - --no-collector.wifi
         - --no-collector.hwmon
-        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)
+        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)
+        - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$
         image: prom/node-exporter:v0.18.1
         name: node-exporter
         resources:
