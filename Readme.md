@@ -8,6 +8,8 @@ This repository collects Kubernetes manifests, Grafana dashboards, and Prometheu
 
 The content of this project is written in jsonnet and is an extension of the fantastic [kube-prometheus](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus) project.
 
+If you like this project and others I've been contributing and would like to support me, please check-out my [Patreon page](https://www.patreon.com/carlosedp)!
+
 To continue using my previous stack with manifests and previous versions of the operator and components, use the legacy repo tag from: https://github.com/carlosedp/prometheus-operator-ARM/tree/legacy.
 
 Components included in this package:
