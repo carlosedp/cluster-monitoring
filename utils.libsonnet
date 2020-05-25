@@ -196,6 +196,15 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
             port: portName,
             scheme: portScheme,
             interval: '30s',
+            relabelings: [
+              {
+                action: 'replace',
+                regex: '(.*)',
+                replacement: '$1',
+                sourceLabels: ['__meta_kubernetes_pod_node_name'],
+                targetLabel: 'instance',
+              },
+            ],
           },
         ],
         namespaceSelector: {
@@ -219,12 +228,20 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
           tlsConfig: {
             insecureSkipVerify: true,
           },
+          relabelings: [
+            {
+              action: 'replace',
+              regex: '(.*)',
+              replacement: '$1',
+              sourceLabels: ['__meta_kubernetes_pod_node_name'],
+              targetLabel: 'instance',
+            },
+          ],
         }],
       },
     };
     std.mergePatch(s, t)
   ),
-
 
   // Adds arguments to a container in a deployment
   // args is an array of arguments in the format
