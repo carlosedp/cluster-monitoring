@@ -30,13 +30,15 @@ fmt:       ## Formats all jsonnet and libsonnet files (except on vendor dir)
 	@find . -name 'vendor' -prune -o -name '*.libsonnet' -o -name '*.jsonnet' -print | xargs -n 1 -- $(JSONNET_FMT) -i
 
 deploy: manifests       ## Rebuilds manifests and deploy to configured cluster
-	kubectl apply -f ./manifests/
-	echo "Will wait 40 seconds to reapply manifests"
-	sleep 40
+	echo "Deploying stack setup manifests..."
+	kubectl apply -f ./manifests/setup/
+	echo "Will wait 10 seconds to deploy the additional manifests.."
+	sleep 10
 	kubectl apply -f ./manifests/
 
 teardown:       ## Delete all monitoring stack resources from configured cluster
 	kubectl delete -f ./manifests/
+	kubectl delete -f ./manifests/setup/
 
 tar: manifests       ## Generates a .tar.gz from manifests dir
 	rm -rf manifests.tar.gz

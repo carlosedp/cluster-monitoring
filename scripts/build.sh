@@ -17,7 +17,7 @@ set -o pipefail
 
 # Make sure to start with a clean 'manifests' dir
 rm -rf manifests
-mkdir manifests
+mkdir -p manifests/setup
 
 # optional, but we would like to generate yaml, not json
 $JSONNET_BIN -J vendor -m manifests "${1-example.jsonnet}" | xargs -I{} sh -c 'cat {} | $(go env GOPATH)/bin/gojsontoyaml > {}.yaml; rm -f {}' -- {}

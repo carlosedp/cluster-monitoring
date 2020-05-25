@@ -8,18 +8,17 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            // Additional modules are loaded dynamically from vars.jsonnet
            + utils.join_objects([module.file for module in vars.modules if module.enabled])
            // Load K3s customized modules
-           + utils.join_objects([m for m in [import 'k3s-overrides.jsonnet'] if vars.k3s.enabled])
+           + utils.join_objects([m for m in [import 'modules/k3s-overrides.jsonnet'] if vars.k3s.enabled])
            // Base stack is loaded at the end to override previous definitions
            + (import 'base_operator_stack.jsonnet')
            // Load image versions last to override default from modules
            + (import 'image_sources_versions.jsonnet');
 
-
 // Generate core modules
-{ ['00namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) }
+{ ['setup/0namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) }
 // First generate operator resources except the serviceMonitors
 {
-  ['0prometheus-operator-' + name]: kp.prometheusOperator[name]
+  ['setup/prometheus-operator-' + name]: kp.prometheusOperator[name]
   for name in std.filter((function(name) name != 'serviceMonitor'), std.objectFields(kp.prometheusOperator))
 }
 // serviceMonitor is separated so that it can be created after the CRDs are ready

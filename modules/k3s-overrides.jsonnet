@@ -1,6 +1,6 @@
+local utils = import '../utils.libsonnet';
+local vars = import '../vars.jsonnet';
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
-local utils = import 'utils.libsonnet';
-local vars = import 'vars.jsonnet';
 
 {
   prometheus+:: {

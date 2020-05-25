@@ -8,32 +8,32 @@
       // After deployment, run the create_gmail_auth.sh script from scripts dir.
       name: 'smtpRelay',
       enabled: false,
-      file: import 'smtp_relay.jsonnet',
+      file: import 'modules/smtp_relay.jsonnet',
     },
     {
       name: 'armExporter',
       enabled: false,
-      file: import 'arm_exporter.jsonnet',
+      file: import 'modules/arm_exporter.jsonnet',
     },
     {
       name: 'upsExporter',
       enabled: false,
-      file: import 'ups_exporter.jsonnet',
+      file: import 'modules/ups_exporter.jsonnet',
     },
     {
       name: 'metallbExporter',
       enabled: false,
-      file: import 'metallb.jsonnet',
+      file: import 'modules/metallb.jsonnet',
     },
     {
       name: 'traefikExporter',
       enabled: false,
-      file: import 'traefik.jsonnet',
+      file: import 'modules/traefik.jsonnet',
     },
     {
       name: 'elasticExporter',
       enabled: false,
-      file: import 'elasticsearch_exporter.jsonnet',
+      file: import 'modules/elasticsearch_exporter.jsonnet',
     },
   ],
 
