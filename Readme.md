@@ -4,13 +4,11 @@ The Prometheus Operator for Kubernetes provides easy monitoring definitions for 
 
 This have been tested on a hybrid ARM64 / X84-64 Kubernetes cluster deployed as [this article](https://medium.com/@carlosedp/building-a-hybrid-x86-64-and-arm-kubernetes-cluster-e7f94ff6e51d).
 
-This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator. 
+This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.
 
 The content of this project is written in jsonnet and is an extension of the fantastic [kube-prometheus](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus) project.
 
 If you like this project and others I've been contributing and would like to support me, please check-out my [Patreon page](https://www.patreon.com/carlosedp)!
-
-To continue using my previous stack with manifests and previous versions of the operator and components, use the legacy repo tag from: https://github.com/carlosedp/prometheus-operator-ARM/tree/legacy.
 
 Components included in this package:
 
@@ -23,15 +21,16 @@ Components included in this package:
 * Grafana
 * SMTP relay to Gmail for Grafana notifications (optional)
 
-There are additional modules (disabled by default) to monitor other components of the infra-structure. These can be disabled on `vars.jsonnet` file by setting the module in `installModules` to `false`.
+There are additional modules (disabled by default) to monitor other components of the infra-structure. These can be enabled or disabled on `vars.jsonnet` file by setting the module `enabled` flag in `modules` to `true` or `false`.
 
 The additional modules are:
 
-* ARM_exporter to generate temperature metrics
+* arm-exporter to generate temperature metrics (works on some ARM boards like RaspberryPi)
 * MetalLB metrics
 * Traefik metrics
 * ElasticSearch metrics
 * APC UPS metrics
+* GMail SMTP relay module
 
 There are also options to set the ingress domain suffix and enable persistence for Grafana and Prometheus.
 
@@ -54,13 +53,8 @@ $ make deploy
 # Or manually:
 
 $ make
+$ kubectl apply -f manifests/setup/
 $ kubectl apply -f manifests/
-
-# It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
-$ until kubectl get customresourcedefinitions servicemonitors.monitoring.coreos.com ; do date; sleep 1; echo ""; done
-$ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
-
-$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition)
 ```
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
@@ -111,13 +105,8 @@ $ make deploy
 
 $ make vendor
 $ make
+$ kubectl apply -f manifests/setup/
 $ kubectl apply -f manifests/
-
-# It can take a few seconds for the above 'create manifests' command to fully create the following resources, so verify the resources are ready before proceeding.
-$ until kubectl get customresourcedefinitions servicemonitors.monitoring.coreos.com ; do date; sleep 1; echo ""; done
-$ until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
-
-$ kubectl apply -f manifests/ # This command sometimes may need to be done twice (to workaround a race condition)
 ```
 
 If you get an error from applying the manifests, run the `make deploy` or `kubectl apply -f manifests/` again. Sometimes the resources required to apply the CRDs are not deployed yet.
@@ -148,7 +137,7 @@ The project requires json-bundler and the jsonnet compiler. The Makefile does th
 
 ```bash
 git clone https://github.com/carlosedp/cluster-monitoring
-cd prometheus-operator-ARM
+cd cluster-monitoring
 make vendor
 # Change the jsonnet files...
 make
