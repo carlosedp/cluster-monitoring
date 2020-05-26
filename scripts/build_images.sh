@@ -8,11 +8,10 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 REPO=carlosedp
 
 export AOR_VERSION=2.3
-export PROM_ADAPTER_VERSION=v0.6.0
-export KSM_VERSION=v1.9.5
-export PROM_OP_VERSION=v0.37.0
+export KSM_VERSION=v1.9.6
+export PROM_OP_VERSION=v0.39.0
 export KUBE_RBAC_VERSION=v0.5.0
-export PROM_CONFIG_RELOADER_VERSION=v0.37.0
+export PROM_CONFIG_RELOADER_VERSION=v0.39.0
 export CONFIGMAP_RELOAD_VERSION=latest
 #-------------------------------------------------------------------------------
 # Kubernetes addon-resizer
@@ -37,32 +36,6 @@ docker manifest push --purge $REPO/$IMAGE:$AOR_VERSION
 for arch in $ALL_ARCH; do
     docker rmi gcr.io/google-containers/$IMAGE-$arch:$AOR_VERSION
     docker rmi $REPO/$IMAGE:$AOR_VERSION-$arch
-done
-
-#-------------------------------------------------------------------------------
-# Prometheus-adapter
-# Retag prometheus-adapter from directxman12 images to have unified manifest on DockerHub
-
-ALL_ARCH=(amd64 arm arm64 ppc64le)
-IMAGE=k8s-prometheus-adapter
-
-for arch in $ALL_ARCH; do
-    if [[ $arch == "arm" ]]; then archdocker="arm32v7";
-    elif [[ $arch == "arm64" ]]; then archdocker="arm64v8";
-    else archdocker="$arch"; fi
-    docker pull directxman12/$IMAGE-$arch:$PROM_ADAPTER_VERSION
-    docker tag directxman12/$IMAGE-$arch:$PROM_ADAPTER_VERSION $REPO/$IMAGE:$PROM_ADAPTER_VERSION-$arch
-    docker push $REPO/$IMAGE:$PROM_ADAPTER_VERSION-$arch
-done
-
-
-docker manifest create --amend $REPO/$IMAGE:$PROM_ADAPTER_VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$REPO/$IMAGE:$PROM_ADAPTER_VERSION\-&~g"`
-for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $REPO/$IMAGE:$PROM_ADAPTER_VERSION $REPO/$IMAGE:$PROM_ADAPTER_VERSION-$arch; done
-docker manifest push --purge $REPO/$IMAGE:$PROM_ADAPTER_VERSION
-
-for arch in $ALL_ARCH; do
-    docker rmi directxman12/$IMAGE-$arch:$PROM_ADAPTER_VERSION
-    docker rmi $REPO/$IMAGE:$PROM_ADAPTER_VERSION-$arch
 done
 
 #-------------------------------------------------------------------------------
@@ -113,15 +86,15 @@ for arch in $ALL_ARCH; do
 
     cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e "s/^FROM.*/FROM $archdocker\/busybox/" > Dockerfile.custom
     CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -ldflags="-s -X github.com/coreos/prometheus-operator/pkg/version.Version=$(cat VERSION | tr -d " \t\n\r")" -o operator cmd/operator/main.go
-    rm -rf operator
     docker build -t $REPO/prometheus-operator:${PROM_OP_VERSION}-$arch -f Dockerfile.custom .
-    docker push $REPO/prometheus-operator:$PROM_OP_VERSION-arm
+    docker push $REPO/prometheus-operator:$PROM_OP_VERSION-$arch
 done
 
 
 docker manifest create --amend $IMAGE:$PROM_OP_VERSION `echo $ALL_ARCH | sed -e "s~[^ ]*~$IMAGE:$PROM_OP_VERSION\-&~g"`
 for arch in $ALL_ARCH; do docker manifest annotate --arch $arch $IMAGE:$PROM_OP_VERSION $IMAGE:$PROM_OP_VERSION-$arch; done
 docker manifest push --purge $IMAGE:$PROM_OP_VERSION
+
 
 for arch in $ALL_ARCH; do
     docker rmi $REPO/prometheus-operator:$PROM_OP_VERSION-$arch
@@ -173,7 +146,7 @@ ALL_ARCH=(amd64 arm arm64 ppc64le)
 
 pushd $GOPATH/src/github.com/coreos/prometheus-operator
 cd $GOPATH/src/github.com/coreos/prometheus-operator/cmd/prometheus-config-reloader
-git checkout ${VERSION}
+git checkout ${PROM_CONFIG_RELOADER_VERSION}
 
 for arch in $ALL_ARCH; do
     if [[ $arch == "arm" ]]; then archdocker="arm32v7";

@@ -39,7 +39,9 @@ items:
                               "#d44a3a"
                           ],
                           "datasource": "$datasource",
-                          "format": "none",
+                          "decimals": 3,
+                          "description": "How many percent of requests (both read and write) in 30 days have been answered successfully and fast enough?",
+                          "format": "percentunit",
                           "gauge": {
                               "maxValue": 100,
                               "minValue": 0,
@@ -80,7 +82,7 @@ items:
                                   "to": "null"
                               }
                           ],
-                          "span": 2,
+                          "span": 4,
                           "sparkline": {
                               "fillColor": "rgba(31, 118, 189, 0.18)",
                               "full": false,
@@ -90,7 +92,7 @@ items:
                           "tableColumn": "",
                           "targets": [
                               {
-                                  "expr": "sum(up{job=\"apiserver\", cluster=\"$cluster\"})",
+                                  "expr": "apiserver_request:availability30d{verb=\"all\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "",
@@ -98,7 +100,7 @@ items:
                               }
                           ],
                           "thresholds": "",
-                          "title": "Up",
+                          "title": "Availability (30d) > 99.000%",
                           "tooltip": {
                               "shared": false
                           },
@@ -111,7 +113,7 @@ items:
                                   "value": "null"
                               }
                           ],
-                          "valueName": "min"
+                          "valueName": "avg"
                       },
                       {
                           "aliasColors": {
@@ -121,7 +123,9 @@ items:
                           "dashLength": 10,
                           "dashes": false,
                           "datasource": "$datasource",
-                          "fill": 1,
+                          "decimals": 3,
+                          "description": "How much error budget is left looking at our 0.990% availability gurantees?",
+                          "fill": 10,
                           "gridPos": {
 
                           },
@@ -134,6 +138,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -152,37 +157,16 @@ items:
 
                           ],
                           "spaceLength": 10,
-                          "span": 5,
+                          "span": 8,
                           "stack": false,
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"2..\", cluster=\"$cluster\"}[5m]))",
+                                  "expr": "100 * (apiserver_request:availability30d{verb=\"all\"} - 0.990000)",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "2xx",
+                                  "legendFormat": "errorbudget",
                                   "refId": "A"
-                              },
-                              {
-                                  "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"3..\", cluster=\"$cluster\"}[5m]))",
-                                  "format": "time_series",
-                                  "intervalFactor": 2,
-                                  "legendFormat": "3xx",
-                                  "refId": "B"
-                              },
-                              {
-                                  "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"4..\", cluster=\"$cluster\"}[5m]))",
-                                  "format": "time_series",
-                                  "intervalFactor": 2,
-                                  "legendFormat": "4xx",
-                                  "refId": "C"
-                              },
-                              {
-                                  "expr": "sum(rate(apiserver_request_total{job=\"apiserver\", instance=~\"$instance\",code=~\"5..\", cluster=\"$cluster\"}[5m]))",
-                                  "format": "time_series",
-                                  "intervalFactor": 2,
-                                  "legendFormat": "5xx",
-                                  "refId": "D"
                               }
                           ],
                           "thresholds": [
@@ -190,7 +174,7 @@ items:
                           ],
                           "timeFrom": null,
                           "timeShift": null,
-                          "title": "RPC Rate",
+                          "title": "ErrorBudget (30d) > 99.000%",
                           "tooltip": {
                               "shared": false,
                               "sort": 0,
@@ -208,7 +192,8 @@ items:
                           },
                           "yaxes": [
                               {
-                                  "format": "ops",
+                                  "decimals": 3,
+                                  "format": "percentunit",
                                   "label": null,
                                   "logBase": 1,
                                   "max": null,
@@ -216,7 +201,215 @@ items:
                                   "show": true
                               },
                               {
-                                  "format": "ops",
+                                  "decimals": 3,
+                                  "format": "percentunit",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              }
+                          ]
+                      }
+                  ],
+                  "repeat": null,
+                  "repeatIteration": null,
+                  "repeatRowId": null,
+                  "showTitle": false,
+                  "title": "Dashboard Row",
+                  "titleSize": "h6",
+                  "type": "row"
+              },
+              {
+                  "collapse": false,
+                  "collapsed": false,
+                  "panels": [
+                      {
+                          "cacheTimeout": null,
+                          "colorBackground": false,
+                          "colorValue": false,
+                          "colors": [
+                              "#299c46",
+                              "rgba(237, 129, 40, 0.89)",
+                              "#d44a3a"
+                          ],
+                          "datasource": "$datasource",
+                          "decimals": 3,
+                          "description": "How many percent of read requests (LIST,GET) in 30 days have been answered successfully and fast enough?",
+                          "format": "percentunit",
+                          "gauge": {
+                              "maxValue": 100,
+                              "minValue": 0,
+                              "show": false,
+                              "thresholdLabels": false,
+                              "thresholdMarkers": true
+                          },
+                          "gridPos": {
+
+                          },
+                          "id": 4,
+                          "interval": null,
+                          "links": [
+
+                          ],
+                          "mappingType": 1,
+                          "mappingTypes": [
+                              {
+                                  "name": "value to text",
+                                  "value": 1
+                              },
+                              {
+                                  "name": "range to text",
+                                  "value": 2
+                              }
+                          ],
+                          "maxDataPoints": 100,
+                          "nullPointMode": "connected",
+                          "nullText": null,
+                          "postfix": "",
+                          "postfixFontSize": "50%",
+                          "prefix": "",
+                          "prefixFontSize": "50%",
+                          "rangeMaps": [
+                              {
+                                  "from": "null",
+                                  "text": "N/A",
+                                  "to": "null"
+                              }
+                          ],
+                          "span": 3,
+                          "sparkline": {
+                              "fillColor": "rgba(31, 118, 189, 0.18)",
+                              "full": false,
+                              "lineColor": "rgb(31, 120, 193)",
+                              "show": false
+                          },
+                          "tableColumn": "",
+                          "targets": [
+                              {
+                                  "expr": "apiserver_request:availability30d{verb=\"read\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": "",
+                          "title": "Read Availability (30d)",
+                          "tooltip": {
+                              "shared": false
+                          },
+                          "type": "singlestat",
+                          "valueFontSize": "80%",
+                          "valueMaps": [
+                              {
+                                  "op": "=",
+                                  "text": "N/A",
+                                  "value": "null"
+                              }
+                          ],
+                          "valueName": "avg"
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "description": "How many read requests (LIST,GET) per second do the apiservers get by code?",
+                          "fill": 10,
+                          "gridPos": {
+
+                          },
+                          "id": 5,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "sideWidth": null,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+                              {
+                                  "alias": "/2../i",
+                                  "color": "#56A64B"
+                              },
+                              {
+                                  "alias": "/3../i",
+                                  "color": "#F2CC0C"
+                              },
+                              {
+                                  "alias": "/4../i",
+                                  "color": "#3274D9"
+                              },
+                              {
+                                  "alias": "/5../i",
+                                  "color": "#E02F44"
+                              }
+                          ],
+                          "spaceLength": 10,
+                          "span": 3,
+                          "stack": true,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "sum by (code) (code_resource:apiserver_request_total:rate5m{verb=\"read\"})",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{ code }}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Read SLI - Requests",
+                          "tooltip": {
+                              "shared": false,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "reqps",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              },
+                              {
+                                  "format": "reqps",
                                   "label": null,
                                   "logBase": 1,
                                   "max": null,
@@ -233,21 +426,23 @@ items:
                           "dashLength": 10,
                           "dashes": false,
                           "datasource": "$datasource",
+                          "description": "How many percent of read requests (LIST,GET) per second are returned with errors (5xx)?",
                           "fill": 1,
                           "gridPos": {
 
                           },
-                          "id": 4,
+                          "id": 6,
                           "legend": {
-                              "alignAsTable": true,
+                              "alignAsTable": false,
                               "avg": false,
-                              "current": true,
+                              "current": false,
                               "max": false,
                               "min": false,
-                              "rightSide": true,
+                              "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
-                              "values": true
+                              "values": false
                           },
                           "lines": true,
                           "linewidth": 1,
@@ -264,15 +459,15 @@ items:
 
                           ],
                           "spaceLength": 10,
-                          "span": 5,
+                          "span": 3,
                           "stack": false,
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{job=\"apiserver\", instance=~\"$instance\", verb!=\"WATCH\", cluster=\"$cluster\"}[5m])) by (verb, le))",
+                                  "expr": "sum by (resource) (code_resource:apiserver_request_total:rate5m{verb=\"read\",code=~\"5..\"}) / sum by (resource) (code_resource:apiserver_request_total:rate5m{verb=\"read\"})",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{verb}}",
+                                  "legendFormat": "{{ resource }}",
                                   "refId": "A"
                               }
                           ],
@@ -281,7 +476,493 @@ items:
                           ],
                           "timeFrom": null,
                           "timeShift": null,
-                          "title": "Request duration 99th quantile",
+                          "title": "Read SLI - Errors",
+                          "tooltip": {
+                              "shared": false,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "percentunit",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": 0,
+                                  "show": true
+                              },
+                              {
+                                  "format": "percentunit",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": 0,
+                                  "show": true
+                              }
+                          ]
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "description": "How many seconds is the 99th percentile for reading (LIST|GET) a given resource?",
+                          "fill": 1,
+                          "gridPos": {
+
+                          },
+                          "id": 7,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "sideWidth": null,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+
+                          ],
+                          "spaceLength": 10,
+                          "span": 3,
+                          "stack": false,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{verb=\"read\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{ resource }}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Read SLI - Duration",
+                          "tooltip": {
+                              "shared": false,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "s",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              },
+                              {
+                                  "format": "s",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              }
+                          ]
+                      }
+                  ],
+                  "repeat": null,
+                  "repeatIteration": null,
+                  "repeatRowId": null,
+                  "showTitle": false,
+                  "title": "Dashboard Row",
+                  "titleSize": "h6",
+                  "type": "row"
+              },
+              {
+                  "collapse": false,
+                  "collapsed": false,
+                  "panels": [
+                      {
+                          "cacheTimeout": null,
+                          "colorBackground": false,
+                          "colorValue": false,
+                          "colors": [
+                              "#299c46",
+                              "rgba(237, 129, 40, 0.89)",
+                              "#d44a3a"
+                          ],
+                          "datasource": "$datasource",
+                          "decimals": 3,
+                          "description": "How many percent of write requests (POST|PUT|PATCH|DELETE) in 30 days have been answered successfully and fast enough?",
+                          "format": "percentunit",
+                          "gauge": {
+                              "maxValue": 100,
+                              "minValue": 0,
+                              "show": false,
+                              "thresholdLabels": false,
+                              "thresholdMarkers": true
+                          },
+                          "gridPos": {
+
+                          },
+                          "id": 8,
+                          "interval": null,
+                          "links": [
+
+                          ],
+                          "mappingType": 1,
+                          "mappingTypes": [
+                              {
+                                  "name": "value to text",
+                                  "value": 1
+                              },
+                              {
+                                  "name": "range to text",
+                                  "value": 2
+                              }
+                          ],
+                          "maxDataPoints": 100,
+                          "nullPointMode": "connected",
+                          "nullText": null,
+                          "postfix": "",
+                          "postfixFontSize": "50%",
+                          "prefix": "",
+                          "prefixFontSize": "50%",
+                          "rangeMaps": [
+                              {
+                                  "from": "null",
+                                  "text": "N/A",
+                                  "to": "null"
+                              }
+                          ],
+                          "span": 3,
+                          "sparkline": {
+                              "fillColor": "rgba(31, 118, 189, 0.18)",
+                              "full": false,
+                              "lineColor": "rgb(31, 120, 193)",
+                              "show": false
+                          },
+                          "tableColumn": "",
+                          "targets": [
+                              {
+                                  "expr": "apiserver_request:availability30d{verb=\"write\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": "",
+                          "title": "Write Availability (30d)",
+                          "tooltip": {
+                              "shared": false
+                          },
+                          "type": "singlestat",
+                          "valueFontSize": "80%",
+                          "valueMaps": [
+                              {
+                                  "op": "=",
+                                  "text": "N/A",
+                                  "value": "null"
+                              }
+                          ],
+                          "valueName": "avg"
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "description": "How many write requests (POST|PUT|PATCH|DELETE) per second do the apiservers get by code?",
+                          "fill": 10,
+                          "gridPos": {
+
+                          },
+                          "id": 9,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "sideWidth": null,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+                              {
+                                  "alias": "/2../i",
+                                  "color": "#56A64B"
+                              },
+                              {
+                                  "alias": "/3../i",
+                                  "color": "#F2CC0C"
+                              },
+                              {
+                                  "alias": "/4../i",
+                                  "color": "#3274D9"
+                              },
+                              {
+                                  "alias": "/5../i",
+                                  "color": "#E02F44"
+                              }
+                          ],
+                          "spaceLength": 10,
+                          "span": 3,
+                          "stack": true,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "sum by (code) (code_resource:apiserver_request_total:rate5m{verb=\"write\"})",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{ code }}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Write SLI - Requests",
+                          "tooltip": {
+                              "shared": false,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "reqps",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              },
+                              {
+                                  "format": "reqps",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": null,
+                                  "show": true
+                              }
+                          ]
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "description": "How many percent of write requests (POST|PUT|PATCH|DELETE) per second are returned with errors (5xx)?",
+                          "fill": 1,
+                          "gridPos": {
+
+                          },
+                          "id": 10,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "sideWidth": null,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+
+                          ],
+                          "spaceLength": 10,
+                          "span": 3,
+                          "stack": false,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "sum by (resource) (code_resource:apiserver_request_total:rate5m{verb=\"write\",code=~\"5..\"}) / sum by (resource) (code_resource:apiserver_request_total:rate5m{verb=\"write\"})",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{ resource }}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Write SLI - Errors",
+                          "tooltip": {
+                              "shared": false,
+                              "sort": 0,
+                              "value_type": "individual"
+                          },
+                          "type": "graph",
+                          "xaxis": {
+                              "buckets": null,
+                              "mode": "time",
+                              "name": null,
+                              "show": true,
+                              "values": [
+
+                              ]
+                          },
+                          "yaxes": [
+                              {
+                                  "format": "percentunit",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": 0,
+                                  "show": true
+                              },
+                              {
+                                  "format": "percentunit",
+                                  "label": null,
+                                  "logBase": 1,
+                                  "max": null,
+                                  "min": 0,
+                                  "show": true
+                              }
+                          ]
+                      },
+                      {
+                          "aliasColors": {
+
+                          },
+                          "bars": false,
+                          "dashLength": 10,
+                          "dashes": false,
+                          "datasource": "$datasource",
+                          "description": "How many seconds is the 99th percentile for writing (POST|PUT|PATCH|DELETE) a given resource?",
+                          "fill": 1,
+                          "gridPos": {
+
+                          },
+                          "id": 11,
+                          "legend": {
+                              "alignAsTable": false,
+                              "avg": false,
+                              "current": false,
+                              "max": false,
+                              "min": false,
+                              "rightSide": false,
+                              "show": true,
+                              "sideWidth": null,
+                              "total": false,
+                              "values": false
+                          },
+                          "lines": true,
+                          "linewidth": 1,
+                          "links": [
+
+                          ],
+                          "nullPointMode": "null",
+                          "percentage": false,
+                          "pointradius": 5,
+                          "points": false,
+                          "renderer": "flot",
+                          "repeat": null,
+                          "seriesOverrides": [
+
+                          ],
+                          "spaceLength": 10,
+                          "span": 3,
+                          "stack": false,
+                          "steppedLine": false,
+                          "targets": [
+                              {
+                                  "expr": "cluster_quantile:apiserver_request_duration_seconds:histogram_quantile{verb=\"write\"}",
+                                  "format": "time_series",
+                                  "intervalFactor": 2,
+                                  "legendFormat": "{{ resource }}",
+                                  "refId": "A"
+                              }
+                          ],
+                          "thresholds": [
+
+                          ],
+                          "timeFrom": null,
+                          "timeShift": null,
+                          "title": "Write SLI - Duration",
                           "tooltip": {
                               "shared": false,
                               "sort": 0,
@@ -341,7 +1022,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 5,
+                          "id": 12,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -350,6 +1031,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": false,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -368,7 +1050,7 @@ items:
 
                           ],
                           "spaceLength": 10,
-                          "span": 6,
+                          "span": 4,
                           "stack": false,
                           "steppedLine": false,
                           "targets": [
@@ -432,7 +1114,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 6,
+                          "id": 13,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -441,6 +1123,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": false,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -459,7 +1142,7 @@ items:
 
                           ],
                           "spaceLength": 10,
-                          "span": 6,
+                          "span": 4,
                           "stack": false,
                           "steppedLine": false,
                           "targets": [
@@ -523,7 +1206,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 7,
+                          "id": 14,
                           "legend": {
                               "alignAsTable": true,
                               "avg": false,
@@ -532,6 +1215,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -550,7 +1234,7 @@ items:
 
                           ],
                           "spaceLength": 10,
-                          "span": 12,
+                          "span": 4,
                           "stack": false,
                           "steppedLine": false,
                           "targets": [
@@ -627,7 +1311,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 8,
+                          "id": 15,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -636,6 +1320,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -718,7 +1403,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 9,
+                          "id": 16,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -727,6 +1412,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -816,7 +1502,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 10,
+                          "id": 17,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -825,6 +1511,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -927,7 +1614,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 11,
+                          "id": 18,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -936,6 +1623,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -1018,7 +1706,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 12,
+                          "id": 19,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -1027,6 +1715,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -1109,7 +1798,7 @@ items:
                           "gridPos": {
 
                           },
-                          "id": 13,
+                          "id": 20,
                           "legend": {
                               "alignAsTable": false,
                               "avg": false,
@@ -1118,6 +1807,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -1393,6 +2083,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -1494,6 +2185,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -1933,6 +2625,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "sort": "current",
                               "sortDesc": true,
                               "total": false,
@@ -2034,6 +2727,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "sort": "current",
                               "sortDesc": true,
                               "total": false,
@@ -2165,6 +2859,7 @@ items:
                       "min": true,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": true
                   },
@@ -2264,6 +2959,7 @@ items:
                       "min": true,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": true
                   },
@@ -2374,6 +3070,7 @@ items:
                               "min": true,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -2473,6 +3170,7 @@ items:
                               "min": true,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -2592,6 +3290,7 @@ items:
                               "min": true,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -2691,6 +3390,7 @@ items:
                               "min": true,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -2790,6 +3490,7 @@ items:
                               "min": true,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -2893,6 +3594,7 @@ items:
                               "min": true,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -3261,6 +3963,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -3365,6 +4068,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -3469,6 +4173,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -3573,6 +4278,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -3685,6 +4391,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -3789,6 +4496,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -3893,6 +4601,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -3984,6 +4693,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -4075,6 +4785,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -8200,68 +8911,6 @@ items:
                   {
                       "allValue": null,
                       "current": {
-                          "text": "prod",
-                          "value": "prod"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": "cluster",
-                      "multi": false,
-                      "name": "cluster",
-                      "options": [
-
-                      ],
-                      "query": "label_values(node_cpu_seconds_total, cluster)",
-                      "refresh": 1,
-                      "regex": "",
-                      "sort": 2,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "query",
-                      "useTags": false
-                  },
-                  {
-                      "allValue": null,
-                      "auto": false,
-                      "auto_count": 30,
-                      "auto_min": "10s",
-                      "current": {
-                          "text": "5m",
-                          "value": "5m"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": null,
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                          {
-                              "selected": true,
-                              "text": "$__interval",
-                              "value": "$__interval"
-                          }
-                      ],
-                      "query": "$__interval",
-                      "refresh": 2,
-                      "regex": "",
-                      "skipUrlSync": false,
-                      "sort": 1,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "interval",
-                      "useTags": false
-                  },
-                  {
-                      "allValue": null,
-                      "current": {
                           "text": "",
                           "value": ""
                       },
@@ -10481,41 +11130,6 @@ items:
                   },
                   {
                       "allValue": null,
-                      "auto": false,
-                      "auto_count": 30,
-                      "auto_min": "10s",
-                      "current": {
-                          "text": "5m",
-                          "value": "5m"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": null,
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                          {
-                              "selected": true,
-                              "text": "$__interval",
-                              "value": "$__interval"
-                          }
-                      ],
-                      "query": "$__interval",
-                      "refresh": 2,
-                      "regex": "",
-                      "skipUrlSync": false,
-                      "sort": 1,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "interval",
-                      "useTags": false
-                  },
-                  {
-                      "allValue": null,
                       "current": {
                           "text": "",
                           "value": ""
@@ -10668,7 +11282,7 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "{{pod}}",
@@ -10897,7 +11511,7 @@ items:
                           ],
                           "targets": [
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -10906,7 +11520,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -10915,7 +11529,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=\"$node\"}) by (pod) / sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=~\"$node\"}) by (pod) / sum(kube_pod_container_resource_requests_cpu_cores{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -10924,7 +11538,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -10933,7 +11547,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=\"$node\"}) by (pod) / sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate{cluster=\"$cluster\", node=~\"$node\"}) by (pod) / sum(kube_pod_container_resource_limits_cpu_cores{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11033,7 +11647,7 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=\"$node\", container!=\"\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=~\"$node\", container!=\"\"}) by (pod)",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "{{pod}}",
@@ -11316,7 +11930,7 @@ items:
                           ],
                           "targets": [
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=\"$node\",container!=\"\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=~\"$node\",container!=\"\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11325,7 +11939,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(kube_pod_container_resource_requests_memory_bytes{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11334,7 +11948,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=\"$node\",container!=\"\"}) by (pod) / sum(kube_pod_container_resource_requests_memory_bytes{node=\"$node\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=~\"$node\",container!=\"\"}) by (pod) / sum(kube_pod_container_resource_requests_memory_bytes{node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11343,7 +11957,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\", node=\"$node\"}) by (pod)",
+                                  "expr": "sum(kube_pod_container_resource_limits_memory_bytes{cluster=\"$cluster\", node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11352,7 +11966,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=\"$node\",container!=\"\"}) by (pod) / sum(kube_pod_container_resource_limits_memory_bytes{node=\"$node\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_working_set_bytes{cluster=\"$cluster\", node=~\"$node\",container!=\"\"}) by (pod) / sum(kube_pod_container_resource_limits_memory_bytes{node=~\"$node\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11361,7 +11975,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_rss{cluster=\"$cluster\", node=\"$node\",container!=\"\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_rss{cluster=\"$cluster\", node=~\"$node\",container!=\"\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11370,7 +11984,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_cache{cluster=\"$cluster\", node=\"$node\",container!=\"\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_cache{cluster=\"$cluster\", node=~\"$node\",container!=\"\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11379,7 +11993,7 @@ items:
                                   "step": 10
                               },
                               {
-                                  "expr": "sum(node_namespace_pod_container:container_memory_swap{cluster=\"$cluster\", node=\"$node\",container!=\"\"}) by (pod)",
+                                  "expr": "sum(node_namespace_pod_container:container_memory_swap{cluster=\"$cluster\", node=~\"$node\",container!=\"\"}) by (pod)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -11463,41 +12077,6 @@ items:
                   },
                   {
                       "allValue": null,
-                      "auto": false,
-                      "auto_count": 30,
-                      "auto_min": "10s",
-                      "current": {
-                          "text": "5m",
-                          "value": "5m"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": null,
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                          {
-                              "selected": true,
-                              "text": "$__interval",
-                              "value": "$__interval"
-                          }
-                      ],
-                      "query": "$__interval",
-                      "refresh": 2,
-                      "regex": "",
-                      "skipUrlSync": false,
-                      "sort": 1,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "interval",
-                      "useTags": false
-                  },
-                  {
-                      "allValue": null,
                       "current": {
                           "text": "",
                           "value": ""
@@ -11533,7 +12112,7 @@ items:
                       "hide": 0,
                       "includeAll": false,
                       "label": null,
-                      "multi": false,
+                      "multi": true,
                       "name": "node",
                       "options": [
 
@@ -13203,41 +13782,6 @@ items:
                       "refresh": 1,
                       "regex": "",
                       "type": "datasource"
-                  },
-                  {
-                      "allValue": null,
-                      "auto": false,
-                      "auto_count": 30,
-                      "auto_min": "10s",
-                      "current": {
-                          "text": "5m",
-                          "value": "5m"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": null,
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                          {
-                              "selected": true,
-                              "text": "$__interval",
-                              "value": "$__interval"
-                          }
-                      ],
-                      "query": "$__interval",
-                      "refresh": 2,
-                      "regex": "",
-                      "skipUrlSync": false,
-                      "sort": 1,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "interval",
-                      "useTags": false
                   },
                   {
                       "allValue": null,
@@ -15209,41 +15753,6 @@ items:
                       "refresh": 1,
                       "regex": "",
                       "type": "datasource"
-                  },
-                  {
-                      "allValue": null,
-                      "auto": false,
-                      "auto_count": 30,
-                      "auto_min": "10s",
-                      "current": {
-                          "text": "5m",
-                          "value": "5m"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": null,
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                          {
-                              "selected": true,
-                              "text": "$__interval",
-                              "value": "$__interval"
-                          }
-                      ],
-                      "query": "$__interval",
-                      "refresh": 2,
-                      "regex": "",
-                      "skipUrlSync": false,
-                      "sort": 1,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "interval",
-                      "useTags": false
                   },
                   {
                       "allValue": null,
@@ -17427,41 +17936,6 @@ items:
                       "auto_count": 30,
                       "auto_min": "10s",
                       "current": {
-                          "text": "5m",
-                          "value": "5m"
-                      },
-                      "datasource": "$datasource",
-                      "hide": 2,
-                      "includeAll": false,
-                      "label": null,
-                      "multi": false,
-                      "name": "interval",
-                      "options": [
-                          {
-                              "selected": true,
-                              "text": "$__interval",
-                              "value": "$__interval"
-                          }
-                      ],
-                      "query": "$__interval",
-                      "refresh": 2,
-                      "regex": "",
-                      "skipUrlSync": false,
-                      "sort": 1,
-                      "tagValuesQuery": "",
-                      "tags": [
-
-                      ],
-                      "tagsQuery": "",
-                      "type": "interval",
-                      "useTags": false
-                  },
-                  {
-                      "allValue": null,
-                      "auto": false,
-                      "auto_count": 30,
-                      "auto_min": "10s",
-                      "current": {
                           "text": "deployment",
                           "value": "deployment"
                       },
@@ -18149,6 +18623,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18240,6 +18715,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18344,6 +18820,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18448,6 +18925,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18546,6 +19024,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18659,6 +19138,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18752,6 +19232,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18858,6 +19339,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -18962,6 +19444,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -19053,6 +19536,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -19158,6 +19642,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -19249,6 +19734,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -19353,6 +19839,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -19457,6 +19944,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -19582,6 +20070,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -19686,6 +20175,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -19777,6 +20267,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -19868,6 +20359,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -22535,6 +23027,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -22634,6 +23127,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -22744,6 +23238,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -22843,6 +23338,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -22962,6 +23458,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -23061,6 +23558,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -23402,6 +23900,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -23503,6 +24002,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -23942,6 +24442,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "sort": "current",
                               "sortDesc": true,
                               "total": false,
@@ -24043,6 +24544,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "sort": "current",
                               "sortDesc": true,
                               "total": false,
@@ -24174,6 +24676,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -24273,6 +24776,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -24383,6 +24887,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -24482,6 +24987,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -24601,6 +25107,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -24700,6 +25207,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -26967,6 +27475,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27059,6 +27568,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27184,6 +27694,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27393,6 +27904,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27508,6 +28020,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27626,6 +28139,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27718,6 +28232,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -27938,6 +28453,7 @@ items:
                               "min": true,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -28133,6 +28649,7 @@ items:
                               "min": true,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -28799,6 +29316,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -28898,6 +29416,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -29008,6 +29527,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -29107,6 +29627,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -29226,6 +29747,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -29325,6 +29847,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35411,6 +35934,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35434,10 +35958,10 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "(\n  prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"} \n-  \n  ignoring(queue) group_right(instance) prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}\n)\n",
+                                  "expr": "(\n  prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"} \n-  \n  ignoring(remote_name, url) group_right(instance) prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}\n)\n",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -35502,6 +36026,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35525,10 +36050,10 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "(\n  rate(prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])  \n- \n  ignoring (queue) group_right(instance) rate(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n)\n",
+                                  "expr": "(\n  rate(prometheus_remote_storage_highest_timestamp_in_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])  \n- \n  ignoring (remote_name, url) group_right(instance) rate(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n)\n",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -35606,6 +36131,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35629,10 +36155,10 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "rate(\n  prometheus_remote_storage_samples_in_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n- \n  ignoring(queue) group_right(instance) rate(prometheus_remote_storage_succeeded_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m]) \n- \n  rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n",
+                                  "expr": "rate(\n  prometheus_remote_storage_samples_in_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n- \n  ignoring(remote_name, url) group_right(instance) rate(prometheus_remote_storage_succeeded_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n- \n  rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])\n",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -35710,6 +36236,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35737,7 +36264,7 @@ items:
                                   "expr": "prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -35802,6 +36329,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35828,7 +36356,7 @@ items:
                                   "expr": "prometheus_remote_storage_shards_max{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -35893,6 +36421,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -35919,7 +36448,7 @@ items:
                                   "expr": "prometheus_remote_storage_shards_min{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -35984,6 +36513,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36010,7 +36540,7 @@ items:
                                   "expr": "prometheus_remote_storage_shards_desired{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36088,6 +36618,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36114,7 +36645,7 @@ items:
                                   "expr": "prometheus_remote_storage_shard_capacity{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36179,6 +36710,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36205,7 +36737,7 @@ items:
                                   "expr": "prometheus_remote_storage_pending_samples{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36283,6 +36815,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36374,6 +36907,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36400,7 +36934,7 @@ items:
                                   "expr": "prometheus_wal_watcher_current_segment{cluster=~\"$cluster\", instance=~\"$instance\"}",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{consumer}}",
                                   "refId": "A"
                               }
                           ],
@@ -36478,6 +37012,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36504,7 +37039,7 @@ items:
                                   "expr": "rate(prometheus_remote_storage_dropped_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36569,6 +37104,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36595,7 +37131,7 @@ items:
                                   "expr": "rate(prometheus_remote_storage_failed_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36660,6 +37196,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36686,7 +37223,7 @@ items:
                                   "expr": "rate(prometheus_remote_storage_retried_samples_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36751,6 +37288,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -36777,7 +37315,7 @@ items:
                                   "expr": "rate(prometheus_remote_storage_enqueue_retries_total{cluster=~\"$cluster\", instance=~\"$instance\"}[5m])",
                                   "format": "time_series",
                                   "intervalFactor": 2,
-                                  "legendFormat": "{{cluster}}:{{instance}}-{{queue}}",
+                                  "legendFormat": "{{cluster}}:{{instance}} {{remote_name}}:{{url}}",
                                   "refId": "A"
                               }
                           ],
@@ -36930,11 +37468,11 @@ items:
                       "includeAll": true,
                       "label": null,
                       "multi": false,
-                      "name": "queue",
+                      "name": "url",
                       "options": [
 
                       ],
-                      "query": "label_values(prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\"}, queue)",
+                      "query": "label_values(prometheus_remote_storage_shards{cluster=~\"$cluster\", instance=~\"$instance\"}, url)",
                       "refresh": 2,
                       "regex": "",
                       "sort": 0,
@@ -38325,6 +38863,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -38416,6 +38955,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -38520,6 +39060,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -38611,6 +39152,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -38715,6 +39257,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -38827,6 +39370,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -38931,6 +39475,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -39035,6 +39580,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -39126,6 +39672,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -39217,6 +39764,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -39520,6 +40068,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -39632,6 +40181,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -39757,6 +40307,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -39869,6 +40420,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -39973,6 +40525,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": true
                           },
@@ -40077,6 +40630,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -40168,6 +40722,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -40259,6 +40814,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -41090,6 +41646,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -41417,6 +41974,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -41518,6 +42076,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
+                      "sideWidth": null,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -41630,6 +42189,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "sort": "current",
                               "sortDesc": true,
                               "total": false,
@@ -41731,6 +42291,7 @@ items:
                               "min": false,
                               "rightSide": true,
                               "show": true,
+                              "sideWidth": null,
                               "sort": "current",
                               "sortDesc": true,
                               "total": false,
@@ -41862,6 +42423,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -41961,6 +42523,7 @@ items:
                       "min": false,
                       "rightSide": false,
                       "show": true,
+                      "sideWidth": null,
                       "total": false,
                       "values": false
                   },
@@ -42071,6 +42634,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -42170,6 +42734,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -42289,6 +42854,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },
@@ -42388,6 +42954,7 @@ items:
                               "min": false,
                               "rightSide": false,
                               "show": true,
+                              "sideWidth": null,
                               "total": false,
                               "values": false
                           },

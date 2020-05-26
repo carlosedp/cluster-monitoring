@@ -26,7 +26,7 @@ spec:
       namespace: monitoring
       port: web
   externalUrl: http://prometheus.192.168.15.15.nip.io
-  image: prom/prometheus:v2.16.0
+  image: prom/prometheus:v2.18.1
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorNamespaceSelector: {}
@@ -47,4 +47,4 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: v2.16.0
+  version: v2.18.1

@@ -11,7 +11,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
     // Add custom dashboards
     grafanaDashboards+:: {
-      'apc-ups-dashboard.json': (import 'grafana-dashboards/apc-ups-dashboard.json'),
+      'apc-ups-dashboard.json': (import '../grafana-dashboards/apc-ups-dashboard.json'),
     },
   },
 
