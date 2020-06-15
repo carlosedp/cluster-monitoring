@@ -20576,7 +20576,6 @@ items:
           "editable": true,
           "gnetId": 162,
           "graphTooltip": 1,
-          "id": 7,
           "links": [
 
           ],
@@ -20593,6 +20592,16 @@ items:
                   "datasource": "prometheus",
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "format": "percent",
                   "gauge": {
                       "maxValue": 100,
@@ -20678,6 +20687,16 @@ items:
                       "#890f02"
                   ],
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "format": "percentunit",
                   "gauge": {
                       "maxValue": 100,
@@ -20728,7 +20747,7 @@ items:
                       "lineColor": "rgb(31, 120, 193)",
                       "show": false
                   },
-                  "tableColumn": "",
+                  "tableColumn": "{job=\"kubelet\"}",
                   "targets": [
                       {
                           "expr": "avg(up{job=\"kubelet\"}) BY (job)",
@@ -20765,6 +20784,16 @@ items:
                   "decimals": 0,
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "format": "percent",
                   "gauge": {
                       "maxValue": 100,
@@ -20845,6 +20874,16 @@ items:
 
                   ],
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fontSize": "90%",
                   "gridPos": {
                       "h": 5,
@@ -20866,6 +20905,7 @@ items:
                   "styles": [
                       {
                           "alias": "Time",
+                          "align": "auto",
                           "dateFormat": "YYYY-MM-DD HH:mm:ss",
                           "link": false,
                           "pattern": "Time",
@@ -20873,6 +20913,7 @@ items:
                       },
                       {
                           "alias": "Uptime",
+                          "align": "auto",
                           "colorMode": null,
                           "colors": [
                               "rgba(50, 172, 45, 0.97)",
@@ -20890,6 +20931,7 @@ items:
                       },
                       {
                           "alias": "",
+                          "align": "auto",
                           "colorMode": null,
                           "colors": [
                               "rgba(245, 54, 54, 0.9)",
@@ -20906,6 +20948,7 @@ items:
                       },
                       {
                           "alias": "",
+                          "align": "auto",
                           "colorMode": null,
                           "colors": [
                               "rgba(245, 54, 54, 0.9)",
@@ -20936,10 +20979,11 @@ items:
                   "title": "Node Uptime",
                   "transform": "table",
                   "transparent": true,
-                  "type": "table"
+                  "type": "table-old"
               },
               {
                   "collapsed": false,
+                  "datasource": null,
                   "gridPos": {
                       "h": 1,
                       "w": 24,
@@ -20999,13 +21043,25 @@ items:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 1,
+                  "fillGradient": 0,
                   "gridPos": {
                       "h": 9,
                       "w": 12,
                       "x": 0,
                       "y": 8
                   },
+                  "hiddenSeries": false,
                   "id": 10,
                   "legend": {
                       "avg": false,
@@ -21022,6 +21078,11 @@ items:
 
                   ],
                   "nullPointMode": "null",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -21146,13 +21207,25 @@ items:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 1,
+                  "fillGradient": 0,
                   "gridPos": {
                       "h": 9,
                       "w": 12,
                       "x": 12,
                       "y": 8
                   },
+                  "hiddenSeries": false,
                   "id": 11,
                   "legend": {
                       "avg": false,
@@ -21169,6 +21242,11 @@ items:
 
                   ],
                   "nullPointMode": "null",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -21247,6 +21325,16 @@ items:
 
                   ],
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fontSize": "100%",
                   "gridPos": {
                       "h": 9,
@@ -21268,6 +21356,7 @@ items:
                   "styles": [
                       {
                           "alias": "Time",
+                          "align": "auto",
                           "dateFormat": "YYYY-MM-DD HH:mm:ss",
                           "link": false,
                           "pattern": "Time",
@@ -21275,6 +21364,7 @@ items:
                       },
                       {
                           "alias": "",
+                          "align": "auto",
                           "colorMode": null,
                           "colors": [
                               "rgba(245, 54, 54, 0.9)",
@@ -21292,6 +21382,7 @@ items:
                       },
                       {
                           "alias": "",
+                          "align": "auto",
                           "colorMode": null,
                           "colors": [
                               "rgba(245, 54, 54, 0.9)",
@@ -21325,13 +21416,24 @@ items:
                   ],
                   "title": "Active Alerts",
                   "transform": "table",
-                  "type": "table"
+                  "type": "table-old"
               },
               {
                   "dashboardFilter": "",
                   "dashboardTags": [
 
                   ],
+                  "datasource": null,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "folderId": null,
                   "gridPos": {
                       "h": 9,
@@ -21367,6 +21469,16 @@ items:
                   "decimals": null,
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "format": "percent",
                   "gauge": {
                       "maxValue": 100,
@@ -21488,13 +21600,25 @@ items:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 1,
+                  "fillGradient": 0,
                   "gridPos": {
                       "h": 4,
                       "w": 7,
                       "x": 17,
                       "y": 22
                   },
+                  "hiddenSeries": false,
                   "id": 29,
                   "legend": {
                       "avg": false,
@@ -21511,6 +21635,11 @@ items:
 
                   ],
                   "nullPointMode": "null as zero",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -21646,13 +21775,25 @@ items:
                   "dashLength": 10,
                   "dashes": false,
                   "datasource": "prometheus",
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 1,
+                  "fillGradient": 0,
                   "gridPos": {
                       "h": 6,
                       "w": 24,
                       "x": 0,
                       "y": 26
                   },
+                  "hiddenSeries": false,
                   "id": 13,
                   "legend": {
                       "avg": false,
@@ -21669,6 +21810,11 @@ items:
 
                   ],
                   "nullPointMode": "null",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -21743,6 +21889,7 @@ items:
               },
               {
                   "collapsed": false,
+                  "datasource": null,
                   "gridPos": {
                       "h": 1,
                       "w": 24,
@@ -21767,7 +21914,18 @@ items:
                   "decimals": 0,
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 0,
+                  "fillGradient": 0,
                   "grid": {
 
                   },
@@ -21777,6 +21935,7 @@ items:
                       "x": 0,
                       "y": 33
                   },
+                  "hiddenSeries": false,
                   "id": 3,
                   "isNew": true,
                   "legend": {
@@ -21801,6 +21960,11 @@ items:
 
                   ],
                   "nullPointMode": "null as zero",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -21813,12 +21977,12 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "topk(10,sum by (container_name)( rate(container_cpu_usage_seconds_total{image!=\"\",container_name!=\"POD\"}[1m] ) ))",
+                          "expr": "topk(10,sum by (pod)(rate(container_cpu_usage_seconds_total{image!=\"\"}[1m] ) ))",
                           "format": "time_series",
                           "instant": false,
                           "interval": "",
                           "intervalFactor": 1,
-                          "legendFormat": "{{ container_name}}",
+                          "legendFormat": "{{ pod}}",
                           "metric": "container_cpu",
                           "refId": "A",
                           "step": 10
@@ -21883,7 +22047,18 @@ items:
                   "decimals": 2,
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 0,
+                  "fillGradient": 0,
                   "grid": {
 
                   },
@@ -21893,6 +22068,7 @@ items:
                       "x": 0,
                       "y": 40
                   },
+                  "hiddenSeries": false,
                   "id": 2,
                   "isNew": true,
                   "legend": {
@@ -21915,6 +22091,11 @@ items:
 
                   ],
                   "nullPointMode": "connected",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -21927,21 +22108,22 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "sort_desc(sum(container_memory_usage_bytes{image!=\"\"}) by (container_name, image))",
+                          "expr": "sort_desc(sum(container_memory_usage_bytes{image!=\"\"}) by (pod, image))",
                           "format": "time_series",
                           "hide": true,
                           "interval": "10s",
                           "intervalFactor": 1,
-                          "legendFormat": "{{ container_name }}",
+                          "legendFormat": "{{ pod }}",
                           "metric": "container_memory_usage:sort_desc",
                           "refId": "A",
                           "step": 10
                       },
                       {
-                          "expr": "topk(10,sum(container_memory_rss{name=~\".+\"}) by (container_name))",
+                          "expr": "topk(10,sum(container_memory_rss{name=~\".+\"}) by (pod))",
                           "format": "time_series",
+                          "interval": "",
                           "intervalFactor": 1,
-                          "legendFormat": "{{ container_name }}",
+                          "legendFormat": "{{ pod }}",
                           "refId": "B"
                       }
                   ],
@@ -22003,7 +22185,18 @@ items:
                   "datasource": "prometheus",
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 1,
+                  "fillGradient": 0,
                   "grid": {
 
                   },
@@ -22013,6 +22206,7 @@ items:
                       "x": 0,
                       "y": 47
                   },
+                  "hiddenSeries": false,
                   "id": 19,
                   "legend": {
                       "alignAsTable": true,
@@ -22036,6 +22230,11 @@ items:
 
                   ],
                   "nullPointMode": "null",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -22048,8 +22247,9 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "topk(10,sum(rate(container_network_transmit_bytes_total{pod_name=~\".+\"}[5m])) by (pod_name))",
+                          "expr": "topk(10,sum(rate(container_network_transmit_bytes_total{pod=~\".+\"}[5m])) by (pod))",
                           "format": "time_series",
+                          "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "{{ pod_name }}",
                           "refId": "A",
@@ -22059,6 +22259,7 @@ items:
                           "expr": "rate(container_network_transmit_bytes_total{id=\"/\"}[$interval])",
                           "format": "time_series",
                           "hide": true,
+                          "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "",
                           "refId": "B",
@@ -22080,7 +22281,6 @@ items:
                       "sort": 2,
                       "value_type": "cumulative"
                   },
-                  "transparent": false,
                   "type": "graph",
                   "xaxis": {
                       "buckets": null,
@@ -22124,7 +22324,18 @@ items:
                   "datasource": "prometheus",
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 1,
+                  "fillGradient": 0,
                   "grid": {
 
                   },
@@ -22134,6 +22345,7 @@ items:
                       "x": 12,
                       "y": 47
                   },
+                  "hiddenSeries": false,
                   "id": 21,
                   "legend": {
                       "alignAsTable": true,
@@ -22157,6 +22369,11 @@ items:
 
                   ],
                   "nullPointMode": "null",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -22169,8 +22386,9 @@ items:
                   "steppedLine": false,
                   "targets": [
                       {
-                          "expr": "topk(10,sum(rate(container_network_receive_bytes_total{pod_name=~\".+\"}[5m])) by (pod_name))",
+                          "expr": "topk(10,sum(rate(container_network_receive_bytes_total{pod=~\".+\"}[5m])) by (pod))",
                           "format": "time_series",
+                          "interval": "",
                           "intervalFactor": 2,
                           "legendFormat": "{{pod_name}}",
                           "refId": "A",
@@ -22201,7 +22419,6 @@ items:
                       "sort": 2,
                       "value_type": "cumulative"
                   },
-                  "transparent": false,
                   "type": "graph",
                   "xaxis": {
                       "buckets": null,
@@ -22246,7 +22463,18 @@ items:
                   "decimals": 2,
                   "editable": true,
                   "error": false,
+                  "fieldConfig": {
+                      "defaults": {
+                          "custom": {
+
+                          }
+                      },
+                      "overrides": [
+
+                      ]
+                  },
                   "fill": 0,
+                  "fillGradient": 0,
                   "grid": {
 
                   },
@@ -22256,6 +22484,7 @@ items:
                       "x": 0,
                       "y": 54
                   },
+                  "hiddenSeries": false,
                   "id": 8,
                   "isNew": true,
                   "legend": {
@@ -22266,7 +22495,7 @@ items:
                       "min": false,
                       "rightSide": true,
                       "show": true,
-                      "sideWidth": 200,
+                      "sideWidth": 220,
                       "sort": "current",
                       "sortDesc": true,
                       "total": false,
@@ -22278,6 +22507,11 @@ items:
 
                   ],
                   "nullPointMode": "connected",
+                  "options": {
+                      "dataLinks": [
+
+                      ]
+                  },
                   "percentage": false,
                   "pointradius": 5,
                   "points": false,
@@ -22337,6 +22571,7 @@ items:
                   },
                   "yaxes": [
                       {
+                          "$$hashKey": "object:1163",
                           "format": "bytes",
                           "label": null,
                           "logBase": 1,
@@ -22345,6 +22580,7 @@ items:
                           "show": true
                       },
                       {
+                          "$$hashKey": "object:1164",
                           "format": "short",
                           "label": null,
                           "logBase": 1,
@@ -22360,7 +22596,7 @@ items:
               }
           ],
           "refresh": "10s",
-          "schemaVersion": 16,
+          "schemaVersion": 25,
           "style": "dark",
           "tags": [
               "custom"
