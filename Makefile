@@ -62,11 +62,10 @@ update_tools:       ## Updates jsonnet, jsonnetfmt and jb utilities
 	@go get -u github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
 
 change_suffix:       ## Changes suffix for the ingress. Pass suffix=[suffixURL] as argument
-	@sed -i -e "s/\(.*prometheus\.\).*/\1${suffix}/" manifests/ingress-prometheus.yaml
-	@sed -i -e "s/\(.*alertmanager\.\).*/\1${suffix}/" manifests/ingress-alertmanager.yaml
-	@sed -i -e "s/\(.*grafana\.\).*/\1${suffix}/" manifests/ingress-grafana.yaml
 	@echo "Ingress IPs changed to [service].${suffix}"
 	@echo "Apply to your cluster with:"
-	@echo ${K3S} kubectl apply -f manifests/ingress-alertmanager.yaml
-	@echo ${K3S} kubectl apply -f manifests/ingress-grafana.yaml
-	@echo ${K3S} kubectl apply -f manifests/ingress-prometheus.yaml
+	@for f in alertmanager prometheus grafana; do \
+		cat manifests/ingress-$$f.yaml | sed -e "s/\(.*$$f\.\).*/\1${suffix}/" > manifests/ingress-$$f.yaml-tmp; \
+		mv -f manifests/ingress-$$f.yaml-tmp manifests/ingress-$$f.yaml; \
+		echo ${K3S} kubectl apply -f manifests/ingress-$$f.yaml; \
+	done
