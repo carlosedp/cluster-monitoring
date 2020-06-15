@@ -5,15 +5,15 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     namespace: 'monitoring',
 
     versions+:: {
-      smtpServer: 'v1.0.1',
+      smtpRelay: 'v1.0.1',
     },
 
     imageRepos+:: {
-      smtpServer: 'carlosedp/docker-smtp',
+      smtpRelay: 'carlosedp/docker-smtp',
     },
   },
 
-  smtpServer+:: {
+  smtpRelay+:: {
     deployment:
       local deployment = k.apps.v1.deployment;
       local container = k.apps.v1.deployment.mixin.spec.template.spec.containersType;
@@ -21,8 +21,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
       local podLabels = { run: 'smtp-server' };
 
-      local smtpServer =
-        container.new('smtp-server', $._config.imageRepos.smtpServer + ':' + $._config.versions.smtpServer) +
+      local smtpRelay =
+        container.new('smtp-server', $._config.imageRepos.smtpRelay + ':' + $._config.versions.smtpRelay) +
         container.withPorts(containerPort.newNamed(25, 'smtp')) +
         container.withEnv([
           {
@@ -44,7 +44,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
           { name: 'RELAY_DOMAINS', value: ':192.168.0.0/24:10.0.0.0/16' },
         ]);
 
-      local c = [smtpServer];
+      local c = [smtpRelay];
 
       deployment.new('smtp-server', 1, c, podLabels) +
       deployment.mixin.metadata.withNamespace($._config.namespace) +
@@ -54,9 +54,9 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     service:
       local service = k.core.v1.service;
       local servicePort = k.core.v1.service.mixin.spec.portsType;
-      local smtpServerPorts = servicePort.newNamed('smtp', 25, 'smtp');
+      local smtpRelayPorts = servicePort.newNamed('smtp', 25, 'smtp');
 
-      service.new('smtp-server', $.smtpServer.deployment.spec.selector.matchLabels, smtpServerPorts) +
+      service.new('smtp-server', $.smtpRelay.deployment.spec.selector.matchLabels, smtpRelayPorts) +
       service.mixin.metadata.withNamespace($._config.namespace) +
       service.mixin.metadata.withLabels({ run: 'smtp-server' }),
   },

@@ -13,7 +13,7 @@
       configmapReloader: 'latest',
       prometheusConfigReloader: 'v0.39.0',
       armExporter: 'latest',
-      smtpServer: 'v1.0.1',
+      smtpRelay: 'v1.0.1',
       elasticExporter: '1.0.4rc1',
     },
 
@@ -30,7 +30,7 @@
       configmapReloader: 'carlosedp/configmap-reload',
       prometheusConfigReloader: 'carlosedp/prometheus-config-reloader',
       armExporter: 'carlosedp/arm_exporter',
-      smtpServer: 'carlosedp/docker-smtp',
+      smtpRelay: 'carlosedp/docker-smtp',
       elasticExporter: 'carlosedp/elasticsearch-exporter',
     },
   },
