@@ -130,7 +130,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
   newTLSSecret(name, namespace, crt, key):: (
     local secret = k.core.v1.secret;
 
-    secret.new('ingress-secret') +
+    secret.new(name) +
     secret.mixin.metadata.withNamespace(namespace) +
     secret.withType('kubernetes.io/tls') +
     secret.withData(
