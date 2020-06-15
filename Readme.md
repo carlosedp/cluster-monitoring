@@ -4,7 +4,7 @@ The Prometheus Operator for Kubernetes provides easy monitoring definitions for 
 
 This have been tested on a hybrid ARM64 / X84-64 Kubernetes cluster deployed as [this article](https://medium.com/@carlosedp/building-a-hybrid-x86-64-and-arm-kubernetes-cluster-e7f94ff6e51d).
 
-This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator.
+This repository collects Kubernetes manifests, Grafana dashboards, and Prometheus rules combined with documentation and scripts to provide easy to operate end-to-end Kubernetes cluster monitoring with Prometheus using the Prometheus Operator. The container images support AMD64, ARM64, ARM and PPC64le architectures.
 
 The content of this project is written in jsonnet and is an extension of the fantastic [kube-prometheus](https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus) project.
 
@@ -25,7 +25,7 @@ There are additional modules (disabled by default) to monitor other components o
 
 The additional modules are:
 
-* arm-exporter to generate temperature metrics (works on some ARM boards like RaspberryPi)
+* ARM-exporter to generate temperature metrics (works on some ARM boards like RaspberryPi)
 * MetalLB metrics
 * Traefik metrics
 * ElasticSearch metrics
@@ -36,22 +36,32 @@ There are also options to set the ingress domain suffix and enable persistence f
 
 The ingresses can use TLS with the default self-signed certificate from your Ingress controller by setting `TLSingress` to `true` and use a custom certificate by creating the files `server.crt` and `server.key` and enabling the `UseProvidedCerts` parameter at `vars.jsonnet`.
 
-After changing these parameters, rebuild the manifests with `make`.
+Changing these parameters require a rebuild of the manifests with `make`.
 
 ## Quickstart (non K3s)
 
-The repository already provides a set of compiled manifests to be applied into the cluster. The deployment can be customized thru the jsonnet files.
+The repository already provides a set of compiled manifests to be applied into the cluster or the deployment can be customized thru the jsonnet files.
 
-For the ingresses, edit `suffixDomain` to have your cluster URL suffix. This will be your ingresses will be exposed (ex. grafana.yourcluster.domain.com).
+If you only need the default features and adjust your cluster URL for the ingress, there is no need to rebuild the manifests(and install all tools). Use the `change_suffix` target with  argument `suffix=[suffixURL]` with the URL of your cluster ingress controller. If you have a local cluster, use the nip.io domain resolver passing `your_cluster_ip.nip.io` to the `suffix` argument. After this, just run `make deploy`.
 
-To deploy the stack, run:
+```bash
+# Update the ingress URLs
+make change_suffix suffix=[suffixURL]
+
+# Deploy
+make deploy
+```
+
+To customize the manifests, edit `vars.jsonnet` and rebuild the manifests.
 
 ```bash
 $ make vendor
+$ make
 $ make deploy
 
 # Or manually:
 
+$ make vendor
 $ make
 $ kubectl apply -f manifests/setup/
 $ kubectl apply -f manifests/
@@ -63,9 +73,7 @@ If you enable the SMTP relay for Gmail in `vars.jsonnet`, the pod will be in an 
 
 ## Quickstart on Minikube
 
-You can also test and develop the monitoring stack on Minikube. First install minikube by following the instructions [here](https://kubernetes.io/docs/tasks/tools/install-minikube/) for your platform.
-
-Then, adjust and deploy the stack:
+You can also test and develop the monitoring stack on Minikube. First install minikube by following the instructions [here](https://kubernetes.io/docs/tasks/tools/install-minikube/) for your platform. Then, follow the instructions similar to the non-K3s deployment:
 
 ```bash
 # Start minikube (if not started)
@@ -77,9 +85,14 @@ minikube addons enable ingress
 # Get the minikube instance IP
 minikube ip
 
-# Adjust the "suffixDomain" line in `vars.jsonnet` to the IP of the minikube instance keeping the "nip.io"
-# Build and deploy the monitoring stack
+# Run the change_suffix target
+make change_suffix suffix=[minikubeIP.nip.io]
+
+# or customize additional params on vars.jsonnet and rebuild
 make vendor
+make
+
+# and deploy the manifests
 make deploy
 
 # Get the URLs for the exposed applications and open in your browser
@@ -99,6 +112,7 @@ After changing these values to deploy the stack, run:
 
 ```bash
 $ make vendor
+$ make
 $ make deploy
 
 # Or manually:
@@ -125,7 +139,7 @@ To list the created ingresses, run `kubectl get ingress --all-namespaces`, if yo
 
 ## Updating the ingress suffixes
 
-To avoid rebuilding all manifests, there is a make target to update the Ingress URL suffix to a different suffix (using nip.io) to match your host IP. Run `make change_suffix IP="[IP-ADDRESS]"` to change the ingress route IP for Grafana, Prometheus and Alertmanager and reapply the manifests. If you have a K3s cluster, run `make change_suffix IP="[IP-ADDRESS] K3S=k3s`.
+To avoid rebuilding all manifests, there is a make target to update the Ingress URL suffix to a different suffix. Run `make change_suffix suffix="[clusterURL]"` to change the ingress route IP for Grafana, Prometheus and Alertmanager and reapply the manifests.
 
 ## Customizing
 
