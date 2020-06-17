@@ -69,6 +69,7 @@ local vars = import 'vars.jsonnet';
     local pvc = k.core.v1.persistentVolumeClaim,
     prometheus+: {
       spec+: {
+               // Here one can use parameters from https://coreos.com/operators/prometheus/docs/latest/api.html#prometheusspec
                replicas: $._config.prometheus.replicas,
                retention: '15d',
                externalUrl: 'http://' + $._config.urls.prom_ingress,
@@ -78,7 +79,8 @@ local vars = import 'vars.jsonnet';
                     volumeClaimTemplate:
                       pvc.new() +
                       pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
-                      pvc.mixin.spec.resources.withRequests({ storage: '20Gi' }),
+                      pvc.mixin.spec.resources.withRequests({ storage: vars.enablePersistence.prometheusSizePV }) +
+                      (if vars.enablePersistence.prometheusPV != '' then pvc.mixin.spec.withVolumeName(vars.enablePersistence.prometheusPV)),
                     // Uncomment below to define a StorageClass name
                     //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
                   },
@@ -120,7 +122,8 @@ local vars = import 'vars.jsonnet';
       pvc.mixin.metadata.withNamespace($._config.namespace) +
       pvc.mixin.metadata.withName('grafana-storage') +
       pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
-      pvc.mixin.spec.resources.withRequests({ storage: '2Gi' }),
+      pvc.mixin.spec.resources.withRequests({ storage: vars.enablePersistence.grafanaSizePV }) +
+      (if vars.enablePersistence.grafanaPV != '' then pvc.mixin.spec.withVolumeName(vars.enablePersistence.grafanaPV)),
   } else {},
 
   grafanaDashboards+:: $._config.grafanaDashboards,

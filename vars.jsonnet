@@ -52,10 +52,15 @@
   TLSCertificate: importstr 'server.crt',
   TLSKey: importstr 'server.key',
 
-  // Setting these to false, defaults to emptyDirs
+  // Setting these to false, defaults to emptyDirs.
+  // If using a pre-created PV, fill in the names. If blank, they will use the default StorageClass
   enablePersistence: {
     prometheus: false,
     grafana: false,
+    prometheusPV: '',
+    prometheusSizePV: '2Gi',
+    grafanaPV: '',
+    grafanaSizePV: '20Gi',
   },
 
   // Grafana "from" email

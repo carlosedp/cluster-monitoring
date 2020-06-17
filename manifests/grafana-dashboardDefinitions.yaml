@@ -6467,6 +6467,7 @@ items:
                           "fill": 1,
                           "format": "percentunit",
                           "id": 1,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -7275,7 +7276,7 @@ items:
                           ],
                           "targets": [
                               {
-                                  "expr": "count(mixin_pod_workload{cluster=\"$cluster\"}) by (namespace)",
+                                  "expr": "sum(kube_pod_owner{cluster=\"$cluster\"}) by (namespace)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -7694,7 +7695,7 @@ items:
                           ],
                           "targets": [
                               {
-                                  "expr": "count(mixin_pod_workload{cluster=\"$cluster\"}) by (namespace)",
+                                  "expr": "sum(kube_pod_owner{cluster=\"$cluster\"}) by (namespace)",
                                   "format": "table",
                                   "instant": true,
                                   "intervalFactor": 2,
@@ -7820,6 +7821,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 1,
                           "id": 11,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -10236,6 +10238,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 1,
                           "id": 9,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -13185,6 +13188,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 10,
                           "id": 6,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -13283,6 +13287,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 10,
                           "id": 7,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -13381,6 +13386,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 10,
                           "id": 8,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -13479,6 +13485,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 10,
                           "id": 9,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -13577,6 +13584,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 10,
                           "id": 10,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -13675,6 +13683,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 10,
                           "id": 11,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -14666,6 +14675,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 1,
                           "id": 5,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -16824,6 +16834,7 @@ items:
                           "datasource": "$datasource",
                           "fill": 1,
                           "id": 5,
+                          "interval": "1m",
                           "legend": {
                               "avg": false,
                               "current": false,
@@ -17850,7 +17861,7 @@ items:
                           "steppedLine": false,
                           "targets": [
                               {
-                                  "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])\n* on (namespace,pod) \ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\"}) by (workload))\n",
+                                  "expr": "(sum(irate(container_network_transmit_packets_dropped_total{cluster=\"$cluster\", namespace=~\"$namespace\"}[$__interval])\n* on (namespace,pod)\ngroup_left(workload,workload_type) mixin_pod_workload{cluster=\"$cluster\", namespace=~\"$namespace\", workload=~\".+\", workload_type=\"$type\"}) by (workload))\n",
                                   "format": "time_series",
                                   "intervalFactor": 2,
                                   "legendFormat": "{{workload}}",
