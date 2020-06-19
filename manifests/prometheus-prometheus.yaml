@@ -25,8 +25,8 @@ spec:
     - name: alertmanager-main
       namespace: monitoring
       port: web
-  externalUrl: http://prometheus.192.168.15.15.nip.io
-  image: prom/prometheus:v2.18.1
+  externalUrl: http://prometheus.192.168.1.15.nip.io
+  image: prom/prometheus:v2.19.1
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorNamespaceSelector: {}
@@ -40,6 +40,8 @@ spec:
     matchLabels:
       prometheus: k8s
       role: alert-rules
+  scrapeInterval: 30s
+  scrapeTimeout: 30s
   securityContext:
     fsGroup: 2000
     runAsNonRoot: true
@@ -47,4 +49,4 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: v2.18.1
+  version: v2.19.1

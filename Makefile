@@ -27,7 +27,7 @@ vendor: $(JB_BINARY) jsonnetfile.json jsonnetfile.lock.json       ## Download ve
 
 fmt:       ## Formats all jsonnet and libsonnet files (except on vendor dir)
 	@echo "Formatting jsonnet files"
-	@find . -name 'vendor' -prune -o -name '*.libsonnet' -o -name '*.jsonnet' -print | xargs -n 1 -- $(JSONNET_FMT) -i
+	@find . -type f \( -iname "*.libsonnet" -or -iname "*.jsonnet" \) -print -or -name "vendor" -prune | xargs -n 1 -- $(JSONNET_FMT) -i
 
 deploy:       		## Deploy current manifests to configured cluster
 	echo "Deploying stack setup manifests..."

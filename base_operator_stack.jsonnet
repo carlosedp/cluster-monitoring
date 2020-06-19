@@ -71,7 +71,9 @@ local vars = import 'vars.jsonnet';
       spec+: {
                // Here one can use parameters from https://coreos.com/operators/prometheus/docs/latest/api.html#prometheusspec
                replicas: $._config.prometheus.replicas,
-               retention: '15d',
+               retention: vars.prometheus.retention,
+               scrapeInterval: vars.prometheus.scrapeInterval,
+               scrapeTimeout: vars.prometheus.scrapeTimeout,
                externalUrl: 'http://' + $._config.urls.prom_ingress,
              }
              + (if vars.enablePersistence.prometheus then {

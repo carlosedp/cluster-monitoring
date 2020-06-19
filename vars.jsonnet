@@ -39,11 +39,11 @@
 
   k3s: {
     enabled: false,
-    master_ip: ['192.168.15.15'],
+    master_ip: ['192.168.1.15'],
   },
 
   // Domain suffix for the ingresses
-  suffixDomain: '192.168.15.15.nip.io',
+  suffixDomain: '192.168.1.15.nip.io',
   // If TLSingress is true, a self-signed HTTPS ingress with redirect will be created
   TLSingress: true,
   // If UseProvidedCerts is true, provided files will be used on created HTTPS ingresses.
@@ -63,6 +63,12 @@
     grafanaSizePV: '20Gi',
   },
 
+  // Configuration for Prometheus deployment
+  prometheus: {
+    retention: '15d',
+    scrapeInterval: '30s',
+    scrapeTimeout: '30s',
+  },
   // Grafana "from" email
   grafana: {
     from_address: 'myemail@gmail.com',

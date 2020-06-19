@@ -9,9 +9,9 @@ REPO=carlosedp
 
 export AOR_VERSION=2.3
 export KSM_VERSION=v1.9.6
-export PROM_OP_VERSION=v0.39.0
+export PROM_OP_VERSION=v0.40.0
 export KUBE_RBAC_VERSION=v0.5.0
-export PROM_CONFIG_RELOADER_VERSION=v0.39.0
+export PROM_CONFIG_RELOADER_VERSION=v0.40.0
 export CONFIGMAP_RELOAD_VERSION=latest
 #-------------------------------------------------------------------------------
 # Kubernetes addon-resizer
