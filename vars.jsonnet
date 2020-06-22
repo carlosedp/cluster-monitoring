@@ -52,14 +52,18 @@
   TLSCertificate: importstr 'server.crt',
   TLSKey: importstr 'server.key',
 
-  // Setting these to false, defaults to emptyDirs.
-  // If using a pre-created PV, fill in the names. If blank, they will use the default StorageClass
+  // Persistent volume configuration
   enablePersistence: {
+    // Setting these to false, defaults to emptyDirs.
     prometheus: false,
     grafana: false,
+    // If using a pre-created PV, fill in the names below. If blank, they will use the default StorageClass
     prometheusPV: '',
-    prometheusSizePV: '2Gi',
     grafanaPV: '',
+    // If required to use a specific storageClass, keep the PV names above blank and fill the storageClass name below.
+    storageClass: '',
+    // Define the PV sizes below
+    prometheusSizePV: '2Gi',
     grafanaSizePV: '20Gi',
   },
 

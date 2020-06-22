@@ -82,9 +82,8 @@ local vars = import 'vars.jsonnet';
                       pvc.new() +
                       pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
                       pvc.mixin.spec.resources.withRequests({ storage: vars.enablePersistence.prometheusSizePV }) +
-                      (if vars.enablePersistence.prometheusPV != null then pvc.mixin.spec.withVolumeName(vars.enablePersistence.prometheusPV)),
-                    // Uncomment below to define a StorageClass name
-                    //+ pvc.mixin.spec.withStorageClassName('nfs-master-ssd'),
+                      (if vars.enablePersistence.prometheusPV != null then pvc.mixin.spec.withVolumeName(vars.enablePersistence.prometheusPV)) +
+                      (if vars.enablePersistence.storageClass != null then pvc.mixin.spec.withStorageClassName(vars.enablePersistence.storageClass)),
                   },
                 } else {}),
     },
@@ -125,7 +124,9 @@ local vars = import 'vars.jsonnet';
       pvc.mixin.metadata.withName('grafana-storage') +
       pvc.mixin.spec.withAccessModes('ReadWriteOnce') +
       pvc.mixin.spec.resources.withRequests({ storage: vars.enablePersistence.grafanaSizePV }) +
-      (if vars.enablePersistence.grafanaPV != null then pvc.mixin.spec.withVolumeName(vars.enablePersistence.grafanaPV)),
+      (if vars.enablePersistence.grafanaPV != null then pvc.mixin.spec.withVolumeName(vars.enablePersistence.grafanaPV)) +
+      (if vars.enablePersistence.storageClass != null then pvc.mixin.spec.withStorageClassName(vars.enablePersistence.storageClass)),
+
   } else {},
 
   grafanaDashboards+:: $._config.grafanaDashboards,
