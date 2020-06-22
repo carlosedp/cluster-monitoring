@@ -1,0 +1,5 @@
+{
+    "jsonnet.libPaths": [
+        "vendor/",
+    ],
+}
