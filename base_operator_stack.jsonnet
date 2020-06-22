@@ -136,7 +136,7 @@ local vars = import 'vars.jsonnet';
       local I = utils.newIngress('alertmanager-main', $._config.namespace, $._config.urls.alert_ingress, '/', 'alertmanager-main', 'web');
       if vars.TLSingress then
         if vars.UseProvidedCerts then
-          utils.addIngressTLS(I, 'ingress-TLS-secret')
+          utils.addIngressTLS(I, 'ingress-secret')
         else
           utils.addIngressTLS(I)
       else
@@ -146,7 +146,7 @@ local vars = import 'vars.jsonnet';
       local I = utils.newIngress('grafana', $._config.namespace, $._config.urls.grafana_ingress, '/', 'grafana', 'http');
       if vars.TLSingress then
         if vars.UseProvidedCerts then
-          utils.addIngressTLS(I, 'ingress-TLS-secret')
+          utils.addIngressTLS(I, 'ingress-secret')
         else
           utils.addIngressTLS(I)
       else
@@ -156,7 +156,7 @@ local vars = import 'vars.jsonnet';
       local I = utils.newIngress('prometheus-k8s', $._config.namespace, $._config.urls.prom_ingress, '/', 'prometheus-k8s', 'web');
       if vars.TLSingress then
         if vars.UseProvidedCerts then
-          utils.addIngressTLS(I, 'ingress-TLS-secret')
+          utils.addIngressTLS(I, 'ingress-secret')
         else
           utils.addIngressTLS(I)
       else
@@ -188,6 +188,6 @@ local vars = import 'vars.jsonnet';
     //     secret.mixin.metadata.withNamespace($._config.namespace),
   } + if vars.UseProvidedCerts then {
     secret:
-      utils.newTLSSecret('ingress-TLS-secret', $._config.namespace, vars.TLSCertificate, vars.TLSKey),
+      utils.newTLSSecret('ingress-secret', $._config.namespace, vars.TLSCertificate, vars.TLSKey),
   } else {},
 }
