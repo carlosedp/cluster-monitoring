@@ -18,6 +18,9 @@ manifests: $(JSONNET_BIN)       ## Builds the  manifests
 	rm -rf manifests
 	./scripts/build.sh main.jsonnet $(JSONNET_BIN)
 
+docker:		## Builds the manifests in a Docker container to avoid installing pre-requisites (Golang, Jsonnet, etc)
+	docker run -it --rm -v $(PWD):/work -w /work --rm golang make vendor && make
+
 update_libs: $(JB_BINARY)       ## Updates vendor libs. Require a regeneration of the manifests
 	$(JB_BINARY) update
 
