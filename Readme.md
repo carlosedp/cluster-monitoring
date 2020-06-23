@@ -38,6 +38,8 @@ The ingresses can use TLS with the default self-signed certificate from your Ing
 
 Persistence for Prometheus and Grafana can be enabled in the `enablePersistence` section. Setting each to `true`, creates the volume PVCs. If no PV names are defined in `prometheusPV` and `grafanaPV`, the default StorageClass will be used to dynamically create the PVs The sizes can be adjusted in `prometheusSizePV` and `grafanaSizePV`.
 
+If using pre-created persistent volumes (samples in [`samples`](samples)), check permissions on the directories hosting the files. The `UID:GID` for Prometheus is `1000:0` and for Grafana is `472:472`.
+
 Changing these parameters require a rebuild of the manifests with `make` followed by `make deploy`. To avoid installing all pre-requisites like Golang, Jsonnet, Jsonnet-bundler, use the target `make docker` to build in a container.
 
 ## Quickstart (non K3s)
