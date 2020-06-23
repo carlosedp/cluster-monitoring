@@ -58,6 +58,7 @@ local vars = import 'vars.jsonnet';
           },
         },
       },
+      plugins: vars.grafana.plugins,
     },
   },
   //---------------------------------------

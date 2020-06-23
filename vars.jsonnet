@@ -73,8 +73,11 @@
     scrapeInterval: '30s',
     scrapeTimeout: '30s',
   },
-  // Grafana "from" email
   grafana: {
+    // Grafana "from" email
     from_address: 'myemail@gmail.com',
+    // Plugins to be installed at runtime.
+    //Ex. plugins: ['grafana-piechart-panel', 'grafana-clock-panel'],
+    plugins: [],
   },
 }
