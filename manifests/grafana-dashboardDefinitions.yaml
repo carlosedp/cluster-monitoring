@@ -2015,7 +2015,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / API server",
-          "uid": "09ec8aa1e996d6ffcd6817bbaff4db1b",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -3840,7 +3840,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Networking / Cluster",
-          "uid": "ff635a025bcfea7bc3dd4f508990a3e9",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -4966,7 +4966,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Controller Manager",
-          "uid": "72e0e05bef5099e5f049b05fdc429ed4",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -6445,7 +6445,7 @@ items:
           },
           "timezone": "utc",
           "title": "CoreDNS",
-          "uid": "q-QViRumz",
+          "uid": "",
           "version": 1
       }
   kind: ConfigMap
@@ -8988,7 +8988,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Compute Resources / Cluster",
-          "uid": "efa86fd1d0c121a26444b636a3f509a8",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -11236,7 +11236,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Compute Resources / Namespace (Pods)",
-          "uid": "85a562078cdf77779eaa1add43ccec1e",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -12183,7 +12183,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Compute Resources / Node (Pods)",
-          "uid": "200ac8fdbfbb74b39aff88118e4d1c2c",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -13924,7 +13924,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Compute Resources / Pod",
-          "uid": "6581e46e4e5c7ba40a07646395ef7b23",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -15923,7 +15923,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Compute Resources / Workload",
-          "uid": "a164a7f0339f99e89cea5cb47e9be617",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -18078,7 +18078,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Compute Resources / Namespace (Workloads)",
-          "uid": "a87fb0d919ec0ea5f6543124e16c42a5",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -20577,7 +20577,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Kubelet",
-          "uid": "3138fa155d5915769fbded898ac09fd9",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -22666,7 +22666,7 @@ items:
           },
           "timezone": "browser",
           "title": "Kubernetes cluster monitoring (via Prometheus)",
-          "uid": "82pBZCmRkasd",
+          "uid": "",
           "version": 1
       }
   kind: ConfigMap
@@ -24079,7 +24079,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Networking / Namespace (Pods)",
-          "uid": "8b7a8b326d7a6f1f04244066368c67af",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -25760,7 +25760,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Networking / Namespace (Workload)",
-          "uid": "bbb2a765a623ae38130206c7d94a160f",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -26708,7 +26708,7 @@ items:
           },
           "timezone": "UTC",
           "title": "USE Method / Cluster",
-          "uid": "3e97d1d02672cdd0861f4c97c64f89b2",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -27683,7 +27683,7 @@ items:
           },
           "timezone": "UTC",
           "title": "USE Method / Node",
-          "uid": "fac67cfbe174d3ef53eb473d73d9212f",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -28661,7 +28661,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Nodes",
-          "uid": "fa49a4706d07a042595b664c87fb33ea",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -29220,7 +29220,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Persistent Volumes",
-          "uid": "919b92a8e8041bd567af9edab12c840c",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -30400,7 +30400,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Networking / Pod",
-          "uid": "7a18067ce943a40ae25454675c19ff5c",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -32573,7 +32573,7 @@ items:
           },
           "timezone": "browser",
           "title": "⭐️ Kubernetes Monitoring Overview",
-          "uid": "82pBZCmRkasd",
+          "uid": "",
           "version": 1
       }
   kind: ConfigMap
@@ -36623,7 +36623,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Proxy",
-          "uid": "632e265de029684c40b21cb76bca4f94",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -37673,7 +37673,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Scheduler",
-          "uid": "2e6b6a3b4bddf1427b3a55aa1311c656",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -38584,7 +38584,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / StatefulSets",
-          "uid": "a31c1f46e6f727cb37c0d731a7245005",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap
@@ -39970,7 +39970,7 @@ items:
           },
           "timezone": "UTC",
           "title": "Kubernetes / Networking / Workload",
-          "uid": "728bf77cc1166d2f3133bf25846876cc",
+          "uid": "",
           "version": 0
       }
   kind: ConfigMap

@@ -1,16 +1,14 @@
 {
   "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": "-- Grafana --",
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
+    "list": [{
+      "builtIn": 1,
+      "datasource": "-- Grafana --",
+      "enable": true,
+      "hide": true,
+      "iconColor": "rgba(0, 211, 255, 1)",
+      "name": "Annotations & Alerts",
+      "type": "dashboard"
+    }]
   },
   "description": "A dashboard for the CoreDNS DNS server.",
   "editable": true,
@@ -19,8 +17,7 @@
   "id": 14,
   "iteration": 1549319226130,
   "links": [],
-  "panels": [
-    {
+  "panels": [{
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -54,17 +51,14 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "total",
-          "yaxis": 2
-        }
-      ],
+      "seriesOverrides": [{
+        "alias": "total",
+        "yaxis": 2
+      }],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m])) by (proto)",
           "format": "time_series",
           "intervalFactor": 2,
@@ -99,8 +93,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "pps",
           "logBase": 1,
           "max": null,
@@ -154,8 +147,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
+      "seriesOverrides": [{
           "alias": "total",
           "yaxis": 2
         },
@@ -167,15 +159,13 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum(rate(coredns_dns_request_type_count_total{instance=~\"$instance\"}[5m])) by (type)",
-          "intervalFactor": 2,
-          "legendFormat": "{{type}}",
-          "refId": "A",
-          "step": 60
-        }
-      ],
+      "targets": [{
+        "expr": "sum(rate(coredns_dns_request_type_count_total{instance=~\"$instance\"}[5m])) by (type)",
+        "intervalFactor": 2,
+        "legendFormat": "{{type}}",
+        "refId": "A",
+        "step": 60
+      }],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
@@ -194,8 +184,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "pps",
           "logBase": 1,
           "max": null,
@@ -249,17 +238,14 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "total",
-          "yaxis": 2
-        }
-      ],
+      "seriesOverrides": [{
+        "alias": "total",
+        "yaxis": 2
+      }],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "sum(rate(coredns_dns_request_count_total{instance=~\"$instance\"}[5m])) by (zone)",
           "intervalFactor": 2,
           "legendFormat": "{{zone}}",
@@ -292,8 +278,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "pps",
           "logBase": 1,
           "max": null,
@@ -347,17 +332,14 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "total",
-          "yaxis": 2
-        }
-      ],
+      "seriesOverrides": [{
+        "alias": "total",
+        "yaxis": 2
+      }],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "sum(rate(coredns_dns_request_do_count_total{instance=~\"$instance\"}[5m]))",
           "intervalFactor": 2,
           "legendFormat": "DO",
@@ -390,8 +372,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "pps",
           "logBase": 1,
           "max": null,
@@ -445,8 +426,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
+      "seriesOverrides": [{
           "alias": "tcp:90",
           "yaxis": 2
         },
@@ -462,8 +442,7 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto))",
           "intervalFactor": 2,
           "legendFormat": "{{proto}}:99 ",
@@ -503,8 +482,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "bytes",
           "logBase": 1,
           "max": null,
@@ -558,8 +536,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
+      "seriesOverrides": [{
           "alias": "tcp:90",
           "yaxis": 1
         },
@@ -575,8 +552,7 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto))",
           "intervalFactor": 2,
           "legendFormat": "{{proto}}:99 ",
@@ -616,8 +592,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "bytes",
           "logBase": 1,
           "max": null,
@@ -675,15 +650,13 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum(rate(coredns_dns_response_rcode_count_total{instance=~\"$instance\"}[5m])) by (rcode)",
-          "intervalFactor": 2,
-          "legendFormat": "{{rcode}}",
-          "refId": "A",
-          "step": 40
-        }
-      ],
+      "targets": [{
+        "expr": "sum(rate(coredns_dns_response_rcode_count_total{instance=~\"$instance\"}[5m])) by (rcode)",
+        "intervalFactor": 2,
+        "legendFormat": "{{rcode}}",
+        "refId": "A",
+        "step": 40
+      }],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
@@ -702,8 +675,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "pps",
           "logBase": 1,
           "max": null,
@@ -761,8 +733,7 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_request_duration_milliseconds_bucket{instance=~\"$instance\"}[5m])) by (le, job))",
           "intervalFactor": 2,
           "legendFormat": "99%",
@@ -802,8 +773,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "ms",
           "logBase": 1,
           "max": null,
@@ -857,8 +827,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
+      "seriesOverrides": [{
           "alias": "udp:50%",
           "yaxis": 1
         },
@@ -878,8 +847,7 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"udp\"}[5m])) by (le,proto)) ",
           "intervalFactor": 2,
           "legendFormat": "{{proto}}:99%",
@@ -920,8 +888,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "bytes",
           "logBase": 1,
           "max": null,
@@ -975,8 +942,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
+      "seriesOverrides": [{
           "alias": "udp:50%",
           "yaxis": 1
         },
@@ -996,8 +962,7 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "histogram_quantile(0.99, sum(rate(coredns_dns_response_size_bytes_bucket{instance=~\"$instance\",proto=\"tcp\"}[5m])) by (le,proto)) ",
           "intervalFactor": 2,
           "legendFormat": "{{proto}}:99%",
@@ -1038,8 +1003,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "bytes",
           "logBase": 1,
           "max": null,
@@ -1097,15 +1061,13 @@
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum(coredns_cache_size{instance=~\"$instance\"}) by (type)",
-          "intervalFactor": 2,
-          "legendFormat": "{{type}}",
-          "refId": "A",
-          "step": 40
-        }
-      ],
+      "targets": [{
+        "expr": "sum(coredns_cache_size{instance=~\"$instance\"}) by (type)",
+        "intervalFactor": 2,
+        "legendFormat": "{{type}}",
+        "refId": "A",
+        "step": 40
+      }],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
@@ -1124,8 +1086,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "short",
           "logBase": 1,
           "max": null,
@@ -1179,17 +1140,14 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "misses",
-          "yaxis": 2
-        }
-      ],
+      "seriesOverrides": [{
+        "alias": "misses",
+        "yaxis": 2
+      }],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
-      "targets": [
-        {
+      "targets": [{
           "expr": "sum(rate(coredns_cache_hits_total{instance=~\"$instance\"}[5m])) by (type)",
           "intervalFactor": 2,
           "legendFormat": "hits:{{type}}",
@@ -1222,8 +1180,7 @@
         "show": true,
         "values": []
       },
-      "yaxes": [
-        {
+      "yaxes": [{
           "format": "pps",
           "logBase": 1,
           "max": null,
@@ -1251,33 +1208,31 @@
     "coredns"
   ],
   "templating": {
-    "list": [
-      {
-        "allValue": ".*",
-        "current": {
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "prometheus",
-        "definition": "",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Instance",
-        "multi": false,
-        "name": "instance",
-        "options": [],
-        "query": "up{job=\"coredns\"}",
-        "refresh": 1,
-        "regex": ".*instance=\"(.*?)\".*",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      }
-    ]
+    "list": [{
+      "allValue": ".*",
+      "current": {
+        "text": "All",
+        "value": "$__all"
+      },
+      "datasource": "prometheus",
+      "definition": "",
+      "hide": 0,
+      "includeAll": true,
+      "label": "Instance",
+      "multi": false,
+      "name": "instance",
+      "options": [],
+      "query": "up{job=\"coredns\"}",
+      "refresh": 1,
+      "regex": ".*instance=\"(.*?)\".*",
+      "skipUrlSync": false,
+      "sort": 0,
+      "tagValuesQuery": "",
+      "tags": [],
+      "tagsQuery": "",
+      "type": "query",
+      "useTags": false
+    }]
   },
   "time": {
     "from": "now-3h",
@@ -1311,6 +1266,5 @@
   },
   "timezone": "utc",
   "title": "CoreDNS",
-  "uid": "q-QViRumz",
   "version": 1
 }
