@@ -1756,6 +1756,5 @@
   },
   "timezone": "browser",
   "title": "Kubernetes cluster monitoring (via Prometheus)",
-  "uid": "82pBZCmRkasd",
   "version": 1
 }
