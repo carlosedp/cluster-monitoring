@@ -4,7 +4,6 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 {
   _config+:: {
     namespace: 'monitoring',
-    // Add custom dashboards
     grafanaDashboards+:: {
       'nginx-dashboard.json': (import '../grafana-dashboards/nginx-dashboard.json'),
     },
@@ -20,7 +19,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       local nginxPort = servicePort.newNamed('prometheus', 10254, 10254);
 
       service.new('nginx-ingress-metrics', {'app.kubernetes.io/name': 'ingress-nginx'}, nginxPort) +
-      service.mixin.metadata.withNamespace('nginx-ingress') +
+      service.mixin.metadata.withNamespace('ingress-nginx') +
       service.mixin.metadata.withLabels({'app.kubernetes.io/name': 'ingress-nginx'}) +
       service.mixin.spec.withClusterIp('None'),
 
@@ -37,8 +36,6 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     serviceAccount:
       utils.newServiceAccount('nginx-exporter', $._config.namespace, null),
 
-
-    // Creates a ClusterRoleBinding between a `clusterRole` and a `serviceAccount` on `serviceAccountNamespace`
     clusterRoleBinding:
       utils.newClusterRoleBinding('nginx-exporter', 'nginx-exporter', $._config.namespace, 'nginx-exporter', null),
 
