@@ -18,7 +18,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       local servicePort = k.core.v1.service.mixin.spec.portsType;
       local nginxPort = servicePort.newNamed('prometheus', 10254, 10254);
 
-      service.new('nginx-ingress-metrics', {'app.kubernetes.io/name': 'ingress-nginx'}, nginxPort) +
+      service.new('ingress-nginx-metrics', {'app.kubernetes.io/name': 'ingress-nginx'}, nginxPort) +
       service.mixin.metadata.withNamespace('ingress-nginx') +
       service.mixin.metadata.withLabels({'app.kubernetes.io/name': 'ingress-nginx'}) +
       service.mixin.spec.withClusterIp('None'),
