@@ -36,6 +36,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     serviceAccount:
       utils.newServiceAccount('nginx-exporter', $._config.namespace, null),
 
+
     clusterRoleBinding:
       utils.newClusterRoleBinding('nginx-exporter', 'nginx-exporter', $._config.namespace, 'nginx-exporter', null),
 

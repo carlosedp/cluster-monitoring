@@ -44,11 +44,11 @@
 
   k3s: {
     enabled: false,
-    master_ip: ['192.168.4.32'],
+    master_ip: ['192.168.1.15'],
   },
 
   // Domain suffix for the ingresses
-  suffixDomain: '192.168.4.32.nip.io',
+  suffixDomain: '192.168.1.15.nip.io',
   // If TLSingress is true, a self-signed HTTPS ingress with redirect will be created
   TLSingress: true,
   // If UseProvidedCerts is true, provided files will be used on created HTTPS ingresses.
