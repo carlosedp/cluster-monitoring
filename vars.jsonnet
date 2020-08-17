@@ -26,6 +26,11 @@
       file: import 'modules/metallb.jsonnet',
     },
     {
+      name: 'nginxExporter',
+      enabled: false,
+      file: import 'modules/nginx.jsonnet',
+    },
+    {
       name: 'traefikExporter',
       enabled: false,
       file: import 'modules/traefik.jsonnet',
