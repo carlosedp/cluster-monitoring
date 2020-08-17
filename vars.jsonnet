@@ -27,7 +27,7 @@
     },
     {
       name: 'nginxExporter',
-      enabled: true,
+      enabled: false,
       file: import 'modules/nginx.jsonnet',
     },
     {
