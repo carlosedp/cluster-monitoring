@@ -49,6 +49,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
           '/bin/rpi_exporter',
           '--web.listen-address=127.0.0.1:9243',
         ]) +
+        container.mixin.securityContext.withPrivileged(true) +
         container.mixin.resources.withRequests({ cpu: '50m', memory: '50Mi' }) +
         container.mixin.resources.withLimits({ cpu: '100m', memory: '100Mi' });
 
