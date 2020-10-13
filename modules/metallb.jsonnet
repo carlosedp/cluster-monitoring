@@ -35,12 +35,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       ], null),
 
 
-    serviceAccount:
-      utils.newServiceAccount('metallb-exporter', $._config.namespace, null),
-
-
     clusterRoleBinding:
-      utils.newClusterRoleBinding('metallb-exporter', 'metallb-exporter', $._config.namespace, 'metallb-exporter', null),
+      utils.newClusterRoleBinding('metallb-exporter', 'prometheus-k8s', $._config.namespace, 'metallb-exporter', null),
 
 
   },
