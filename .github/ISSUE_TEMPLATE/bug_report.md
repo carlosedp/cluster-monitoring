@@ -14,9 +14,10 @@ A clear and concise description of what the bug is. Please do not use an Issue t
 
 1. Which kind of Kubernetes cluster are you using? (Kubernetes, K3s, etc)
 2. Are all pods in "Running" state? If any is in CrashLoopback or Error, check it's logs.
-2. You cluster already works with other applications that have HTTP/HTTPS? If not, first deploy an example NGINX and test it's access thru the created URL.
-3. If you enabled persistence, do your cluster already provides persistent storage (PVs) to other applications?
-4. Does it provides dynamic storage thru StorageClass?
+3. You cluster already works with other applications that have HTTP/HTTPS? If not, first deploy an example NGINX and test it's access thru the created URL.
+4. If you enabled persistence, do your cluster already provides persistent storage (PVs) to other applications?
+5. Does it provides dynamic storage thru StorageClass?
+6. If you deployed the monitoring stack and some targets are not available or showing no metrics in Grafana, make sure you don't have IPTables rules or use a firewall on your nodes before deploying Kubernetes.
 
 **Customizations**
 
