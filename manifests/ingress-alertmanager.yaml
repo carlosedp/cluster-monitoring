@@ -9,9 +9,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: alertmanager-main
-          servicePort: web
+          service:
+            name: alertmanager-main
+            port:
+              name: web
         path: /
+        pathType: Prefix
   tls:
   - hosts:
     - alertmanager.192.168.1.15.nip.io

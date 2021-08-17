@@ -9,9 +9,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: prometheus-k8s
-          servicePort: web
+          service:
+            name: prometheus-k8s
+            port:
+              name: web
         path: /
+        pathType: Prefix
   tls:
   - hosts:
     - prometheus.192.168.1.15.nip.io
