@@ -40,6 +40,11 @@
       enabled: false,
       file: import 'modules/elasticsearch_exporter.jsonnet',
     },
+    {
+      name: 'speedtestExporter',
+      enabled: false,
+      file: import 'modules/speedtest_exporter.jsonnet',
+    },
   ],
 
   k3s: {
