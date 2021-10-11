@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: alertmanager-main
@@ -9,12 +9,9 @@ spec:
     http:
       paths:
       - backend:
-          service:
-            name: alertmanager-main
-            port:
-              name: web
+          serviceName: alertmanager-main
+          servicePort: web
         path: /
-        pathType: Prefix
   tls:
   - hosts:
     - alertmanager.192.168.1.15.nip.io

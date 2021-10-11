@@ -92,7 +92,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   // Creates ingress objects
   newIngress(name, namespace, host, path, serviceName, servicePort):: (
-    local ingress = k.extensions.v1beta1.ingress;
+    local ingress = k.networking.v1beta1.ingress;
     local ingressTls = ingress.mixin.spec.tlsType;
     local ingressRule = ingress.mixin.spec.rulesType;
     local httpIngressPath = ingressRule.mixin.http.pathsType;
@@ -114,7 +114,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   // Add TLS to Ingress resource with secret containing the certificates if exists
   addIngressTLS(I, S=''):: (
-    local ingress = k.extensions.v1beta1.ingress;
+    local ingress = k.networking.v1beta1.ingress;
     local ingressTls = ingress.mixin.spec.tlsType;
     local host = I.spec.rules[0].host;
     local namespace = I.metadata.namespace;

@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: prometheus-k8s
@@ -9,12 +9,9 @@ spec:
     http:
       paths:
       - backend:
-          service:
-            name: prometheus-k8s
-            port:
-              name: web
+          serviceName: prometheus-k8s
+          servicePort: web
         path: /
-        pathType: Prefix
   tls:
   - hosts:
     - prometheus.192.168.1.15.nip.io
