@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: grafana
@@ -9,9 +9,12 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: grafana
-          servicePort: http
+          service:
+            name: grafana
+            port:
+              name: http
         path: /
+        pathType: Prefix
   tls:
   - hosts:
     - grafana.192.168.1.15.nip.io
