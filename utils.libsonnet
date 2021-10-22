@@ -91,7 +91,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
   ),
 
   // Creates ingress objects
-  newIngress(name, namespace, host, path, serviceName, servicePort):: (
+  newIngress(name, namespace, hosts, path, serviceName, servicePort):: (
     {
       apiVersion: 'networking.k8s.io/v1',
       kind: 'Ingress',
@@ -100,25 +100,28 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
         namespace: namespace,
       },
       spec: {
-        rules: [
+        rules: [$.newIngressHost(host, path, serviceName, servicePort) for host in hosts],
+      },
+    }
+  ),
+
+  // Add host to Ingress resource
+  newIngressHost(host, path, serviceName, servicePort):: (
+    {
+      host: host,
+      http: {
+        paths: [
           {
-            host: host,
-            http: {
-              paths: [
-                {
-                  backend: {
-                    service: {
-                      name: serviceName,
-                      port: {
-                        name: servicePort,
-                      },
-                    },
-                  },
-                  path: path,
-                  pathType: 'Prefix',
+            backend: {
+              service: {
+                name: serviceName,
+                port: {
+                  name: servicePort,
                 },
-              ],
+              },
             },
+            path: path,
+            pathType: 'Prefix',
           },
         ],
       },
@@ -126,16 +129,15 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
   ),
 
   // Add TLS to Ingress resource with secret containing the certificates if exists
-  addIngressTLS(I, S=''):: (
+  addIngressTLS(I, hosts, secretName=''):: (
     local ingress = k.networking.v1beta1.ingress;
     local ingressTls = ingress.mixin.spec.tlsType;
-    local host = I.spec.rules[0].host;
     local namespace = I.metadata.namespace;
 
     I + ingress.mixin.spec.withTls(
       ingressTls.new() +
-      ingressTls.withHosts(host) +
-      (if S != '' then { secretName: S } else {})
+      ingressTls.withHosts(hosts) +
+      (if secretName != '' then { secretName: secretName } else {})
     )
   ),
 

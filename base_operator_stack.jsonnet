@@ -7,9 +7,10 @@ local vars = import 'vars.jsonnet';
     namespace: 'monitoring',
 
     urls+:: {
-      prom_ingress: 'prometheus.' + vars.suffixDomain,
-      alert_ingress: 'alertmanager.' + vars.suffixDomain,
-      grafana_ingress: 'grafana.' + vars.suffixDomain,
+      domains: [vars.suffixDomain] + vars.additionalDomains,
+      prom_ingress: ['prometheus.' + domain for domain in $._config.urls.domains],
+      alert_ingress: ['alertmanager.' + domain for domain in $._config.urls.domains],
+      grafana_ingress: ['grafana.' + domain for domain in $._config.urls.domains],
       grafana_ingress_external: 'grafana.' + vars.suffixDomain,
     },
 
@@ -76,7 +77,7 @@ local vars = import 'vars.jsonnet';
                retention: vars.prometheus.retention,
                scrapeInterval: vars.prometheus.scrapeInterval,
                scrapeTimeout: vars.prometheus.scrapeTimeout,
-               externalUrl: 'http://' + $._config.urls.prom_ingress,
+               externalUrl: 'http://' + $._config.urls.prom_ingress[0],
              }
              + (if vars.enablePersistence.prometheus then {
                   storage: {
@@ -139,9 +140,9 @@ local vars = import 'vars.jsonnet';
       local I = utils.newIngress('alertmanager-main', $._config.namespace, $._config.urls.alert_ingress, '/', 'alertmanager-main', 'web');
       if vars.TLSingress then
         if vars.UseProvidedCerts then
-          utils.addIngressTLS(I, 'ingress-secret')
+          utils.addIngressTLS(I, $._config.urls.alert_ingress, 'ingress-secret')
         else
-          utils.addIngressTLS(I)
+          utils.addIngressTLS(I, $._config.urls.alert_ingress)
       else
         I,
 
@@ -149,9 +150,9 @@ local vars = import 'vars.jsonnet';
       local I = utils.newIngress('grafana', $._config.namespace, $._config.urls.grafana_ingress, '/', 'grafana', 'http');
       if vars.TLSingress then
         if vars.UseProvidedCerts then
-          utils.addIngressTLS(I, 'ingress-secret')
+          utils.addIngressTLS(I, $._config.urls.grafana_ingress, 'ingress-secret')
         else
-          utils.addIngressTLS(I)
+          utils.addIngressTLS(I, $._config.urls.grafana_ingress)
       else
         I,
 
@@ -159,9 +160,9 @@ local vars = import 'vars.jsonnet';
       local I = utils.newIngress('prometheus-k8s', $._config.namespace, $._config.urls.prom_ingress, '/', 'prometheus-k8s', 'web');
       if vars.TLSingress then
         if vars.UseProvidedCerts then
-          utils.addIngressTLS(I, 'ingress-secret')
+          utils.addIngressTLS(I, $._config.urls.prom_ingress, 'ingress-secret')
         else
-          utils.addIngressTLS(I)
+          utils.addIngressTLS(I, $._config.urls.prom_ingress)
       else
         I,
 
