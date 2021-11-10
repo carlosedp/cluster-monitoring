@@ -92,29 +92,42 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
   // Creates ingress objects
   newIngress(name, namespace, host, path, serviceName, servicePort):: (
-    local ingress = k.extensions.v1beta1.ingress;
-    local ingressTls = ingress.mixin.spec.tlsType;
-    local ingressRule = ingress.mixin.spec.rulesType;
-    local httpIngressPath = ingressRule.mixin.http.pathsType;
-
-    ingress.new()
-    + ingress.mixin.metadata.withName(name)
-    + ingress.mixin.metadata.withNamespace(namespace)
-    + ingress.mixin.spec.withRules(
-      ingressRule.new()
-      + ingressRule.withHost(host)
-      + ingressRule.mixin.http.withPaths(
-        httpIngressPath.new()
-        + httpIngressPath.withPath(path)
-        + httpIngressPath.mixin.backend.withServiceName(serviceName)
-        + httpIngressPath.mixin.backend.withServicePort(servicePort)
-      ),
-    )
+    {
+      apiVersion: 'networking.k8s.io/v1',
+      kind: 'Ingress',
+      metadata: {
+        name: name,
+        namespace: namespace,
+      },
+      spec: {
+        rules: [
+          {
+            host: host,
+            http: {
+              paths: [
+                {
+                  backend: {
+                    service: {
+                      name: serviceName,
+                      port: {
+                        name: servicePort,
+                      },
+                    },
+                  },
+                  path: path,
+                  pathType: 'Prefix',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    }
   ),
 
   // Add TLS to Ingress resource with secret containing the certificates if exists
   addIngressTLS(I, S=''):: (
-    local ingress = k.extensions.v1beta1.ingress;
+    local ingress = k.networking.v1beta1.ingress;
     local ingressTls = ingress.mixin.spec.tlsType;
     local host = I.spec.rules[0].host;
     local namespace = I.metadata.namespace;
