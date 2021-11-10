@@ -175,7 +175,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
   ),
 
   // Creates http ServiceMonitor objects
-  newServiceMonitor(name, namespace, matchLabel, matchNamespace, portName, portScheme, path='metrics'):: (
+  newServiceMonitor(name, namespace, matchLabel, matchNamespace, portName, portScheme, path='metrics', interval='30s', timeout='30s'):: (
     {
       apiVersion: 'monitoring.coreos.com/v1',
       kind: 'ServiceMonitor',
@@ -195,7 +195,8 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
           {
             port: portName,
             scheme: portScheme,
-            interval: '30s',
+            interval: interval,
+            scrapeTimeout: timeout,
             relabelings: [
               {
                 action: 'replace',
