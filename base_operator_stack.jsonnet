@@ -4,7 +4,7 @@ local vars = import 'vars.jsonnet';
 
 {
   _config+:: {
-    namespace: 'monitoring',
+    namespace: vars._config.namespace,
 
     urls+:: {
       domains: [vars.suffixDomain] + vars.additionalDomains,
