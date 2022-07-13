@@ -49,20 +49,20 @@ tar: manifests        ## Generates a .tar.gz from manifests dir
 
 $(JB_BINARY):        ## Installs jsonnet-bundler utility
 	@echo "Installing jsonnet-bundler"
-	@go get -u github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
+	@go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
 
 $(JSONNET_BIN):        ## Installs jsonnet and jsonnetfmt utility
 	@echo "Installing jsonnet"
-	@go get -u github.com/google/go-jsonnet/cmd/jsonnet
-	@go get -u github.com/google/go-jsonnet/cmd/jsonnetfmt
-	@go get -u github.com/brancz/gojsontoyaml
+	@go install github.com/google/go-jsonnet/cmd/jsonnet@latest
+	@go install github.com/google/go-jsonnet/cmd/jsonnetfmt@latest
+	@go install github.com/brancz/gojsontoyaml@latest
 
 update_tools:        ## Updates jsonnet, jsonnetfmt and jb utilities
 	@echo "Updating jsonnet"
-	@go get -u github.com/google/go-jsonnet/cmd/jsonnet
-	@go get -u github.com/google/go-jsonnet/cmd/jsonnetfmt
-	@go get -u github.com/brancz/gojsontoyaml
-	@go get -u github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
+	@go install github.com/google/go-jsonnet/cmd/jsonnet@latest
+	@go install github.com/google/go-jsonnet/cmd/jsonnetfmt@latest
+	@go install github.com/brancz/gojsontoyaml@latest
+	@go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
 
 change_suffix:        ## Changes suffix for the ingress. Pass suffix=[suffixURL] as argument
 	@echo "Ingress IPs changed to [service].${suffix}"
