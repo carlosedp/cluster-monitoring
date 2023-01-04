@@ -1,4 +1,4 @@
-local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local k = import 'ksonnet-lib/ksonnet.beta.4/k.libsonnet';
 
 {
   // Generates the manifests for all objects in kp except those starting with "_"

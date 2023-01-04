@@ -4,8 +4,16 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/coreos/kube-prometheus.git",
+          "remote": "https://github.com/prometheus-operator/kube-prometheus.git",
           "subdir": "jsonnet/kube-prometheus"
+        }
+      },
+      "version": "main"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/ksonnet/ksonnet-lib.git"
         }
       },
       "version": "master"
