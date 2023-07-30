@@ -151,7 +151,7 @@ The content of this project consists of a set of jsonnet files making up a libra
 
 ### Pre-reqs
 
-The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need [Go](https://golang.org/dl/) already installed:
+The project requires json-bundler and the jsonnet compiler. The Makefile does the heavy-lifting of installing them. You need [Go](https://golang.org/dl/) (version 1.18 minimum) already installed:
 
 ```bash
 git clone https://github.com/carlosedp/cluster-monitoring
