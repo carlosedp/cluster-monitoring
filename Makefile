@@ -5,6 +5,13 @@ JB_BINARY := $(GOPATH)/bin/jb
 
 JSONNET_FMT := $(GOPATH)/bin/jsonnetfmt -n 2 --max-blank-lines 2 --string-style s --comment-style s
 
+GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
+GO_MINOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2)
+MINIMUM_SUPPORTED_GO_MAJOR_VERSION = 1
+MINIMUM_SUPPORTED_GO_MINOR_VERSION = 18
+GO_VERSION_VALIDATION_ERR_MSG = Your golang version, $(GO_MAJOR_VERSION).$(GO_MINOR_VERSION), is not supported, \
+								please update to at least $(MINIMUM_SUPPORTED_GO_MAJOR_VERSION).$(MINIMUM_SUPPORTED_GO_MINOR_VERSION).
+
 .PHONY: generate vendor fmt manifests help
 
 all: manifests       ## Builds the  manifests
@@ -24,7 +31,7 @@ docker:        ## Builds the manifests in a Docker container to avoid installing
 update_libs: $(JB_BINARY)        ## Updates vendor libs. Require a regeneration of the manifests
 	$(JB_BINARY) update
 
-vendor: $(JB_BINARY) jsonnetfile.json jsonnetfile.lock.json       ## Download vendor libs
+vendor: validate-go-version $(JB_BINARY) jsonnetfile.json jsonnetfile.lock.json       ## Download vendor libs
 	rm -rf vendor
 	$(JB_BINARY) install
 
@@ -72,3 +79,9 @@ change_suffix:        ## Changes suffix for the ingress. Pass suffix=[suffixURL]
 		mv -f manifests/ingress-$$f.yaml-tmp manifests/ingress-$$f.yaml; \
 		echo ${K3S} kubectl apply -f manifests/ingress-$$f.yaml; \
 	done
+
+validate-go-version:  ## Validates the installed version of go to allow the `go install` syntax needed for `make vendor`
+	@if [ $(GO_MAJOR_VERSION) -lt $(MINIMUM_SUPPORTED_GO_MAJOR_VERSION) -o $(GO_MINOR_VERSION) -lt $(MINIMUM_SUPPORTED_GO_MINOR_VERSION) ]; then \
+    	echo '$(GO_VERSION_VALIDATION_ERR_MSG)'; \
+    	exit 1; \
+	fi
