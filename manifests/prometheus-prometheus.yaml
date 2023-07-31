@@ -2,7 +2,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   labels:
-    prometheus: k8s
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.41.0
   name: k8s
   namespace: monitoring
 spec:
@@ -11,35 +15,45 @@ spec:
       preferredDuringSchedulingIgnoredDuringExecution:
       - podAffinityTerm:
           labelSelector:
-            matchExpressions:
-            - key: prometheus
-              operator: In
-              values:
-              - k8s
+            matchLabels:
+              app.kubernetes.io/component: prometheus
+              app.kubernetes.io/instance: k8s
+              app.kubernetes.io/name: prometheus
+              app.kubernetes.io/part-of: kube-prometheus
           namespaces:
           - monitoring
           topologyKey: kubernetes.io/hostname
         weight: 100
   alerting:
     alertmanagers:
-    - name: alertmanager-main
+    - apiVersion: v2
+      name: alertmanager-main
       namespace: monitoring
       port: web
+  enableFeatures: []
+  externalLabels: {}
   externalUrl: http://prometheus.192.168.1.15.nip.io
-  image: prom/prometheus:v2.19.1
+  image: quay.io/prometheus/prometheus:v2.41.0
   nodeSelector:
     kubernetes.io/os: linux
+  podMetadata:
+    labels:
+      app.kubernetes.io/component: prometheus
+      app.kubernetes.io/instance: k8s
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/part-of: kube-prometheus
+      app.kubernetes.io/version: 2.41.0
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
+  probeNamespaceSelector: {}
+  probeSelector: {}
   replicas: 1
   resources:
     requests:
       memory: 400Mi
   retention: 15d
-  ruleSelector:
-    matchLabels:
-      prometheus: k8s
-      role: alert-rules
+  ruleNamespaceSelector: {}
+  ruleSelector: {}
   scrapeInterval: 30s
   scrapeTimeout: 30s
   securityContext:
@@ -49,4 +63,4 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: v2.19.1
+  version: 2.41.0

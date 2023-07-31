@@ -1,10 +1,10 @@
 local utils = import 'utils.libsonnet';
 local vars = import 'vars.jsonnet';
 
-local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
-           + (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet')
-           + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
-           + (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet')
+local kp = (import 'kube-prometheus/main.libsonnet') + { values+:: { common+: { namespace: vars._config.namespace } } }
+           + (import 'kube-prometheus/addons/anti-affinity.libsonnet')
+           + (import 'kube-prometheus/platforms/kops-coredns.libsonnet')
+           + (import 'kube-prometheus/platforms/kubeadm.libsonnet')
            // Additional modules are loaded dynamically from vars.jsonnet
            + utils.join_objects([module.file for module in vars.modules if module.enabled])
            // Load K3s customized modules
@@ -13,6 +13,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'base_operator_stack.jsonnet')
            // Load image versions last to override default from modules
            + (import 'image_sources_versions.jsonnet');
+
 
 // Generate core modules
 { ['setup/0namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) }

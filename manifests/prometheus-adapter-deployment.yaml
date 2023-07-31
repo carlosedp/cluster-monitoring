@@ -1,22 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app.kubernetes.io/component: metrics-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 0.10.0
   name: prometheus-adapter
   namespace: monitoring
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      name: prometheus-adapter
+      app.kubernetes.io/component: metrics-adapter
+      app.kubernetes.io/name: prometheus-adapter
+      app.kubernetes.io/part-of: kube-prometheus
   strategy:
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 0
+      maxUnavailable: 1
   template:
     metadata:
       labels:
-        name: prometheus-adapter
+        app.kubernetes.io/component: metrics-adapter
+        app.kubernetes.io/name: prometheus-adapter
+        app.kubernetes.io/part-of: kube-prometheus
+        app.kubernetes.io/version: 0.10.0
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: metrics-adapter
+                  app.kubernetes.io/name: prometheus-adapter
+                  app.kubernetes.io/part-of: kube-prometheus
+              namespaces:
+              - monitoring
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      automountServiceAccountToken: true
       containers:
       - args:
         - --cert-dir=/var/run/serving-cert
@@ -25,10 +49,41 @@ spec:
         - --metrics-relist-interval=1m
         - --prometheus-url=http://prometheus-k8s.monitoring.svc:9090/
         - --secure-port=6443
-        image: directxman12/k8s-prometheus-adapter:v0.7.0
+        - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA
+        image: registry.k8s.io/prometheus-adapter/prometheus-adapter:v0.10.0
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /livez
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 5
         name: prometheus-adapter
         ports:
         - containerPort: 6443
+          name: https
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /readyz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        resources:
+          limits:
+            cpu: 250m
+            memory: 180Mi
+          requests:
+            cpu: 102m
+            memory: 180Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
         volumeMounts:
         - mountPath: /tmp
           name: tmpfs
