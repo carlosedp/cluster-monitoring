@@ -73,10 +73,10 @@ popd
 IMAGE=carlosedp/prometheus-operator
 ALL_ARCH=(amd64 arm arm64 ppc64le)
 
-rm -rf $GOPATH/src/github.com/coreos/prometheus-operator
-mkdir -p $GOPATH/src/github.com/coreos/
-pushd $GOPATH/src/github.com/coreos/
-git clone https://github.com/coreos/prometheus-operator -b $PROM_OP_VERSION --depth=1
+rm -rf $GOPATH/src/github.com/prometheus-operator/prometheus-operator
+mkdir -p $GOPATH/src/github.com/prometheus-operator/
+pushd $GOPATH/src/github.com/prometheus-operator/
+git clone https://github.com/prometheus-operator/prometheus-operator -b $PROM_OP_VERSION --depth=1
 cd prometheus-operator
 
 for arch in $ALL_ARCH; do
@@ -85,7 +85,7 @@ for arch in $ALL_ARCH; do
     else archdocker="$arch"; fi
 
     cat Dockerfile |sed -e 's/\.build\/linux-amd64\/operator/operator/' |sed -e "s/^FROM.*/FROM $archdocker\/busybox/" > Dockerfile.custom
-    CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -ldflags="-s -X github.com/coreos/prometheus-operator/pkg/version.Version=$(cat VERSION | tr -d " \t\n\r")" -o operator cmd/operator/main.go
+    CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -ldflags="-s -X github.com/prometheus-operator/prometheus-operator/pkg/version.Version=$(cat VERSION | tr -d " \t\n\r")" -o operator cmd/operator/main.go
     docker build -t $REPO/prometheus-operator:${PROM_OP_VERSION}-$arch -f Dockerfile.custom .
     docker push $REPO/prometheus-operator:$PROM_OP_VERSION-$arch
 done
@@ -144,8 +144,8 @@ done
 IMAGE=carlosedp/prometheus-config-reloader
 ALL_ARCH=(amd64 arm arm64 ppc64le)
 
-pushd $GOPATH/src/github.com/coreos/prometheus-operator
-cd $GOPATH/src/github.com/coreos/prometheus-operator/cmd/prometheus-config-reloader
+pushd $GOPATH/src/github.com/prometheus-operator/prometheus-operator
+cd $GOPATH/src/github.com/prometheus-operator/prometheus-operator/cmd/prometheus-config-reloader
 git checkout ${PROM_CONFIG_RELOADER_VERSION}
 
 for arch in $ALL_ARCH; do

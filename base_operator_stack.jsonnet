@@ -1,4 +1,4 @@
-local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local k = import 'ksonnet-lib/ksonnet.beta.4/k.libsonnet';
 local utils = import 'utils.libsonnet';
 local vars = import 'vars.jsonnet';
 
@@ -17,7 +17,7 @@ local vars = import 'vars.jsonnet';
     prometheus+:: {
       names: 'k8s',
       replicas: 1,
-      namespaces: ['default', 'kube-system', 'monitoring'],
+      namespaces: ['default', 'kube-system', vars._config.namespace],
     },
 
     alertmanager+:: {
@@ -60,7 +60,7 @@ local vars = import 'vars.jsonnet';
         },
       },
       plugins: vars.grafana.plugins,
-      env: vars.grafana.env
+      env: vars.grafana.env,
     },
   },
   //---------------------------------------

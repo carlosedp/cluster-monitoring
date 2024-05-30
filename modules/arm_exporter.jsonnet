@@ -1,5 +1,5 @@
 local utils = import '../utils.libsonnet';
-local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local k = import 'ksonnet-lib/ksonnet.beta.4/k.libsonnet';
 
 {
   _config+:: {

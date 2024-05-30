@@ -1,8 +1,15 @@
 apiVersion: v1
-data:
-  grafana.ini: W2F1dGguYW5vbnltb3VzXQplbmFibGVkID0gZmFsc2UKW2F1dGguYmFzaWNdCmVuYWJsZWQgPSBmYWxzZQpbc2Vzc2lvbl0KcHJvdmlkZXIgPSBtZW1vcnkKW3NtdHBdCmVuYWJsZWQgPSB0cnVlCmZyb21fYWRkcmVzcyA9IG15ZW1haWxAZ21haWwuY29tCmZyb21fbmFtZSA9IEdyYWZhbmEgQWxlcnQKaG9zdCA9IHNtdHAtc2VydmVyLm1vbml0b3Jpbmcuc3ZjOjI1CnBhc3N3b3JkID0gCnNraXBfdmVyaWZ5ID0gdHJ1ZQp1c2VyID0gCg==
 kind: Secret
 metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 9.3.2
   name: grafana-config
   namespace: monitoring
+stringData:
+  grafana.ini: |
+    [date_formats]
+    default_timezone = UTC
 type: Opaque
