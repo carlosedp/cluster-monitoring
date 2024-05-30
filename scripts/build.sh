@@ -20,8 +20,10 @@ rm -rf manifests
 mkdir -p manifests/setup
 
 # optional, but we would like to generate yaml, not json
-for file in $(find manifests -type f ! -name '*.yaml'); do
-    cat "$file" | $(go env GOPATH)/bin/gojsontoyaml > "$file.yaml" && rm -f "$file"
+$JSONNET_BIN -J vendor -m manifests "${1-example.jsonnet}" | while IFS= read -r file; do
+    "$(go env GOPATH)/bin/gojsontoyaml" <"$file" >"$file.yaml"
+    rm -f "$file"
 done
+
 # Clean-up json files from manifests dir
 find manifests -type f ! -name '*.yaml' -delete
